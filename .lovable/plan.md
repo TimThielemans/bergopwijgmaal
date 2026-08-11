@@ -97,9 +97,10 @@ Collections are always rendered by mapping over arrays — team counts, section 
 
 No live API is assumed. Volleyball data arrives as **generated static JSON files**, which is the first-class source shape.
 
-- `public/data/matches.json` and `public/data/rankings.json` (plus optional per-team `calendar-<teamId>.json`) hold parser output in a documented, versioned envelope: `{ generatedAt, season, source, items: [...] }`.
-- `src/lib/providers/` defines async interfaces: `MatchProvider.getUpcoming(limit, teamId?)`, `MatchProvider.getCalendar(teamId, season)`, `RankingProvider.getStanding(teamId)`, `RankingProvider.getAllStandings()`, `CmsProvider.getTeams()`.
-- Two interchangeable implementations ship: a **mock provider** (typed data in `src/content`, used today) and a **static-JSON provider** that fetches/imports the files above, validates the envelope and maps rows onto teams. Selecting one is a single line in `src/lib/providers/index.ts`. A future HTTP/parser provider is just a third implementation — components and props never change.
+- `public/data/matches.json` and `public/data/rankings.json` (plus optional per-team `calendar-<teamId>.json`) hold parser output in a documented, versioned envelope: `{ version, generatedAt, seasonId, source, items: [...] }`.
+- `src/lib/providers/` defines async interfaces: `MatchProvider.getUpcoming({ limit, teamId?, seasonId? })`, `MatchProvider.getCalendar(teamId, seasonId)`, `RankingProvider.getStanding(teamId, seasonId?)`, `RankingProvider.getAllStandings(seasonId?)`, `CmsProvider.getTeams()`.
+- Two interchangeable implementations ship: a **mock provider** (typed data in `src/content`, used today) and a **static-JSON provider** that reads the files above, validates the envelope and maps rows onto teams via `volleyScoresTeamId`. Selecting one is a single line in `src/lib/providers/index.ts`. A future **VolleyDataParser** simply writes those same JSON files (or is added as a third provider) — components, props and query keys never change.
+
 - `externalRefs.volleyScoresTeamId` (plus `sourceId` on matches/rankings) is the join key between parsed JSON rows and CMS teams; unmatched rows are ignored rather than rendered.
 - Loaders use `context.queryClient.ensureQueryData(queryOptions)` with per-entity query keys (`["matches","upcoming"]`, `["ranking",teamId]`), so any source gains caching/refetch for free.
 - Missing or stale data degrades gracefully: sections render an "binnenkort beschikbaar" state instead of breaking, and `generatedAt` can surface as a "laatst bijgewerkt" note.
