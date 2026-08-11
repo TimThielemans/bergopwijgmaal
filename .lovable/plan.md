@@ -28,6 +28,9 @@ Shared chrome (sticky translucent header with active-route highlighting, mobile 
 
 Home sections in order: Hero → Volgende wedstrijden → Stand & vorm → Clubactiviteiten → Onze ploegen → Over Berg-Op → Sponsors → Contact.
 
+The "Stand & vorm" section lists **all** competitive teams at once, one row each: team name → ranking position (e.g. "2de") → form streak of the last 5 matches as W/L pills. Row count is driven by the data, and each row links to `/ploegen/$slug`.
+
+
 ## 3. Folder structure
 
 ```text
