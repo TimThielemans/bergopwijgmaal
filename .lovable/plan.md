@@ -10,7 +10,7 @@ Palette derived from the uploaded mark: club blue (`#5AA3D6`-family), near-black
 - Motifs: the brush-stroke "W" used as a large watermark/section divider; the blue dot from the logo reused as a bullet, streak indicator and hover accent.
 - Surfaces: generous whitespace, large rounded cards, soft layered shadows, gradient "court light" washes, hairline borders. No municipal/federation look, no crowded tables.
 - Motion: scroll-reveal fades with small upward offset, staggered card entrances, smooth hover lifts, animated ranking/streak bars. Respects `prefers-reduced-motion`.
-- Imagery: abstract brand graphics (gradient + stroke compositions) for hero and section backdrops; AI-generated volleyball action shots as team-card and team-detail placeholders, all referenced through the data layer so real photos drop in later.
+- Imagery: abstract brand graphics are the default everywhere (gradient/stroke compositions, "W" watermark, court-light washes). Generated sports photos appear only as temporary placeholders inside team cards and team-detail headers. Every layout must hold up photo-free: when a team has no `photo`, the card falls back to a branded gradient tile with the team letter/level — so the AI placeholders can be deleted without touching layout.
 
 ## 2. Site architecture & page hierarchy
 
