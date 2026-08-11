@@ -1,0 +1,158 @@
+import { createFileRoute } from "@tanstack/react-router";
+import { Building2, HeartHandshake, Target } from "lucide-react";
+import { BOARD_MEMBERS, CLUB_INFO, VENUES } from "@/content";
+import { pageMeta } from "@/lib/seo";
+import { PageHero } from "@/components/layout/PageHero";
+import { Section } from "@/components/layout/Section";
+import { BrandGraphic } from "@/components/shared/BrandGraphic";
+import { MapPlaceholder } from "@/components/shared/MapPlaceholder";
+import { Reveal } from "@/components/shared/Reveal";
+
+const TITLE = "De club — VC Berg-Op Wijgmaal";
+const DESCRIPTION =
+  "Het verhaal van VC Berg-Op Wijgmaal: familiale volleybalclub uit Wijgmaal bij Leuven, met clubwaarden, bestuur, sporthal en sportieve ambities.";
+
+export const Route = createFileRoute("/club")({
+  head: () => ({ meta: pageMeta({ title: TITLE, description: DESCRIPTION }) }),
+  component: ClubPage,
+});
+
+function ClubPage() {
+  const hall = VENUES[0]!;
+
+  return (
+    <>
+      <PageHero
+        eyebrow="De club"
+        title="Meer dan vijftig jaar volleybal in Wijgmaal"
+        intro={CLUB_INFO.mission}
+      />
+
+      <Section eyebrow="Ons verhaal" title="Hoe Berg-Op groeide">
+        <div className="grid gap-5 md:grid-cols-3">
+          {CLUB_INFO.storyBlocks.map((block, index) => (
+            <Reveal key={block.title} delay={index * 80}>
+              <article className="surface-card h-full p-6 sm:p-8">
+                <span className="font-display text-sm font-bold text-club-deep">
+                  0{index + 1}
+                </span>
+                <h3 className="mt-3 font-display text-xl font-bold">{block.title}</h3>
+                <p className="mt-3 text-sm leading-relaxed text-muted-foreground">{block.body}</p>
+              </article>
+            </Reveal>
+          ))}
+        </div>
+      </Section>
+
+      <Section
+        tone="ink"
+        eyebrow="Waarden"
+        title="Waar we voor staan"
+        intro="Vier principes die bepalen hoe we trainen, spelen en met elkaar omgaan."
+      >
+        <div className="grid gap-4 sm:grid-cols-2">
+          {CLUB_INFO.values.map((value, index) => (
+            <Reveal key={value.id} delay={index * 70}>
+              <article className="relative isolate h-full overflow-hidden rounded-2xl border border-ink-foreground/12 bg-ink-foreground/5 p-6 sm:p-8">
+                <BrandGraphic
+                  variant="stroke"
+                  className="absolute -right-16 -top-10 h-48 w-48 text-club"
+                />
+                <h3 className="font-display text-xl font-bold">{value.title}</h3>
+                <p className="mt-3 text-sm leading-relaxed text-ink-foreground/70">
+                  {value.description}
+                </p>
+              </article>
+            </Reveal>
+          ))}
+        </div>
+      </Section>
+
+      <Section
+        tone="tint"
+        eyebrow="Ambitie & sfeer"
+        title="Familiaal én sportief"
+      >
+        <div className="grid gap-5 md:grid-cols-2">
+          <Reveal>
+            <article className="surface-card h-full p-6 sm:p-8">
+              <HeartHandshake aria-hidden="true" className="h-7 w-7 text-club-deep" />
+              <h3 className="mt-4 font-display text-xl font-bold">Familiale sfeer</h3>
+              <p className="mt-3 text-sm leading-relaxed text-muted-foreground">
+                Ploegen trainen naast elkaar, supporteren voor elkaar en zitten na de wedstrijd
+                samen in de cafetaria. Nieuwe leden worden meteen opgenomen — leeftijd of niveau
+                maakt niets uit.
+              </p>
+            </article>
+          </Reveal>
+          <Reveal delay={100}>
+            <article className="surface-card h-full p-6 sm:p-8">
+              <Target aria-hidden="true" className="h-7 w-7 text-club-deep" />
+              <h3 className="mt-4 font-display text-xl font-bold">Sportieve ambitie</h3>
+              <p className="mt-3 text-sm leading-relaxed text-muted-foreground">
+                Onze eerste ploegen willen bovenin meedraaien en doorstromen naar een hoger
+                niveau. Daarvoor investeren we in coaching, een degelijke trainingsopbouw en een
+                brede kern.
+              </p>
+            </article>
+          </Reveal>
+        </div>
+      </Section>
+
+      <Section eyebrow="Bestuur" title="Het bestuur">
+        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+          {BOARD_MEMBERS.map((member, index) => (
+            <Reveal key={member.name} delay={index * 60}>
+              <article className="surface-card flex h-full items-center gap-4 p-5">
+                <span className="grid h-12 w-12 shrink-0 place-items-center rounded-full bg-club/15 font-display text-sm font-bold text-club-deep">
+                  {member.name
+                    .split(" ")
+                    .map((part) => part[0])
+                    .slice(0, 2)
+                    .join("")}
+                </span>
+                <span className="min-w-0">
+                  <span className="block truncate font-display text-base font-bold">
+                    {member.name}
+                  </span>
+                  <span className="block truncate text-sm text-muted-foreground">
+                    {member.role}
+                  </span>
+                  {member.email ? (
+                    <a
+                      href={`mailto:${member.email}`}
+                      className="mt-1 block truncate text-xs text-club-deep hover:underline"
+                    >
+                      {member.email}
+                    </a>
+                  ) : null}
+                </span>
+              </article>
+            </Reveal>
+          ))}
+        </div>
+      </Section>
+
+      <Section tone="tint" eyebrow="Sporthal" title="Waar we spelen">
+        <div className="grid gap-6 lg:grid-cols-[1fr_1.1fr]">
+          <Reveal className="surface-card p-6 sm:p-8">
+            <Building2 aria-hidden="true" className="h-7 w-7 text-club-deep" />
+            <h3 className="mt-4 font-display text-xl font-bold">{hall.name}</h3>
+            <address className="mt-3 space-y-1 text-sm not-italic text-muted-foreground">
+              <p>{hall.street}</p>
+              <p>
+                {hall.postalCode} {hall.city}
+              </p>
+            </address>
+            {hall.notes ? (
+              <p className="mt-4 text-sm leading-relaxed text-muted-foreground">{hall.notes}</p>
+            ) : null}
+          </Reveal>
+          <Reveal delay={100}>
+            <MapPlaceholder venue={hall} />
+          </Reveal>
+        </div>
+      </Section>
+    </>
+  );
+}

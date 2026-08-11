@@ -1,0 +1,68 @@
+{
+  "version": 1,
+  "generatedAt": "2026-08-10T22:05:00.000Z",
+  "seasonId": "2026-2027",
+  "source": "VolleyDataParser (mock export)",
+  "items": [
+    {
+      "teamId": "heren-a",
+      "seasonId": "2026-2027",
+      "position": 2,
+      "division": "Nationale 3 A",
+      "played": 5,
+      "won": 4,
+      "lost": 1,
+      "points": 12,
+      "setsFor": 14,
+      "setsAgainst": 6,
+      "form": ["W", "W", "L", "W", "W"],
+      "updatedAt": "2026-08-10T22:05:00.000Z",
+      "sourceId": "VS-BOW-H1"
+    },
+    {
+      "teamId": "dames-a",
+      "seasonId": "2026-2027",
+      "position": 1,
+      "division": "Promo 1 B",
+      "played": 5,
+      "won": 5,
+      "lost": 0,
+      "points": 15,
+      "setsFor": 15,
+      "setsAgainst": 3,
+      "form": ["W", "W", "W", "W", "W"],
+      "updatedAt": "2026-08-10T22:05:00.000Z",
+      "sourceId": "VS-BOW-D1"
+    },
+    {
+      "teamId": "heren-b",
+      "seasonId": "2026-2027",
+      "position": 5,
+      "division": "Promo 2 A",
+      "played": 5,
+      "won": 2,
+      "lost": 3,
+      "points": 7,
+      "setsFor": 9,
+      "setsAgainst": 11,
+      "form": ["L", "W", "L", "W", "L"],
+      "updatedAt": "2026-08-10T22:05:00.000Z",
+      "sourceId": "VS-BOW-H2"
+    },
+    {
+      "teamId": "dames-b",
+      "seasonId": "2026-2027",
+      "position": 4,
+      "division": "Promo 3 C",
+      "played": 5,
+      "won": 3,
+      "lost": 2,
+      "points": 9,
+      "setsFor": 11,
+      "setsAgainst": 8,
+      "form": ["W", "L", "W", "W", "L"],
+      "updatedAt": "2026-08-10T22:05:00.000Z",
+      "sourceId": "VS-BOW-D2"
+    }
+  ]
+}
