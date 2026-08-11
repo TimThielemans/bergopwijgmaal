@@ -5,19 +5,19 @@ export const CLUB_INFO: ClubInfo = {
   tagline: "Familiale volleybalclub met sportieve ambitie",
   foundingYear: 1972,
   mission:
-    "Iedereen die graag volleybal speelt een plek geven — van Nationale 3 tot recreatief — in een club die aanvoelt als een tweede thuis.",
+    "Iedereen die graag volleybal speelt een plek geven van Nationale 3 tot recreatief in een club die aanvoelt als een tweede thuis.",
   storyBlocks: [
     {
       title: "Ontstaan in Wijgmaal",
-      body: "Berg-Op werd in 1972 opgericht door een handvol Wijgmaalse volleyballiefhebbers die een eigen ploeg wilden. Meer dan vijftig jaar later spelen we nog altijd in dezelfde sporthal, met dezelfde mentaliteit: hard werken, samen plezier maken.",
+      body: "Berg-Op werd in 1972 opgericht door een handvol Wijgmaalse volleyballiefhebbers die een eigen ploeg wilden. Meer dan vijftig jaar later spelen we nog altijd in dezelfde sporthal, met dezelfde mentaliteit: hard werken, samen plezier maken. Gelukkig hebben we wel al eens een nieuwe vloer gekregen in onze Ymeria ;) ",
     },
     {
       title: "Gegroeid, nooit vervreemd",
-      body: "Van één ploeg naar een volwaardige club met competitieve en recreatieve teams. De structuur werd professioneler, de sfeer bleef familiaal. Wie hier binnenkomt, kent na twee trainingen de halve club.",
+      body: "Van één ploeg naar een volwaardige club met competitieve en recreatieve teams. De sfeer blijft familiaal. Wie hier binnenkomt, kent na twee trainingen de halve club.",
     },
     {
       title: "Ambitie voor de toekomst",
-      body: "We willen sportief blijven groeien met een sterke A-kern én de instap laagdrempelig houden. Elke speler krijgt bij Berg-Op de kans om te spelen op het niveau dat bij hem of haar past.",
+      body: "We willen sportief blijven groeien met een sterke A-kern én de instap laagdrempelig houden. Elke speler krijgt bij Berg-Op de kans om te spelen op het niveau dat bij hem of haar past. Voor jeugdwerking is er helaas geen plaats in de zaal, we verwijzen je hiervoor naar nabijgelegen clubs met een uitstekende jeugdwerking (e.g. VHLeuven, Lizards Lubbeek, KREG Rotselaar)",
     },
   ],
   values: [
@@ -36,8 +36,7 @@ export const CLUB_INFO: ClubInfo = {
     {
       id: "toegankelijk",
       title: "Toegankelijk",
-      description:
-        "Beginner of ex-nationaal: er is een ploeg voor jou. Twee gratis proeftrainingen, zonder verplichtingen.",
+      description: "Stuur ons een berichtje of kom gewoon eens langs.",
     },
     {
       id: "betrouwbaar",
@@ -69,43 +68,42 @@ export const ACTIVITIES: Activity[] = [
   {
     id: "clubweekend-2026",
     slug: "clubweekend",
-    title: "Clubweekend in de Ardennen",
-    date: "2026-09-05",
-    endDate: "2026-09-06",
-    location: "Durbuy",
+    title: "Clubweekend",
+    date: "2026-09-04",
+    endDate: "2026-09-05",
+    location: "Kattevennen, Genk",
     excerpt:
-      "Twee dagen trainen, wandelen en samen tafelen met alle ploegen. De traditionele seizoensstart van Berg-Op.",
-    ctaLabel: "Inschrijven",
-    ctaUrl: "mailto:info@bergopwijgmaal.be?subject=Clubweekend",
+      "De traditionele seizoensstart van BOW, met de hele club op weekend. Vrijdagavond een gemengd toernooi, stevig feestje achteraf. Zaterdag nog een oefenmatch of lichte training en vooral tijd voor teambuilding.",
   },
   {
-    id: "pastaverkoop-2026",
-    slug: "pastaverkoop",
-    title: "Pastaverkoop",
-    date: "2026-10-17",
-    location: "Sporthal Wijgmaal",
+    id: "startdag-2026",
+    slug: "Startdag",
+    title: "Startdag competitie",
+    date: "2026-09-12",
+    location: "Sporthal Ymeria",
     excerpt:
-      "Onze bekendste actie: verse pasta en saus, opgehaald in de cafetaria. Volledige opbrengst gaat naar nieuw trainingsmateriaal.",
-    ctaLabel: "Bestellen",
-    ctaUrl: "mailto:info@bergopwijgmaal.be?subject=Pastaverkoop",
+      "Al onze competitieve damesploegen starten hun competitie op zaterdag 12 september met een thuismatch! Om 16u trapt Dames C af in Promo 2, en om 20u30 staan Dames A en Dames B tegenover elkaar voor de eerste topmatch in Promo 1.",
   },
+
   {
     id: "sinterklaasactie-2026",
     slug: "sinterklaasactie",
     title: "Sinterklaasactie",
     date: "2026-12-05",
-    location: "Wijgmaal centrum",
+    location: "BOW Kaffee",
     excerpt:
-      "Chocolade en speculaas aan de deur, met de jongste spelers als hulpjes van de Sint. Altijd uitverkocht.",
+      "Sinterklaassnoepgoed heb je altijd nodig toch? Bestel hier alvast je chocolade, koekjes, etc. en steun tegelijk onze club",
+    ctaLabel: "Bestellen",
+    ctaUrl: "",
   },
   {
-    id: "kersttornooi-2026",
-    slug: "kersttornooi",
-    title: "Kersttornooi & receptie",
-    date: "2026-12-27",
-    location: "Sporthal Wijgmaal",
+    id: "pastaverkoop-2027",
+    slug: "pastaverkoop",
+    title: "Pastaverkoop",
+    date: "2027-03-17",
+    location: "BOW Kaffee",
     excerpt:
-      "Gemengde ploegen, gelegenheidsopstellingen en een nieuwjaarsreceptie voor spelers, familie en sponsors.",
+      "Onze bekendste en lekkerste actie: verse pastasauzen bereid door onze lieftallige Dames C, op te halen in het BOW kaffee.",
   },
 ];
 
