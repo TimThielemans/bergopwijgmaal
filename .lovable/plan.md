@@ -72,7 +72,7 @@ Every section component receives its data as props; routes do the fetching from 
 
 Field names and shapes are chosen to map 1:1 onto future Sanity documents; each has `_id`/`slug` and image objects rather than raw string paths.
 
-- **Team** — `id`, `slug`, `name`, `category: "competitief" | "recreatief"`, `level` (e.g. "Nat 3", "Promo 1"), `shortDescription`, `description`, `photo: ImageRef`, `coach: Person`, `assistantCoach?`, `trainings: TrainingSlot[]`, `players: Player[]`, `externalRefs: { rankingId?, calendarId? }`, `order`.
+- **Team** — `id`, `slug`, `name`, `category: "competitief" | "recreatief"`, `level` (e.g. "Nat 3", "Promo 1"), `shortDescription`, `description`, `photo?: ImageRef` (optional — branded fallback when absent), `coach: Person`, `assistantCoach?`, `trainings: TrainingSlot[]`, `players: Player[]`, `externalRefs: { volleyScoresTeamId?, rankingId?, calendarId?, division? }`, `order`.
 - **Player** — `name`, `number?`, `position?`, `photo?`.
 - **TrainingSlot** — `day`, `startTime`, `endTime`, `venueId`.
 - **Match** — `id`, `teamId`, `dateTime` (ISO), `opponent`, `isHome`, `venue: VenueRef`, `competition`, `result?: { setsFor, setsAgainst, scoreLine? }`, `status: "scheduled" | "played" | "postponed"`, `sourceId?`.
