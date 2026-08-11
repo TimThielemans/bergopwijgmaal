@@ -112,6 +112,13 @@ function RootShell({ children }: { children: ReactNode }) {
     <html lang="nl-BE">
       <head>
         <HeadContent />
+        {/* Enables scroll-reveal only when JS runs; SSR HTML stays fully visible. */}
+        <script
+          dangerouslySetInnerHTML={{
+            __html: 'document.documentElement.setAttribute("data-js","ready")',
+          }}
+        />
+
       </head>
       <body>
         {children}
