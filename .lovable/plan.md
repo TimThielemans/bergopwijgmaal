@@ -75,11 +75,15 @@ Every section component receives its data as props; routes do the fetching from 
 
 Field names and shapes are chosen to map 1:1 onto future Sanity documents; each has `_id`/`slug` and image objects rather than raw string paths.
 
-- **Team** — `id`, `slug`, `name`, `category: "competitief" | "recreatief"`, `level` (e.g. "Nat 3", "Promo 1"), `shortDescription`, `description`, `photo?: ImageRef` (optional — branded fallback when absent), `coach: Person`, `assistantCoach?`, `trainings: TrainingSlot[]`, `players: Player[]`, `externalRefs: { volleyScoresTeamId?, rankingId?, calendarId?, division? }`, `order`.
+- **Team** — `id`, `slug`, `name`, `shortName` (compact label for mobile rows, tables and badges), `category: "competitief" | "recreatief"`, `level` (e.g. "Nat 3", "Promo 1"), `shortDescription`, `description`, `photo?: ImageRef` (optional — branded fallback when absent), `coach: Person`, `assistantCoach?`, `trainings: TrainingSlot[]`, `players: Player[]`, `externalRefs: { volleyScoresTeamId?, rankingId?, calendarId?, division? }`, `order`.
 - **Player** — `name`, `number?`, `position?`, `photo?`.
 - **TrainingSlot** — `day`, `startTime`, `endTime`, `venueId`.
-- **Match** — `id`, `teamId`, `dateTime` (ISO), `opponent`, `isHome`, `venue: VenueRef`, `competition`, `result?: { setsFor, setsAgainst, scoreLine? }`, `status: "scheduled" | "played" | "postponed"`, `sourceId?`.
-- **RankingEntry** — `teamId`, `position`, `division`, `played`, `points`, `setsFor`, `setsAgainst`, `form: ("W" | "L")[]` (last 5), `updatedAt`, `sourceId?`.
+- **Season** — `id` (e.g. `"2025-2026"`), `label`, `startDate`, `endDate`, `isCurrent`.
+- **Match** — `id`, `teamId`, `seasonId`, `dateTime` (ISO), `opponent`, `isHome`, `venue: VenueRef`, `competition`, `matchday?`, `result?: { setsFor, setsAgainst, scoreLine? }`, `status: "scheduled" | "played" | "postponed"`, `sourceId?`.
+- **RankingEntry** — `teamId`, `seasonId`, `position`, `division`, `played`, `won`, `lost`, `points`, `setsFor`, `setsAgainst`, `form: ("W" | "L")[]` (last 5), `updatedAt`, `sourceId?`.
+
+Season support is built in from the start: every match and ranking row carries `seasonId`, a `CURRENT_SEASON_ID` constant drives all default queries, and provider methods take an optional `seasonId`. Adding a past/next season later is data-only — plus an optional season switcher on team pages.
+
 - **Activity** — `id`, `slug`, `title`, `date`/`dateRange`, `location`, `excerpt`, `body?`, `image?`, `ctaUrl?`.
 - **Sponsor** — `id`, `name`, `logo: ImageRef`, `websiteUrl`, `tier: "hoofdsponsor" | "partner" | "supporter"`.
 - **BoardMember** — `name`, `role`, `email?`, `photo?`, `order`.
