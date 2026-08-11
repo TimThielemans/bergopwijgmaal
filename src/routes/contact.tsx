@@ -9,8 +9,7 @@ import { Reveal } from "@/components/shared/Reveal";
 import { SocialLinks } from "@/components/shared/SocialLinks";
 
 const TITLE = "Contact — VC Berg-Op Wijgmaal";
-const DESCRIPTION =
-  "Contacteer VC Berg-Op Wijgmaal: sporthal in Wijgmaal (Leuven), e-mail, telefoon en sociale media. Kom gratis proeftrainen.";
+const DESCRIPTION = "Contacteer VC Berg-Op Wijgmaal: sporthal in Wijgmaal (Leuven), e-mail, telefoon en sociale media";
 
 export const Route = createFileRoute("/contact")({
   head: () => ({ meta: pageMeta({ title: TITLE, description: DESCRIPTION }) }),
