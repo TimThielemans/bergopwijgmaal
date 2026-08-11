@@ -9,13 +9,7 @@ export function ContactSection() {
   const hall = VENUES[0]!;
 
   return (
-    <Section
-      id="contact"
-      tone="tint"
-      eyebrow="Contact"
-      title="Kom eens langs"
-      intro="Twee gratis proeftrainingen, daarna beslis je zelf. Laat gewoon iets weten en we zetten je bij de juiste ploeg."
-    >
+    <Section id="contact" tone="tint" eyebrow="Contact" title="Contact" intro="Zo kan je ons bereiken">
       <div className="grid gap-6 lg:grid-cols-[1fr_1.1fr]">
         <Reveal className="surface-card p-6 sm:p-8">
           <h3 className="font-display text-xl font-bold">Sporthal</h3>

@@ -64,12 +64,6 @@ export function SiteHeader() {
               {item.label}
             </Link>
           ))}
-          <Link
-            to="/contact"
-            className="ml-2 rounded-full bg-ink px-4 py-2 font-display text-sm font-semibold text-ink-foreground transition-transform hover:scale-[1.03]"
-          >
-            Kom proeftrainen
-          </Link>
         </nav>
 
         <button
@@ -98,13 +92,6 @@ export function SiteHeader() {
                 {item.label}
               </Link>
             ))}
-            <Link
-              to="/contact"
-              onClick={() => setOpen(false)}
-              className="mt-2 flex min-h-12 items-center justify-center rounded-xl bg-ink font-display text-base font-semibold text-ink-foreground"
-            >
-              Kom proeftrainen
-            </Link>
           </nav>
         </div>
       ) : null}

@@ -24,8 +24,8 @@ function ContactPage() {
     <>
       <PageHero
         eyebrow="Contact"
-        title="Kom gratis proeftrainen"
-        intro="Stuur een bericht met je leeftijd en ervaring, en we zetten je bij de ploeg die past. De eerste twee trainingen zijn altijd gratis."
+        title="Wij zijn bereikbaar."
+        intro="Vragen, suggesties, ... stuur ons een berichtje."
       />
 
       <Section eyebrow="Bereik ons" title="Contactgegevens">
