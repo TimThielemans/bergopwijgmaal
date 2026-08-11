@@ -28,7 +28,10 @@ Shared chrome (sticky translucent header with active-route highlighting, mobile 
 
 Home sections in order: Hero → Volgende wedstrijden → Stand & vorm → Clubactiviteiten → Onze ploegen → Over Berg-Op → Sponsors → Contact.
 
-The "Stand & vorm" section lists **all** competitive teams at once, one row each: team name → ranking position (e.g. "2de") → form streak of the last 5 matches as W/L pills. Row count is driven by the data, and each row links to `/ploegen/$slug`.
+**Upcoming matches and rankings stay the primary homepage features** — they sit directly under the hero, get the largest section treatment and the strongest contrast. **Clubactiviteiten ranks visually above Sponsors**: activities get full-width prominent cards with imagery/date blocks and hover motion, while Sponsors stays a compact, quiet logo wall near the footer.
+
+The "Stand & vorm" section lists **all** competitive teams at once, one row each: team name (or `shortName` on mobile) → ranking position (e.g. "2de") → form streak of the last 5 matches as W/L pills. Row count is driven by the data, and each row links to `/ploegen/$slug`.
+
 
 
 ## 3. Folder structure
@@ -72,11 +75,15 @@ Every section component receives its data as props; routes do the fetching from 
 
 Field names and shapes are chosen to map 1:1 onto future Sanity documents; each has `_id`/`slug` and image objects rather than raw string paths.
 
-- **Team** — `id`, `slug`, `name`, `category: "competitief" | "recreatief"`, `level` (e.g. "Nat 3", "Promo 1"), `shortDescription`, `description`, `photo?: ImageRef` (optional — branded fallback when absent), `coach: Person`, `assistantCoach?`, `trainings: TrainingSlot[]`, `players: Player[]`, `externalRefs: { volleyScoresTeamId?, rankingId?, calendarId?, division? }`, `order`.
+- **Team** — `id`, `slug`, `name`, `shortName` (compact label for mobile rows, tables and badges), `category: "competitief" | "recreatief"`, `level` (e.g. "Nat 3", "Promo 1"), `shortDescription`, `description`, `photo?: ImageRef` (optional — branded fallback when absent), `coach: Person`, `assistantCoach?`, `trainings: TrainingSlot[]`, `players: Player[]`, `externalRefs: { volleyScoresTeamId?, rankingId?, calendarId?, division? }`, `order`.
 - **Player** — `name`, `number?`, `position?`, `photo?`.
 - **TrainingSlot** — `day`, `startTime`, `endTime`, `venueId`.
-- **Match** — `id`, `teamId`, `dateTime` (ISO), `opponent`, `isHome`, `venue: VenueRef`, `competition`, `result?: { setsFor, setsAgainst, scoreLine? }`, `status: "scheduled" | "played" | "postponed"`, `sourceId?`.
-- **RankingEntry** — `teamId`, `position`, `division`, `played`, `points`, `setsFor`, `setsAgainst`, `form: ("W" | "L")[]` (last 5), `updatedAt`, `sourceId?`.
+- **Season** — `id` (e.g. `"2025-2026"`), `label`, `startDate`, `endDate`, `isCurrent`.
+- **Match** — `id`, `teamId`, `seasonId`, `dateTime` (ISO), `opponent`, `isHome`, `venue: VenueRef`, `competition`, `matchday?`, `result?: { setsFor, setsAgainst, scoreLine? }`, `status: "scheduled" | "played" | "postponed"`, `sourceId?`.
+- **RankingEntry** — `teamId`, `seasonId`, `position`, `division`, `played`, `won`, `lost`, `points`, `setsFor`, `setsAgainst`, `form: ("W" | "L")[]` (last 5), `updatedAt`, `sourceId?`.
+
+Season support is built in from the start: every match and ranking row carries `seasonId`, a `CURRENT_SEASON_ID` constant drives all default queries, and provider methods take an optional `seasonId`. Adding a past/next season later is data-only — plus an optional season switcher on team pages.
+
 - **Activity** — `id`, `slug`, `title`, `date`/`dateRange`, `location`, `excerpt`, `body?`, `image?`, `ctaUrl?`.
 - **Sponsor** — `id`, `name`, `logo: ImageRef`, `websiteUrl`, `tier: "hoofdsponsor" | "partner" | "supporter"`.
 - **BoardMember** — `name`, `role`, `email?`, `photo?`, `order`.
@@ -90,9 +97,10 @@ Collections are always rendered by mapping over arrays — team counts, section 
 
 No live API is assumed. Volleyball data arrives as **generated static JSON files**, which is the first-class source shape.
 
-- `public/data/matches.json` and `public/data/rankings.json` (plus optional per-team `calendar-<teamId>.json`) hold parser output in a documented, versioned envelope: `{ generatedAt, season, source, items: [...] }`.
-- `src/lib/providers/` defines async interfaces: `MatchProvider.getUpcoming(limit, teamId?)`, `MatchProvider.getCalendar(teamId, season)`, `RankingProvider.getStanding(teamId)`, `RankingProvider.getAllStandings()`, `CmsProvider.getTeams()`.
-- Two interchangeable implementations ship: a **mock provider** (typed data in `src/content`, used today) and a **static-JSON provider** that fetches/imports the files above, validates the envelope and maps rows onto teams. Selecting one is a single line in `src/lib/providers/index.ts`. A future HTTP/parser provider is just a third implementation — components and props never change.
+- `public/data/matches.json` and `public/data/rankings.json` (plus optional per-team `calendar-<teamId>.json`) hold parser output in a documented, versioned envelope: `{ version, generatedAt, seasonId, source, items: [...] }`.
+- `src/lib/providers/` defines async interfaces: `MatchProvider.getUpcoming({ limit, teamId?, seasonId? })`, `MatchProvider.getCalendar(teamId, seasonId)`, `RankingProvider.getStanding(teamId, seasonId?)`, `RankingProvider.getAllStandings(seasonId?)`, `CmsProvider.getTeams()`.
+- Two interchangeable implementations ship: a **mock provider** (typed data in `src/content`, used today) and a **static-JSON provider** that reads the files above, validates the envelope and maps rows onto teams via `volleyScoresTeamId`. Selecting one is a single line in `src/lib/providers/index.ts`. A future **VolleyDataParser** simply writes those same JSON files (or is added as a third provider) — components, props and query keys never change.
+
 - `externalRefs.volleyScoresTeamId` (plus `sourceId` on matches/rankings) is the join key between parsed JSON rows and CMS teams; unmatched rows are ignored rather than rendered.
 - Loaders use `context.queryClient.ensureQueryData(queryOptions)` with per-entity query keys (`["matches","upcoming"]`, `["ranking",teamId]`), so any source gains caching/refetch for free.
 - Missing or stale data degrades gracefully: sections render an "binnenkort beschikbaar" state instead of breaking, and `generatedAt` can surface as a "laatst bijgewerkt" note.
