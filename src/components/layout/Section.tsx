@@ -3,14 +3,14 @@ import { cn } from "@/lib/utils";
 import { Reveal } from "@/components/shared/Reveal";
 
 interface SectionProps {
-  id?: string;
-  eyebrow?: string;
-  title?: string;
-  intro?: string;
-  action?: ReactNode;
+  id?: string | undefined;
+  eyebrow?: string | undefined;
+  title?: string | undefined;
+  intro?: string | undefined;
+  action?: ReactNode | undefined;
   children: ReactNode;
   tone?: "paper" | "ink" | "tint";
-  className?: string;
+  className?: string | undefined;
   size?: "default" | "compact";
 }
 

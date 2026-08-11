@@ -10,8 +10,8 @@ export function PageHero({
 }: {
   eyebrow: string;
   title: string;
-  intro?: string;
-  children?: ReactNode;
+  intro?: string | undefined;
+  children?: ReactNode | undefined;
 }) {
   return (
     <section className="relative isolate overflow-hidden bg-ink text-ink-foreground">

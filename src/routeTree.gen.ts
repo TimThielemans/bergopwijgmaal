@@ -11,6 +11,8 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as PloegenRouteImport } from './routes/ploegen'
+import { Route as PloegenIndexRouteImport } from './routes/ploegen.index'
+import { Route as PloegenSlugRouteImport } from './routes/ploegen.$slug'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -22,31 +24,46 @@ const PloegenRoute = PloegenRouteImport.update({
   path: '/ploegen',
   getParentRoute: () => rootRouteImport,
 } as any)
+const PloegenIndexRoute = PloegenIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => PloegenRoute,
+} as any)
+const PloegenSlugRoute = PloegenSlugRouteImport.update({
+  id: '/$slug',
+  path: '/$slug',
+  getParentRoute: () => PloegenRoute,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
-  '/ploegen': typeof PloegenRoute
+  '/ploegen': typeof PloegenRouteWithChildren
+  '/ploegen/$slug': typeof PloegenSlugRoute
+  '/ploegen/': typeof PloegenIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
-  '/ploegen': typeof PloegenRoute
+  '/ploegen/$slug': typeof PloegenSlugRoute
+  '/ploegen': typeof PloegenIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
-  '/ploegen': typeof PloegenRoute
+  '/ploegen': typeof PloegenRouteWithChildren
+  '/ploegen/$slug': typeof PloegenSlugRoute
+  '/ploegen/': typeof PloegenIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/ploegen'
+  fullPaths: '/' | '/ploegen' | '/ploegen/$slug' | '/ploegen/'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/ploegen'
-  id: '__root__' | '/' | '/ploegen'
+  to: '/' | '/ploegen/$slug' | '/ploegen'
+  id: '__root__' | '/' | '/ploegen' | '/ploegen/$slug' | '/ploegen/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
-  PloegenRoute: typeof PloegenRoute
+  PloegenRoute: typeof PloegenRouteWithChildren
 }
 
 declare module '@tanstack/react-router' {
@@ -65,23 +82,40 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof PloegenRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/ploegen/': {
+      id: '/ploegen/'
+      path: '/'
+      fullPath: '/ploegen/'
+      preLoaderRoute: typeof PloegenIndexRouteImport
+      parentRoute: typeof PloegenRoute
+    }
+    '/ploegen/$slug': {
+      id: '/ploegen/$slug'
+      path: '/$slug'
+      fullPath: '/ploegen/$slug'
+      preLoaderRoute: typeof PloegenSlugRouteImport
+      parentRoute: typeof PloegenRoute
+    }
   }
 }
 
+interface PloegenRouteChildren {
+  PloegenSlugRoute: typeof PloegenSlugRoute
+  PloegenIndexRoute: typeof PloegenIndexRoute
+}
+
+const PloegenRouteChildren: PloegenRouteChildren = {
+  PloegenSlugRoute: PloegenSlugRoute,
+  PloegenIndexRoute: PloegenIndexRoute,
+}
+
+const PloegenRouteWithChildren =
+  PloegenRoute._addFileChildren(PloegenRouteChildren)
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
-  PloegenRoute: PloegenRoute,
+  PloegenRoute: PloegenRouteWithChildren,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
-
-import type { getRouter } from './router.tsx'
-import type { startInstance } from './start.ts'
-declare module '@tanstack/react-start' {
-  interface Register {
-    ssr: true
-    router: Awaited<ReturnType<typeof getRouter>>
-    config: Awaited<ReturnType<typeof startInstance.getOptions>>
-  }
-}
