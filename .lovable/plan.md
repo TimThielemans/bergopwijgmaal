@@ -88,10 +88,16 @@ Collections are always rendered by mapping over arrays — team counts, section 
 
 ## 5. Future integrations
 
-- `src/lib/providers/` defines async interfaces: `MatchProvider.getUpcoming(limit, teamId?)`, `MatchProvider.getCalendar(teamId, season)`, `RankingProvider.getStanding(teamId)`, `CmsProvider.getTeams()`. Today each resolves mock data; later they call a parser endpoint or Sanity client — component props don't change.
-- Loaders use `context.queryClient.ensureQueryData(queryOptions)` with per-entity query keys (`["matches","upcoming"]`, `["ranking",teamId]`), so live sources gain caching/refetch for free.
-- `externalRefs`/`sourceId` fields carry federation IDs so parsed rows can be matched to CMS teams.
+No live API is assumed. Volleyball data arrives as **generated static JSON files**, which is the first-class source shape.
+
+- `public/data/matches.json` and `public/data/rankings.json` (plus optional per-team `calendar-<teamId>.json`) hold parser output in a documented, versioned envelope: `{ generatedAt, season, source, items: [...] }`.
+- `src/lib/providers/` defines async interfaces: `MatchProvider.getUpcoming(limit, teamId?)`, `MatchProvider.getCalendar(teamId, season)`, `RankingProvider.getStanding(teamId)`, `RankingProvider.getAllStandings()`, `CmsProvider.getTeams()`.
+- Two interchangeable implementations ship: a **mock provider** (typed data in `src/content`, used today) and a **static-JSON provider** that fetches/imports the files above, validates the envelope and maps rows onto teams. Selecting one is a single line in `src/lib/providers/index.ts`. A future HTTP/parser provider is just a third implementation — components and props never change.
+- `externalRefs.volleyScoresTeamId` (plus `sourceId` on matches/rankings) is the join key between parsed JSON rows and CMS teams; unmatched rows are ignored rather than rendered.
+- Loaders use `context.queryClient.ensureQueryData(queryOptions)` with per-entity query keys (`["matches","upcoming"]`, `["ranking",teamId]`), so any source gains caching/refetch for free.
+- Missing or stale data degrades gracefully: sections render an "binnenkort beschikbaar" state instead of breaking, and `generatedAt` can surface as a "laatst bijgewerkt" note.
 - `/studio` stays a static placeholder page until Sanity Studio is mounted (Studio brings its own login; nothing auth-related is built now).
+
 
 ## 6. Mobile-first strategy
 
