@@ -3,13 +3,7 @@ import { useSuspenseQuery } from "@tanstack/react-query";
 import { ACTIVITIES, SPONSORS } from "@/content";
 import { formatRelativeUpdate } from "@/lib/format";
 import { jsonLdScript, pageMeta, sportsClubJsonLd } from "@/lib/seo";
-import {
-  matchProvider,
-  rankingProvider,
-  standingsQuery,
-  teamsQuery,
-  upcomingMatchesQuery,
-} from "@/lib/providers";
+import { matchProvider, rankingProvider, standingsQuery, teamsQuery, upcomingMatchesQuery } from "@/lib/providers";
 import { HeroSection } from "@/components/home/HeroSection";
 import { UpcomingMatchesSection } from "@/components/home/UpcomingMatchesSection";
 import { RankingsSection } from "@/components/home/RankingsSection";
@@ -19,9 +13,9 @@ import { AboutSection } from "@/components/home/AboutSection";
 import { SponsorsSection } from "@/components/home/SponsorsSection";
 import { ContactSection } from "@/components/home/ContactSection";
 
-const TITLE = "VC Berg-Op Wijgmaal — familiale volleybalclub in Leuven";
+const TITLE = "Berg-Op Wijgmaal — familiale volleybalclub in Leuven";
 const DESCRIPTION =
-  "Volleybal in Wijgmaal bij Leuven: competitieve en recreatieve ploegen, wedstrijdkalender, standen en clubactiviteiten. Kom gratis proeftrainen.";
+  "Volleybal in Wijgmaal bij Leuven: competitieve en recreatieve ploegen, wedstrijdkalender, standen en clubactiviteiten";
 
 export const Route = createFileRoute("/")({
   loader: async ({ context }) => {
@@ -50,16 +44,8 @@ function HomePage() {
   return (
     <>
       <HeroSection teamCount={teams.length} />
-      <UpcomingMatchesSection
-        matches={matches}
-        teams={teams}
-        lastUpdated={formatRelativeUpdate(matchesUpdatedAt)}
-      />
-      <RankingsSection
-        standings={standings}
-        teams={teams}
-        lastUpdated={formatRelativeUpdate(rankingsUpdatedAt)}
-      />
+      <UpcomingMatchesSection matches={matches} teams={teams} lastUpdated={formatRelativeUpdate(matchesUpdatedAt)} />
+      <RankingsSection standings={standings} teams={teams} lastUpdated={formatRelativeUpdate(rankingsUpdatedAt)} />
       <ActivitiesSection activities={ACTIVITIES} />
       <TeamsOverviewSection teams={teams} />
       <AboutSection />
