@@ -1,5 +1,5 @@
 import { Link } from "@tanstack/react-router";
-import { CalendarDays, Trophy, Users } from "lucide-react";
+import { CalendarDays, ExternalLink, Trophy, Users } from "lucide-react";
 import type { Match, RankingEntry, Team } from "@/content/types";
 import { getVenue } from "@/content";
 import { formatPosition } from "@/lib/format";
@@ -77,78 +77,6 @@ export function TeamDetail({ team, standing, upcoming, calendar }: TeamDetailPro
         </div>
       </section>
 
-      <Section
-        eyebrow="Klassement"
-        title="Stand & vorm"
-        intro={standing ? `${standing.division}, seizoen in uitvoering.` : undefined}
-      >
-        {standing ? (
-          <Reveal className="surface-card grid gap-6 p-6 sm:grid-cols-2 sm:p-8 lg:grid-cols-4">
-            <div>
-              <span className="text-eyebrow text-muted-foreground">Positie</span>
-              <p className="mt-2 font-display text-4xl font-bold text-club-deep">
-                {formatPosition(standing.position)}
-              </p>
-            </div>
-            <div>
-              <span className="text-eyebrow text-muted-foreground">Punten</span>
-              <p className="mt-2 font-display text-4xl font-bold">{standing.points}</p>
-              <p className="mt-1 text-sm text-muted-foreground">
-                {standing.won} gewonnen · {standing.lost} verloren
-              </p>
-            </div>
-            <div>
-              <span className="text-eyebrow text-muted-foreground">Sets</span>
-              <p className="mt-2 font-display text-4xl font-bold">
-                {standing.setsFor}
-                <span className="text-muted-foreground">/{standing.setsAgainst}</span>
-              </p>
-            </div>
-            <div>
-              <span className="text-eyebrow text-muted-foreground">Vorm</span>
-              <div className="mt-3">
-                <FormStreak form={standing.form} />
-              </div>
-            </div>
-          </Reveal>
-        ) : (
-          <p className="text-sm text-muted-foreground">
-            Deze ploeg speelt geen competitie met klassement.
-          </p>
-        )}
-      </Section>
-
-      <Section
-        tone="tint"
-        eyebrow="Kalender"
-        title="Volgende wedstrijden"
-        intro="De eerstvolgende wedstrijden van deze ploeg."
-      >
-        <Reveal className="surface-card px-5 py-2 sm:px-8 sm:py-4">
-          {upcoming.length === 0 ? (
-            <p className="py-10 text-center text-sm text-muted-foreground">
-              Geen geplande wedstrijden.
-            </p>
-          ) : (
-            upcoming.map((match) => <MatchRow key={match.id} match={match} team={team} />)
-          )}
-        </Reveal>
-
-        {played.length > 0 ? (
-          <Reveal delay={100} className="mt-8">
-            <h3 className="flex items-center gap-2 font-display text-lg font-bold">
-              <CalendarDays aria-hidden="true" className="h-5 w-5 text-club-deep" />
-              Gespeeld
-            </h3>
-            <div className="surface-card mt-4 px-5 py-2 sm:px-8 sm:py-4">
-              {played.map((match) => (
-                <MatchRow key={match.id} match={match} team={team} />
-              ))}
-            </div>
-          </Reveal>
-        ) : null}
-      </Section>
-
       <Section eyebrow="Praktisch" title="Trainingen & kern">
         <div className="grid gap-6 lg:grid-cols-[1fr_1.4fr]">
           <Reveal className="surface-card p-6 sm:p-8">
@@ -212,6 +140,91 @@ export function TeamDetail({ team, standing, upcoming, calendar }: TeamDetailPro
             </ul>
           </Reveal>
         </div>
+      </Section>
+
+      <Section
+        tone="tint"
+        eyebrow="Klassement"
+        title="Stand & vorm"
+        intro={standing ? `${standing.division}, seizoen in uitvoering.` : undefined}
+      >
+        {standing ? (
+          <Reveal className="surface-card grid gap-6 p-6 sm:grid-cols-2 sm:p-8 lg:grid-cols-4">
+            <div>
+              <span className="text-eyebrow text-muted-foreground">Positie</span>
+              <p className="mt-2 font-display text-4xl font-bold text-club-deep">
+                {formatPosition(standing.position)}
+              </p>
+            </div>
+            <div>
+              <span className="text-eyebrow text-muted-foreground">Punten</span>
+              <p className="mt-2 font-display text-4xl font-bold">{standing.points}</p>
+              <p className="mt-1 text-sm text-muted-foreground">
+                {standing.won} gewonnen · {standing.lost} verloren
+              </p>
+            </div>
+            <div>
+              <span className="text-eyebrow text-muted-foreground">Sets</span>
+              <p className="mt-2 font-display text-4xl font-bold">
+                {standing.setsFor}
+                <span className="text-muted-foreground">/{standing.setsAgainst}</span>
+              </p>
+            </div>
+            <div>
+              <span className="text-eyebrow text-muted-foreground">Vorm</span>
+              <div className="mt-3">
+                <FormStreak form={standing.form} />
+              </div>
+            </div>
+          </Reveal>
+        ) : (
+          <p className="text-sm text-muted-foreground">
+            Deze ploeg speelt geen competitie met klassement.
+          </p>
+        )}
+      </Section>
+
+      <Section
+        eyebrow="Kalender"
+        title="Volgende wedstrijden"
+        intro="De eerstvolgende wedstrijden van deze ploeg."
+        action={
+          team.externalRefs.calendarUrl ? (
+            <a
+              href={team.externalRefs.calendarUrl}
+              target="_blank"
+              rel="noreferrer noopener"
+              className="inline-flex min-h-11 items-center gap-2 font-display text-sm font-semibold text-club-deep transition-colors hover:text-ink"
+            >
+              Volledig overzicht
+              <ExternalLink aria-hidden="true" className="h-4 w-4" />
+            </a>
+          ) : undefined
+        }
+      >
+        <Reveal className="surface-card px-5 py-2 sm:px-8 sm:py-4">
+          {upcoming.length === 0 ? (
+            <p className="py-10 text-center text-sm text-muted-foreground">
+              Geen geplande wedstrijden.
+            </p>
+          ) : (
+            upcoming.map((match) => <MatchRow key={match.id} match={match} team={team} />)
+          )}
+        </Reveal>
+
+        {played.length > 0 ? (
+          <Reveal delay={100} className="mt-8">
+            <h3 className="flex items-center gap-2 font-display text-lg font-bold">
+              <CalendarDays aria-hidden="true" className="h-5 w-5 text-club-deep" />
+              Gespeeld
+            </h3>
+            <div className="surface-card mt-4 px-5 py-2 sm:px-8 sm:py-4">
+              {played.map((match) => (
+                <MatchRow key={match.id} match={match} team={team} />
+              ))}
+            </div>
+          </Reveal>
+        ) : null}
       </Section>
     </>
   );
