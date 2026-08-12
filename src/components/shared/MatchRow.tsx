@@ -1,3 +1,4 @@
+import { Link } from "@tanstack/react-router";
 import type { Match, Team } from "@/content/types";
 import { formatDateShort, formatTime, formatWeekday } from "@/lib/format";
 import { cn } from "@/lib/utils";
@@ -27,7 +28,7 @@ export function MatchRow({ match, team, className }: MatchRowProps) {
     "Berg-Op"
   );
 
-
+  return (
     <article
       className={cn(
         "group grid grid-cols-[auto_minmax(0,1fr)] items-center gap-x-4 gap-y-3 border-b border-border/70 py-4 last:border-b-0 md:grid-cols-[5.5rem_minmax(0,1fr)_auto_auto] md:gap-x-6",
