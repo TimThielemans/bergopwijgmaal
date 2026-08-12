@@ -40,10 +40,11 @@ function HomePage() {
   const { data: teams } = useSuspenseQuery(teamsQuery());
   const { data: matches } = useSuspenseQuery(upcomingMatchesQuery({ limit: 5 }));
   const { data: standings } = useSuspenseQuery(standingsQuery());
+  const activeMembers = teams.reduce((total, team) => total + (team.players?.length ?? 0), 0);
 
   return (
     <>
-      <HeroSection teamCount={teams.length} />
+      <HeroSection teamCount={teams.length} playerCount={activeMembers} />
       <UpcomingMatchesSection matches={matches} teams={teams} lastUpdated={formatRelativeUpdate(matchesUpdatedAt)} />
       <RankingsSection standings={standings} teams={teams} lastUpdated={formatRelativeUpdate(rankingsUpdatedAt)} />
       <ActivitiesSection activities={ACTIVITIES} />
