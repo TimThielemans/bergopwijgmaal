@@ -1,9 +1,11 @@
 /** Dutch (nl-BE) formatting helpers. */
 
-const DAY = new Intl.DateTimeFormat("nl-BE", { weekday: "short" });
-const DATE_SHORT = new Intl.DateTimeFormat("nl-BE", { day: "numeric", month: "short" });
-const DATE_LONG = new Intl.DateTimeFormat("nl-BE", { day: "numeric", month: "long", year: "numeric" });
-const TIME = new Intl.DateTimeFormat("nl-BE", { hour: "2-digit", minute: "2-digit" });
+const TZ = "Europe/Brussels";
+
+const DAY = new Intl.DateTimeFormat("nl-BE", { weekday: "short", timeZone: TZ });
+const DATE_SHORT = new Intl.DateTimeFormat("nl-BE", { day: "numeric", month: "short", timeZone: TZ });
+const DATE_LONG = new Intl.DateTimeFormat("nl-BE", { day: "numeric", month: "long", year: "numeric", timeZone: TZ });
+const TIME = new Intl.DateTimeFormat("nl-BE", { hour: "2-digit", minute: "2-digit", timeZone: TZ });
 
 function toDate(value: string): Date {
   return new Date(value);
@@ -25,12 +27,19 @@ export function formatTime(value: string): string {
   return TIME.format(toDate(value));
 }
 
+/** Compact Dutch clock notation, e.g. "20u" or "20u30". */
+export function formatTimeCompact(value: string): string {
+  const [h, m] = formatTime(value).split(":");
+  const hour = String(Number(h));
+  return m && m !== "00" ? `${hour}u${m}` : `${hour}u`;
+}
+
 export function formatDateRange(start: string, end?: string): string {
   if (!end) return formatDateLong(start);
   const a = toDate(start);
   const b = toDate(end);
   if (a.getMonth() === b.getMonth()) {
-    return `${a.getDate()}-${b.getDate()} ${new Intl.DateTimeFormat("nl-BE", { month: "long", year: "numeric" }).format(b)}`;
+    return `${a.getDate()}-${b.getDate()} ${new Intl.DateTimeFormat("nl-BE", { month: "long", year: "numeric", timeZone: TZ }).format(b)}`;
   }
   return `${formatDateShort(start)} – ${formatDateLong(end)}`;
 }
