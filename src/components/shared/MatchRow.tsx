@@ -1,3 +1,4 @@
+import { Link } from "@tanstack/react-router";
 import type { Match, Team } from "@/content/types";
 import { formatDateShort, formatTime, formatWeekday } from "@/lib/format";
 import { cn } from "@/lib/utils";
@@ -15,6 +16,18 @@ interface MatchRowProps {
  * Never a horizontally scrolling table.
  */
 export function MatchRow({ match, team, className }: MatchRowProps) {
+  const teamLabel = team ? (
+    <Link
+      to="/ploegen/$slug"
+      params={{ slug: team.slug }}
+      className="underline-offset-4 transition-colors hover:text-club-deep hover:underline"
+    >
+      {team.name}
+    </Link>
+  ) : (
+    "Berg-Op"
+  );
+
   return (
     <article
       className={cn(
@@ -33,16 +46,15 @@ export function MatchRow({ match, team, className }: MatchRowProps) {
         <h3 className="truncate font-display text-base font-semibold sm:text-lg">
           {match.isHome ? (
             <>
-              {team?.name ?? "Berg-Op"} <span className="text-muted-foreground">—</span>{" "}
-              {match.opponent}
+              {teamLabel} <span className="text-muted-foreground">—</span> {match.opponent}
             </>
           ) : (
             <>
-              {match.opponent} <span className="text-muted-foreground">—</span>{" "}
-              {team?.name ?? "Berg-Op"}
+              {match.opponent} <span className="text-muted-foreground">—</span> {teamLabel}
             </>
           )}
         </h3>
+
         <p className="mt-1 truncate text-sm text-muted-foreground">
           {match.competition} · {match.venue.name}
           {match.venue.city ? `, ${match.venue.city}` : ""}
