@@ -15,7 +15,19 @@ interface MatchRowProps {
  * Never a horizontally scrolling table.
  */
 export function MatchRow({ match, team, className }: MatchRowProps) {
-  return (
+  const teamLabel = team ? (
+    <Link
+      to="/ploegen/$slug"
+      params={{ slug: team.slug }}
+      className="underline-offset-4 transition-colors hover:text-club-deep hover:underline"
+    >
+      {team.name}
+    </Link>
+  ) : (
+    "Berg-Op"
+  );
+
+
     <article
       className={cn(
         "group grid grid-cols-[auto_minmax(0,1fr)] items-center gap-x-4 gap-y-3 border-b border-border/70 py-4 last:border-b-0 md:grid-cols-[5.5rem_minmax(0,1fr)_auto_auto] md:gap-x-6",
