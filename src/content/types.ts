@@ -45,6 +45,8 @@ export interface TeamExternalRefs {
   volleyScoresTeamId?: string;
   rankingId?: string;
   calendarId?: string;
+  /** Public calendar page (volleyscores etc.); when empty no link is shown. */
+  calendarUrl?: string;
   division?: string;
 }
 

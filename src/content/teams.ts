@@ -36,7 +36,8 @@ export const TEAMS: Team[] = [
       { name: "Milan Coppens", number: 13, position: "Opposite" },
       { name: "Arne Willems", number: 15, position: "Spelverdeler" },
     ],
-    externalRefs: { volleyScoresTeamId: "VS-BOW-H1", division: "NAT3 A" },
+    externalRefs: { volleyScoresTeamId: "VS-BOW-H1",
+      calendarUrl: "https://www.volleyscores.be/team/heren-a/kalender", division: "NAT3 A" },
     order: 1,
   },
   {
@@ -64,7 +65,8 @@ export const TEAMS: Team[] = [
       { name: "Julie Wouters", number: 12, position: "Hoekaanvaller" },
       { name: "Elke Nijs", number: 14, position: "Midden" },
     ],
-    externalRefs: { volleyScoresTeamId: "VS-BOW-D1", division: "PROMO 1 B" },
+    externalRefs: { volleyScoresTeamId: "VS-BOW-D1",
+      calendarUrl: "https://www.volleyscores.be/team/dames-a/kalender", division: "PROMO 1 B" },
     order: 2,
   },
   {
@@ -89,7 +91,8 @@ export const TEAMS: Team[] = [
       { name: "Sander Bruyninckx", number: 12, position: "Opposite" },
       { name: "Jelle Verbeeck", number: 16, position: "Midden" },
     ],
-    externalRefs: { volleyScoresTeamId: "VS-BOW-H2", division: "PROMO 2 A" },
+    externalRefs: { volleyScoresTeamId: "VS-BOW-H2",
+      calendarUrl: "https://www.volleyscores.be/team/heren-b/kalender", division: "PROMO 2 A" },
     order: 3,
   },
   {
@@ -113,7 +116,8 @@ export const TEAMS: Team[] = [
       { name: "Noor Van Loo", number: 7, position: "Libero" },
       { name: "Britt Ceulemans", number: 11, position: "Opposite" },
     ],
-    externalRefs: { volleyScoresTeamId: "VS-BOW-D2", division: "PROMO 3 C" },
+    externalRefs: { volleyScoresTeamId: "VS-BOW-D2",
+      calendarUrl: "https://www.volleyscores.be/team/dames-b/kalender", division: "PROMO 3 C" },
     order: 4,
   },
   {
