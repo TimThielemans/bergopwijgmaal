@@ -33,16 +33,15 @@ export function MatchRow({ match, team, className }: MatchRowProps) {
         <h3 className="truncate font-display text-base font-semibold sm:text-lg">
           {match.isHome ? (
             <>
-              {team?.name ?? "Berg-Op"} <span className="text-muted-foreground">—</span>{" "}
-              {match.opponent}
+              {teamLabel} <span className="text-muted-foreground">—</span> {match.opponent}
             </>
           ) : (
             <>
-              {match.opponent} <span className="text-muted-foreground">—</span>{" "}
-              {team?.name ?? "Berg-Op"}
+              {match.opponent} <span className="text-muted-foreground">—</span> {teamLabel}
             </>
           )}
         </h3>
+
         <p className="mt-1 truncate text-sm text-muted-foreground">
           {match.competition} · {match.venue.name}
           {match.venue.city ? `, ${match.venue.city}` : ""}
