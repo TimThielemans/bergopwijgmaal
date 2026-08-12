@@ -5,7 +5,7 @@ import { CLUB_INFO } from "@/content";
 import { BrandGraphic } from "@/components/shared/BrandGraphic";
 import { Reveal } from "@/components/shared/Reveal";
 
-export function HeroSection({ teamCount }: { teamCount: number }, { playerCount }: { playerCount: number }) {
+export function HeroSection({ teamCount, playerCount }: { teamCount: number; playerCount: number }) {
   return (
     <section className="relative isolate overflow-hidden bg-ink text-ink-foreground">
       <img
