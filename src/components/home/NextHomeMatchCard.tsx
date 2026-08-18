@@ -1,6 +1,7 @@
 import { ArrowRight, MapPin } from "lucide-react";
 import type { Match, Team } from "@/content/types";
-import { formatDateShort, formatTimeCompact, formatWeekday } from "@/lib/format";
+import { formatDateShort, formatTimeCompact, formatWeekday, isValidDateTime } from "@/lib/format";
+import { text } from "@/lib/safe";
 
 interface Props {
   match: Match;
@@ -9,6 +10,13 @@ interface Props {
 
 /** Hero insert: invites visitors to the next home game. */
 export function NextHomeMatchCard({ match, team }: Props) {
+  if (!match) return null;
+
+  const opponent = text(match.opponent, "Tegenstander volgt");
+  const hasDate = isValidDateTime(match.dateTime);
+  const venueName = text(match.venue?.name);
+  const venueCity = text(match.venue?.city);
+
   return (
     <a
       href="#wedstrijden"
@@ -23,21 +31,27 @@ export function NextHomeMatchCard({ match, team }: Props) {
       </span>
 
       <p className="mt-4 font-display text-2xl font-bold leading-tight">
-        {team?.name ?? "Berg-Op"}
+        {text(team?.name, "Berg-Op")}
         <span className="text-ink-foreground/45"> vs </span>
-        {match.opponent}
+        {opponent}
       </p>
 
-      <p className="mt-3 font-display text-lg font-semibold text-club">
-        {formatWeekday(match.dateTime)} {formatDateShort(match.dateTime)} ·{" "}
-        {formatTimeCompact(match.dateTime)}
-      </p>
+      {hasDate ? (
+        <p className="mt-3 font-display text-lg font-semibold text-club">
+          {formatWeekday(match.dateTime)} {formatDateShort(match.dateTime)} ·{" "}
+          {formatTimeCompact(match.dateTime)}
+        </p>
+      ) : (
+        <p className="mt-3 font-display text-lg font-semibold text-club">Datum nog te bepalen</p>
+      )}
 
-      <p className="mt-2 flex items-center gap-1.5 text-sm text-ink-foreground/65">
-        <MapPin aria-hidden="true" className="h-4 w-4 shrink-0" />
-        {match.venue.name}
-        {match.venue.city ? `, ${match.venue.city}` : ""}
-      </p>
+      {venueName ? (
+        <p className="mt-2 flex items-center gap-1.5 text-sm text-ink-foreground/65">
+          <MapPin aria-hidden="true" className="h-4 w-4 shrink-0" />
+          {venueName}
+          {venueCity ? `, ${venueCity}` : ""}
+        </p>
+      ) : null}
 
       <p className="mt-5 flex items-center gap-2 border-t border-ink-foreground/15 pt-4 font-display text-sm font-semibold">
         Kom supporteren in Wijgmaal

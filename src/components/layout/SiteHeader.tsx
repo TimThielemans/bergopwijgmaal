@@ -1,8 +1,10 @@
 import { Link } from "@tanstack/react-router";
-import { Menu, X } from "lucide-react";
+import { Lock, Menu, X } from "lucide-react";
 import { useEffect, useState } from "react";
 import logo from "@/assets/bow-logo.png.asset.json";
+import { adminConfig } from "@/lib/config";
 import { cn } from "@/lib/utils";
+
 
 const NAV = [
   { to: "/", label: "Home" },
@@ -64,7 +66,18 @@ export function SiteHeader() {
               {item.label}
             </Link>
           ))}
+          {adminConfig.enabled ? (
+            <Link
+              to="/admin"
+              title="Beheer (clubbeheerders)"
+              className="ml-2 inline-flex items-center gap-1 rounded-full border border-border/70 px-2.5 py-1 text-[0.62rem] uppercase tracking-[0.14em] text-muted-foreground/70 transition-colors hover:text-foreground"
+            >
+              <Lock aria-hidden="true" className="h-3 w-3" />
+              Beheer
+            </Link>
+          ) : null}
         </nav>
+
 
         <button
           type="button"
@@ -92,7 +105,18 @@ export function SiteHeader() {
                 {item.label}
               </Link>
             ))}
+            {adminConfig.enabled ? (
+              <Link
+                to="/admin"
+                onClick={() => setOpen(false)}
+                className="mt-2 flex min-h-10 items-center gap-2 px-4 text-[0.68rem] uppercase tracking-[0.14em] text-muted-foreground/70"
+              >
+                <Lock aria-hidden="true" className="h-3 w-3" />
+                Beheer
+              </Link>
+            ) : null}
           </nav>
+
         </div>
       ) : null}
     </header>

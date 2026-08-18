@@ -2,6 +2,8 @@ import { Link } from "@tanstack/react-router";
 import { ArrowRight, CalendarDays } from "lucide-react";
 import heroImage from "@/assets/brand-hero.jpg";
 import { CLUB_INFO } from "@/content";
+import { num, text } from "@/lib/safe";
+import { cn } from "@/lib/utils";
 import type { Match, Team } from "@/content/types";
 import { BrandGraphic, BrandTile } from "@/components/shared/BrandGraphic";
 import { CountUp } from "@/components/shared/CountUp";
@@ -9,8 +11,8 @@ import { Reveal } from "@/components/shared/Reveal";
 import { NextHomeMatchCard } from "./NextHomeMatchCard";
 
 interface HeroSectionProps {
-  teamCount: number;
-  playerCount: number;
+  teamCount?: number | undefined;
+  playerCount?: number | undefined;
   nextHomeMatch?: Match | undefined;
   nextHomeMatchTeam?: Team | undefined;
 }
@@ -21,11 +23,13 @@ export function HeroSection({
   nextHomeMatch,
   nextHomeMatchTeam,
 }: HeroSectionProps) {
+  const foundingYear = num(CLUB_INFO?.foundingYear, 0);
+  const years = foundingYear > 1900 ? new Date().getFullYear() - foundingYear : 0;
   const stats = [
-    { value: new Date().getFullYear() - CLUB_INFO.foundingYear, suffix: "+", label: "jaar club" },
-    { value: teamCount, suffix: "", label: "ploegen" },
-    { value: playerCount, suffix: "", label: "actieve leden" },
-  ];
+    ...(years > 0 ? [{ value: years, suffix: "+", label: "jaar club" }] : []),
+    { value: num(teamCount), suffix: "", label: "ploegen" },
+    { value: num(playerCount), suffix: "", label: "actieve leden" },
+  ].filter((stat) => stat.value > 0);
 
   return (
     <section className="relative isolate overflow-hidden bg-ink text-ink-foreground">
@@ -48,7 +52,7 @@ export function HeroSection({
                 Familiale volleybalclub met <span className="text-club">sportieve ambitie</span>
               </h1>
               <p className="mt-5 max-w-xl text-base leading-relaxed text-ink-foreground/75 sm:text-lg">
-                {CLUB_INFO.mission}
+                {text(CLUB_INFO?.mission, "Volleybal in Wijgmaal, voor competitie én recreatie.")}
               </p>
             </Reveal>
 
@@ -79,21 +83,27 @@ export function HeroSection({
           </Reveal>
         </div>
 
-        <Reveal
-          delay={240}
-          className="mt-12 grid grid-cols-3 divide-x divide-ink-foreground/15 rounded-2xl border border-ink-foreground/15 bg-ink-foreground/[0.04]"
-        >
-          {stats.map((stat) => (
-            <div key={stat.label} className="min-w-0 px-4 py-6 sm:px-7 sm:py-8">
-              <span className="block font-display text-4xl font-bold leading-none text-club sm:text-5xl">
-                <CountUp value={stat.value} suffix={stat.suffix} />
-              </span>
-              <span className="mt-2 block text-xs leading-snug text-ink-foreground/60 sm:text-sm">
-                {stat.label}
-              </span>
-            </div>
-          ))}
-        </Reveal>
+        {stats.length > 0 ? (
+          <Reveal
+            delay={240}
+            className={cn(
+              "mt-12 grid divide-x divide-ink-foreground/15 rounded-2xl border border-ink-foreground/15 bg-ink-foreground/[0.04]",
+              stats.length >= 3 ? "grid-cols-3" : stats.length === 2 ? "grid-cols-2" : "grid-cols-1",
+            )}
+          >
+            {stats.map((stat) => (
+              <div key={stat.label} className="min-w-0 px-4 py-6 sm:px-7 sm:py-8">
+                <span className="block font-display text-4xl font-bold leading-none text-club sm:text-5xl">
+                  <CountUp value={stat.value} suffix={stat.suffix} />
+                </span>
+                <span className="mt-2 block text-xs leading-snug text-ink-foreground/60 sm:text-sm">
+                  {stat.label}
+                </span>
+              </div>
+            ))}
+          </Reveal>
+        ) : null}
+
       </div>
     </section>
   );

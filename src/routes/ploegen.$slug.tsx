@@ -1,6 +1,8 @@
 import { createFileRoute, notFound } from "@tanstack/react-router";
 import { useSuspenseQuery } from "@tanstack/react-query";
+import { text } from "@/lib/safe";
 import { jsonLdScript, pageMeta, sportsTeamJsonLd } from "@/lib/seo";
+
 import {
   standingQuery,
   teamCalendarQuery,
@@ -18,7 +20,13 @@ export const Route = createFileRoute("/ploegen/$slug")({
       context.queryClient.ensureQueryData(upcomingMatchesQuery({ teamId: team.id, limit: 4 })),
       context.queryClient.ensureQueryData(teamCalendarQuery(team.id)),
     ]);
-    return { teamId: team.id, name: team.name, level: team.level, summary: team.shortDescription };
+    return {
+      teamId: team.id,
+      name: text(team.name, "Ploeg"),
+      level: text(team.level),
+      summary: text(team.shortDescription, text(team.description)),
+    };
+
   },
   head: ({ loaderData }) => {
     if (!loaderData) {
@@ -26,11 +34,17 @@ export const Route = createFileRoute("/ploegen/$slug")({
         meta: [{ title: "Ploeg niet gevonden — VC Berg-Op Wijgmaal" }, { name: "robots", content: "noindex" }],
       };
     }
-    const title = `${loaderData.name} (${loaderData.level}) — VC Berg-Op Wijgmaal`;
+    const title = loaderData.level
+      ? `${loaderData.name} (${loaderData.level}) — VC Berg-Op Wijgmaal`
+      : `${loaderData.name} — VC Berg-Op Wijgmaal`;
+    const description =
+      loaderData.summary ||
+      `Kalender, kern, coaching en klassement van ${loaderData.name} bij VC Berg-Op Wijgmaal.`;
     return {
-      meta: pageMeta({ title, description: loaderData.summary }),
-      scripts: [jsonLdScript(sportsTeamJsonLd(loaderData.name, loaderData.summary))],
+      meta: pageMeta({ title, description }),
+      scripts: [jsonLdScript(sportsTeamJsonLd(loaderData.name, description))],
     };
+
   },
   component: TeamDetailPage,
 });
