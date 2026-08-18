@@ -105,7 +105,18 @@ export function SiteHeader() {
                 {item.label}
               </Link>
             ))}
+            {adminConfig.enabled ? (
+              <Link
+                to="/admin"
+                onClick={() => setOpen(false)}
+                className="mt-2 flex min-h-10 items-center gap-2 px-4 text-[0.68rem] uppercase tracking-[0.14em] text-muted-foreground/70"
+              >
+                <Lock aria-hidden="true" className="h-3 w-3" />
+                Beheer
+              </Link>
+            ) : null}
           </nav>
+
         </div>
       ) : null}
     </header>
