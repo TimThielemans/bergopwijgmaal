@@ -83,23 +83,26 @@ export function HeroSection({
         </div>
 
         {stats.length > 0 ? (
-        <Reveal
-          delay={240}
-          className="mt-12 grid divide-x divide-ink-foreground/15 rounded-2xl border border-ink-foreground/15 bg-ink-foreground/[0.04]"
-          style={{ gridTemplateColumns: `repeat(${stats.length}, minmax(0, 1fr))` }}
-        >
-          {stats.map((stat) => (
-            <div key={stat.label} className="min-w-0 px-4 py-6 sm:px-7 sm:py-8">
-              <span className="block font-display text-4xl font-bold leading-none text-club sm:text-5xl">
-                <CountUp value={stat.value} suffix={stat.suffix} />
-              </span>
-              <span className="mt-2 block text-xs leading-snug text-ink-foreground/60 sm:text-sm">
-                {stat.label}
-              </span>
-            </div>
-          ))}
-        </Reveal>
+          <Reveal
+            delay={240}
+            className={cn(
+              "mt-12 grid divide-x divide-ink-foreground/15 rounded-2xl border border-ink-foreground/15 bg-ink-foreground/[0.04]",
+              stats.length >= 3 ? "grid-cols-3" : stats.length === 2 ? "grid-cols-2" : "grid-cols-1",
+            )}
+          >
+            {stats.map((stat) => (
+              <div key={stat.label} className="min-w-0 px-4 py-6 sm:px-7 sm:py-8">
+                <span className="block font-display text-4xl font-bold leading-none text-club sm:text-5xl">
+                  <CountUp value={stat.value} suffix={stat.suffix} />
+                </span>
+                <span className="mt-2 block text-xs leading-snug text-ink-foreground/60 sm:text-sm">
+                  {stat.label}
+                </span>
+              </div>
+            ))}
+          </Reveal>
         ) : null}
+
       </div>
     </section>
   );
