@@ -1,12 +1,16 @@
 import { Link } from "@tanstack/react-router";
-import { ArrowRight } from "lucide-react";
+import { ArrowRight, Users } from "lucide-react";
 import type { Team } from "@/content/types";
+import { list, text } from "@/lib/safe";
 import { Section } from "@/components/layout/Section";
+import { EmptyState } from "@/components/shared/EmptyState";
 import { Reveal } from "@/components/shared/Reveal";
 import { TeamCard } from "@/components/teams/TeamCard";
 
 /** Dynamic collection: the grid renders whatever teams the provider returns. */
-export function TeamsOverviewSection({ teams }: { teams: Team[] }) {
+export function TeamsOverviewSection({ teams }: { teams?: Team[] | null }) {
+  const items = list(teams).filter((team) => text(team?.slug).length > 0);
+
   return (
     <Section
       id="ploegen"
@@ -24,13 +28,21 @@ export function TeamsOverviewSection({ teams }: { teams: Team[] }) {
         </Link>
       }
     >
-      <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
-        {teams.map((team, index) => (
-          <Reveal key={team.id} delay={index * 60}>
-            <TeamCard team={team} />
-          </Reveal>
-        ))}
-      </div>
+      {items.length === 0 ? (
+        <EmptyState
+          message="Ploeginfo wordt binnenkort toegevoegd"
+          hint="De ploegen voor dit seizoen worden momenteel samengesteld."
+          icon={Users}
+        />
+      ) : (
+        <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+          {items.map((team, index) => (
+            <Reveal key={team.id} delay={index * 60}>
+              <TeamCard team={team} />
+            </Reveal>
+          ))}
+        </div>
+      )}
     </Section>
   );
 }
