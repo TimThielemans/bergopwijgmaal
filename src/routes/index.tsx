@@ -2,6 +2,8 @@ import { createFileRoute } from "@tanstack/react-router";
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { ACTIVITIES, SPONSORS } from "@/content";
 import { formatRelativeUpdate } from "@/lib/format";
+import { list } from "@/lib/safe";
+
 import { jsonLdScript, pageMeta, sportsClubJsonLd } from "@/lib/seo";
 import { matchProvider, rankingProvider, standingsQuery, teamsQuery, upcomingMatchesQuery } from "@/lib/providers";
 import { HeroSection } from "@/components/home/HeroSection";
