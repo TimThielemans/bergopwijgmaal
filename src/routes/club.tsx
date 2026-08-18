@@ -103,60 +103,70 @@ function ClubPage() {
         </div>
       </Section>
 
-      <Section eyebrow="Bestuur" title="Het bestuur">
-        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-          {board.map((member, index) => (
-            <Reveal key={member.name} delay={index * 60}>
-              <article className="surface-card flex h-full items-center gap-4 p-5">
-                <span className="grid h-12 w-12 shrink-0 place-items-center rounded-full bg-club/15 font-display text-sm font-bold text-club-deep">
-                  {member.name
-                    .split(" ")
-                    .map((part) => part[0])
-                    .slice(0, 2)
-                    .join("")}
-                </span>
-                <span className="min-w-0">
-                  <span className="block truncate font-display text-base font-bold">
-                    {member.name}
-                  </span>
-                  <span className="block truncate text-sm text-muted-foreground">
-                    {member.role}
-                  </span>
-                  {member.email ? (
-                    <a
-                      href={`mailto:${member.email}`}
-                      className="mt-1 block truncate text-xs text-club-deep hover:underline"
-                    >
-                      {member.email}
-                    </a>
-                  ) : null}
-                </span>
-              </article>
-            </Reveal>
-          ))}
-        </div>
-      </Section>
+      {board.length > 0 ? (
+        <Section eyebrow="Bestuur" title="Het bestuur">
+          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+            {board.map((member, index) => {
+              const name = text(member?.name, "Bestuurslid");
+              const initials = name
+                .split(" ")
+                .map((part) => part[0] ?? "")
+                .slice(0, 2)
+                .join("");
+              const email = text(member?.email);
+              return (
+                <Reveal key={`${name}-${index}`} delay={index * 60}>
+                  <article className="surface-card flex h-full items-center gap-4 p-5">
+                    <span className="grid h-12 w-12 shrink-0 place-items-center rounded-full bg-club/15 font-display text-sm font-bold text-club-deep">
+                      {initials}
+                    </span>
+                    <span className="min-w-0">
+                      <span className="block truncate font-display text-base font-bold">{name}</span>
+                      {text(member?.role) ? (
+                        <span className="block truncate text-sm text-muted-foreground">
+                          {text(member.role)}
+                        </span>
+                      ) : null}
+                      {email ? (
+                        <a
+                          href={`mailto:${email}`}
+                          className="mt-1 block truncate text-xs text-club-deep hover:underline"
+                        >
+                          {email}
+                        </a>
+                      ) : null}
+                    </span>
+                  </article>
+                </Reveal>
+              );
+            })}
+          </div>
+        </Section>
+      ) : null}
 
-      <Section tone="tint" eyebrow="Sporthal" title="Waar we spelen">
-        <div className="grid gap-6 lg:grid-cols-[1fr_1.1fr]">
-          <Reveal className="surface-card p-6 sm:p-8">
-            <Building2 aria-hidden="true" className="h-7 w-7 text-club-deep" />
-            <h3 className="mt-4 font-display text-xl font-bold">{hall.name}</h3>
-            <address className="mt-3 space-y-1 text-sm not-italic text-muted-foreground">
-              <p>{hall.street}</p>
-              <p>
-                {hall.postalCode} {hall.city}
-              </p>
-            </address>
-            {hall.notes ? (
-              <p className="mt-4 text-sm leading-relaxed text-muted-foreground">{hall.notes}</p>
-            ) : null}
-          </Reveal>
-          <Reveal delay={100}>
-            <MapPlaceholder venue={hall} />
-          </Reveal>
-        </div>
-      </Section>
+      {hall ? (
+        <Section tone="tint" eyebrow="Sporthal" title="Waar we spelen">
+          <div className="grid gap-6 lg:grid-cols-[1fr_1.1fr]">
+            <Reveal className="surface-card p-6 sm:p-8">
+              <Building2 aria-hidden="true" className="h-7 w-7 text-club-deep" />
+              <h3 className="mt-4 font-display text-xl font-bold">{text(hall.name, "Sporthal")}</h3>
+              <address className="mt-3 space-y-1 text-sm not-italic text-muted-foreground">
+                {text(hall.street) ? <p>{text(hall.street)}</p> : null}
+                <p>{`${text(hall.postalCode)} ${text(hall.city)}`.trim()}</p>
+              </address>
+              {text(hall.notes) ? (
+                <p className="mt-4 text-sm leading-relaxed text-muted-foreground">
+                  {text(hall.notes)}
+                </p>
+              ) : null}
+            </Reveal>
+            <Reveal delay={100}>
+              <MapPlaceholder venue={hall} />
+            </Reveal>
+          </div>
+        </Section>
+      ) : null}
+
     </>
   );
 }
