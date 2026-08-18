@@ -3,21 +3,37 @@ import { CalendarDays, ExternalLink, Trophy, Users } from "lucide-react";
 import type { Match, RankingEntry, Team } from "@/content/types";
 import { getVenue } from "@/content";
 import { formatPosition } from "@/lib/format";
+import { list, safeUrl, text } from "@/lib/safe";
 import { Section } from "@/components/layout/Section";
 import { BrandGraphic, BrandTile } from "@/components/shared/BrandGraphic";
+import { EmptyState } from "@/components/shared/EmptyState";
 import { FormStreak } from "@/components/shared/FormStreak";
 import { MatchRow } from "@/components/shared/MatchRow";
 import { Reveal } from "@/components/shared/Reveal";
+import { SafeImage } from "@/components/shared/SafeImage";
 
 interface TeamDetailProps {
   team: Team;
-  standing: RankingEntry | null;
-  upcoming: Match[];
-  calendar: Match[];
+  standing?: RankingEntry | null;
+  upcoming?: Match[] | null;
+  calendar?: Match[] | null;
 }
 
 export function TeamDetail({ team, standing, upcoming, calendar }: TeamDetailProps) {
-  const played = calendar.filter((match) => match.status === "played");
+  const upcomingMatches = list(upcoming);
+  const calendarMatches = list(calendar);
+  const played = calendarMatches.filter((match) => match.status === "played");
+
+  const name = text(team?.name, "Ploeg");
+  const shortName = text(team?.shortName, name.slice(0, 3).toUpperCase());
+  const level = text(team?.level);
+  const description = text(team?.description, text(team?.shortDescription));
+  const coachName = text(team?.coach?.name);
+  const coachRole = text(team?.coach?.role);
+  const assistantName = text(team?.assistantCoach?.name);
+  const trainings = list(team?.trainings);
+  const players = list(team?.players);
+  const calendarUrl = safeUrl(team?.externalRefs?.calendarUrl);
 
   return (
     <>
@@ -34,19 +50,27 @@ export function TeamDetail({ team, standing, upcoming, calendar }: TeamDetailPro
             >
               ← Alle ploegen
             </Link>
-            <h1 className="mt-5 text-display-lg">{team.name}</h1>
-            <p className="mt-3 font-display text-lg font-semibold text-club">{team.level}</p>
-            <p className="mt-5 max-w-xl text-base leading-relaxed text-ink-foreground/75">
-              {team.description}
-            </p>
+            <h1 className="mt-5 text-display-lg">{name}</h1>
+            {level ? (
+              <p className="mt-3 font-display text-lg font-semibold text-club">{level}</p>
+            ) : null}
+            {description ? (
+              <p className="mt-5 max-w-xl text-base leading-relaxed text-ink-foreground/75">
+                {description}
+              </p>
+            ) : null}
             <dl className="mt-8 grid max-w-md grid-cols-3 gap-4 border-t border-ink-foreground/15 pt-6 text-sm">
               <div>
                 <dt className="text-ink-foreground/55">Coach</dt>
-                <dd className="mt-1 font-display font-semibold">{team.coach.name}</dd>
+                <dd className="mt-1 font-display font-semibold">
+                  {coachName || "Nog niet gekend"}
+                </dd>
               </div>
               <div>
                 <dt className="text-ink-foreground/55">Spelers</dt>
-                <dd className="mt-1 font-display font-semibold">{team.players.length}</dd>
+                <dd className="mt-1 font-display font-semibold">
+                  {players.length > 0 ? players.length : "—"}
+                </dd>
               </div>
               <div>
                 <dt className="text-ink-foreground/55">Stand</dt>
@@ -58,21 +82,18 @@ export function TeamDetail({ team, standing, upcoming, calendar }: TeamDetailPro
           </div>
 
           <div className="overflow-hidden rounded-2xl">
-            {team.photo ? (
-              <img
-                src={team.photo.url}
-                alt={team.photo.alt}
-                width={team.photo.width}
-                height={team.photo.height}
-                className="aspect-[4/3] w-full object-cover"
-              />
-            ) : (
-              <BrandTile
-                label={team.shortName}
-                caption={team.level}
-                className="aspect-[4/3] w-full"
-              />
-            )}
+            <SafeImage
+              image={team?.photo}
+              loading="eager"
+              className="aspect-[4/3] w-full"
+              fallback={
+                <BrandTile
+                  label={shortName}
+                  {...(level ? { caption: level } : {})}
+                  className="aspect-[4/3] w-full"
+                />
+              }
+            />
           </div>
         </div>
       </section>
@@ -84,30 +105,48 @@ export function TeamDetail({ team, standing, upcoming, calendar }: TeamDetailPro
               <CalendarDays aria-hidden="true" className="h-5 w-5 text-club-deep" />
               Trainingen
             </h3>
-            <ul className="mt-4 space-y-3 text-sm">
-              {team.trainings.map((slot) => (
-                <li
-                  key={`${slot.day}-${slot.startTime}`}
-                  className="flex flex-col gap-0.5 border-b border-border pb-3 last:border-b-0 last:pb-0"
-                >
-                  <span className="font-display font-semibold">
-                    {slot.day} · {slot.startTime}–{slot.endTime}
-                  </span>
-                  <span className="text-muted-foreground">
-                    {getVenue(slot.venueId)?.name ?? "Sporthal"}
-                  </span>
-                </li>
-              ))}
-            </ul>
+            {trainings.length === 0 ? (
+              <EmptyState
+                className="mt-4"
+                message="Trainingsuren nog niet bekend"
+                hint="Zodra het trainingsschema vastligt, verschijnt het hier."
+                icon={CalendarDays}
+              />
+            ) : (
+              <ul className="mt-4 space-y-3 text-sm">
+                {trainings.map((slot, index) => (
+                  <li
+                    key={`${text(slot?.day)}-${text(slot?.startTime)}-${index}`}
+                    className="flex flex-col gap-0.5 border-b border-border pb-3 last:border-b-0 last:pb-0"
+                  >
+                    <span className="font-display font-semibold">
+                      {text(slot?.day, "Dag n.n.b.")}
+                      {text(slot?.startTime) && text(slot?.endTime)
+                        ? ` · ${text(slot?.startTime)}–${text(slot?.endTime)}`
+                        : ""}
+                    </span>
+                    <span className="text-muted-foreground">
+                      {text(getVenue(text(slot?.venueId))?.name, "Sporthal")}
+                    </span>
+                  </li>
+                ))}
+              </ul>
+            )}
 
             <h3 className="mt-8 flex items-center gap-2 font-display text-xl font-bold">
               <Trophy aria-hidden="true" className="h-5 w-5 text-club-deep" />
               Coaching
             </h3>
             <p className="mt-3 text-sm text-muted-foreground">
-              {team.coach.name}
-              {team.coach.role ? ` — ${team.coach.role}` : ""}
-              {team.assistantCoach ? ` · ${team.assistantCoach.name} (assistent)` : ""}
+              {coachName ? (
+                <>
+                  {coachName}
+                  {coachRole ? ` — ${coachRole}` : ""}
+                  {assistantName ? ` · ${assistantName} (assistent)` : ""}
+                </>
+              ) : (
+                "Coach nog niet gekend"
+              )}
             </p>
           </Reveal>
 
@@ -116,28 +155,37 @@ export function TeamDetail({ team, standing, upcoming, calendar }: TeamDetailPro
               <Users aria-hidden="true" className="h-5 w-5 text-club-deep" />
               Kern
             </h3>
-            <ul className="mt-5 grid gap-2 sm:grid-cols-2">
-              {team.players.map((player) => (
-                <li
-                  key={player.name}
-                  className="flex items-center gap-3 rounded-xl bg-secondary/70 px-3 py-2"
-                >
-                  <span className="grid h-9 w-9 shrink-0 place-items-center rounded-lg bg-ink font-display text-xs font-bold text-ink-foreground">
-                    {player.number ?? team.shortName}
-                  </span>
-                  <span className="min-w-0">
-                    <span className="block truncate font-display text-sm font-semibold">
-                      {player.name}
+            {players.length === 0 ? (
+              <EmptyState
+                className="mt-5"
+                message="Nog geen spelers beschikbaar"
+                hint="De kern voor dit seizoen wordt binnenkort aangevuld."
+                icon={Users}
+              />
+            ) : (
+              <ul className="mt-5 grid gap-2 sm:grid-cols-2">
+                {players.map((player, index) => (
+                  <li
+                    key={`${text(player?.name)}-${index}`}
+                    className="flex items-center gap-3 rounded-xl bg-secondary/70 px-3 py-2"
+                  >
+                    <span className="grid h-9 w-9 shrink-0 place-items-center rounded-lg bg-ink font-display text-xs font-bold text-ink-foreground">
+                      {player?.number ?? shortName}
                     </span>
-                    {player.position ? (
-                      <span className="block truncate text-xs text-muted-foreground">
-                        {player.position}
+                    <span className="min-w-0">
+                      <span className="block truncate font-display text-sm font-semibold">
+                        {text(player?.name, "Speler")}
                       </span>
-                    ) : null}
-                  </span>
-                </li>
-              ))}
-            </ul>
+                      {text(player?.position) ? (
+                        <span className="block truncate text-xs text-muted-foreground">
+                          {text(player?.position)}
+                        </span>
+                      ) : null}
+                    </span>
+                  </li>
+                ))}
+              </ul>
+            )}
           </Reveal>
         </div>
       </Section>
@@ -146,7 +194,9 @@ export function TeamDetail({ team, standing, upcoming, calendar }: TeamDetailPro
         tone="tint"
         eyebrow="Klassement"
         title="Stand & vorm"
-        intro={standing ? `${standing.division}, seizoen in uitvoering.` : undefined}
+        {...(standing && text(standing.division)
+          ? { intro: `${text(standing.division)}, seizoen in uitvoering.` }
+          : {})}
       >
         {standing ? (
           <Reveal className="surface-card grid gap-6 p-6 sm:grid-cols-2 sm:p-8 lg:grid-cols-4">
@@ -178,9 +228,11 @@ export function TeamDetail({ team, standing, upcoming, calendar }: TeamDetailPro
             </div>
           </Reveal>
         ) : (
-          <p className="text-sm text-muted-foreground">
-            Deze ploeg speelt geen competitie met klassement.
-          </p>
+          <EmptyState
+            message="Geen klassement beschikbaar"
+            hint="Deze ploeg speelt geen competitie met klassement, of de stand is nog niet ingelezen."
+            icon={Trophy}
+          />
         )}
       </Section>
 
@@ -188,29 +240,35 @@ export function TeamDetail({ team, standing, upcoming, calendar }: TeamDetailPro
         eyebrow="Kalender"
         title="Volgende wedstrijden"
         intro="De eerstvolgende wedstrijden van deze ploeg."
-        action={
-          team.externalRefs.calendarUrl ? (
-            <a
-              href={team.externalRefs.calendarUrl}
-              target="_blank"
-              rel="noreferrer noopener"
-              className="inline-flex min-h-11 items-center gap-2 font-display text-sm font-semibold text-club-deep transition-colors hover:text-ink"
-            >
-              Volledig overzicht
-              <ExternalLink aria-hidden="true" className="h-4 w-4" />
-            </a>
-          ) : undefined
-        }
+        {...(calendarUrl
+          ? {
+              action: (
+                <a
+                  href={calendarUrl}
+                  target="_blank"
+                  rel="noreferrer noopener"
+                  className="inline-flex min-h-11 items-center gap-2 font-display text-sm font-semibold text-club-deep transition-colors hover:text-ink"
+                >
+                  Volledig overzicht
+                  <ExternalLink aria-hidden="true" className="h-4 w-4" />
+                </a>
+              ),
+            }
+          : {})}
       >
-        <Reveal className="surface-card px-5 py-2 sm:px-8 sm:py-4">
-          {upcoming.length === 0 ? (
-            <p className="py-10 text-center text-sm text-muted-foreground">
-              Geen geplande wedstrijden.
-            </p>
-          ) : (
-            upcoming.map((match) => <MatchRow key={match.id} match={match} team={team} />)
-          )}
-        </Reveal>
+        {upcomingMatches.length === 0 ? (
+          <EmptyState
+            message="Geen geplande wedstrijden"
+            hint="De kalender wordt aangevuld zodra de competitiedata beschikbaar zijn."
+            icon={CalendarDays}
+          />
+        ) : (
+          <Reveal className="surface-card px-5 py-2 sm:px-8 sm:py-4">
+            {upcomingMatches.map((match) => (
+              <MatchRow key={match.id} match={match} team={team} />
+            ))}
+          </Reveal>
+        )}
 
         {played.length > 0 ? (
           <Reveal delay={100} className="mt-8">
