@@ -16,6 +16,7 @@ import { Route as ContactRouteImport } from './routes/contact'
 import { Route as LoginRouteImport } from './routes/login'
 import { Route as PloegenRouteImport } from './routes/ploegen'
 import { Route as StudioRouteImport } from './routes/studio'
+import { Route as AdminIndexRouteImport } from './routes/admin.index'
 import { Route as PloegenIndexRouteImport } from './routes/ploegen.index'
 import { Route as PloegenSlugRouteImport } from './routes/ploegen.$slug'
 
@@ -54,6 +55,11 @@ const StudioRoute = StudioRouteImport.update({
   path: '/studio',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AdminIndexRoute = AdminIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => AdminRoute,
+} as any)
 const PloegenIndexRoute = PloegenIndexRouteImport.update({
   id: '/',
   path: '/',
@@ -67,35 +73,37 @@ const PloegenSlugRoute = PloegenSlugRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
-  '/admin': typeof AdminRoute
+  '/admin': typeof AdminRouteWithChildren
   '/club': typeof ClubRoute
   '/contact': typeof ContactRoute
   '/login': typeof LoginRoute
   '/ploegen': typeof PloegenRouteWithChildren
   '/studio': typeof StudioRoute
   '/ploegen/$slug': typeof PloegenSlugRoute
+  '/admin/': typeof AdminIndexRoute
   '/ploegen/': typeof PloegenIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
-  '/admin': typeof AdminRoute
   '/club': typeof ClubRoute
   '/contact': typeof ContactRoute
   '/login': typeof LoginRoute
   '/studio': typeof StudioRoute
   '/ploegen/$slug': typeof PloegenSlugRoute
+  '/admin': typeof AdminIndexRoute
   '/ploegen': typeof PloegenIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
-  '/admin': typeof AdminRoute
+  '/admin': typeof AdminRouteWithChildren
   '/club': typeof ClubRoute
   '/contact': typeof ContactRoute
   '/login': typeof LoginRoute
   '/ploegen': typeof PloegenRouteWithChildren
   '/studio': typeof StudioRoute
   '/ploegen/$slug': typeof PloegenSlugRoute
+  '/admin/': typeof AdminIndexRoute
   '/ploegen/': typeof PloegenIndexRoute
 }
 export interface FileRouteTypes {
@@ -109,16 +117,17 @@ export interface FileRouteTypes {
     | '/ploegen'
     | '/studio'
     | '/ploegen/$slug'
+    | '/admin/'
     | '/ploegen/'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
-    | '/admin'
     | '/club'
     | '/contact'
     | '/login'
     | '/studio'
     | '/ploegen/$slug'
+    | '/admin'
     | '/ploegen'
   id:
     | '__root__'
@@ -130,12 +139,13 @@ export interface FileRouteTypes {
     | '/ploegen'
     | '/studio'
     | '/ploegen/$slug'
+    | '/admin/'
     | '/ploegen/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
-  AdminRoute: typeof AdminRoute
+  AdminRoute: typeof AdminRouteWithChildren
   ClubRoute: typeof ClubRoute
   ContactRoute: typeof ContactRoute
   LoginRoute: typeof LoginRoute
@@ -194,6 +204,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof StudioRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/admin/': {
+      id: '/admin/'
+      path: '/'
+      fullPath: '/admin/'
+      preLoaderRoute: typeof AdminIndexRouteImport
+      parentRoute: typeof AdminRoute
+    }
     '/ploegen/': {
       id: '/ploegen/'
       path: '/'
@@ -211,6 +228,16 @@ declare module '@tanstack/react-router' {
   }
 }
 
+interface AdminRouteChildren {
+  AdminIndexRoute: typeof AdminIndexRoute
+}
+
+const AdminRouteChildren: AdminRouteChildren = {
+  AdminIndexRoute: AdminIndexRoute,
+}
+
+const AdminRouteWithChildren = AdminRoute._addFileChildren(AdminRouteChildren)
+
 interface PloegenRouteChildren {
   PloegenSlugRoute: typeof PloegenSlugRoute
   PloegenIndexRoute: typeof PloegenIndexRoute
@@ -226,7 +253,7 @@ const PloegenRouteWithChildren =
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
-  AdminRoute: AdminRoute,
+  AdminRoute: AdminRouteWithChildren,
   ClubRoute: ClubRoute,
   ContactRoute: ContactRoute,
   LoginRoute: LoginRoute,
