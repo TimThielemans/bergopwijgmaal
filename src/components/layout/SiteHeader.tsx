@@ -64,7 +64,18 @@ export function SiteHeader() {
               {item.label}
             </Link>
           ))}
+          {adminConfig.enabled ? (
+            <Link
+              to="/admin"
+              title="Beheer (clubbeheerders)"
+              className="ml-2 inline-flex items-center gap-1 rounded-full border border-border/70 px-2.5 py-1 text-[0.62rem] uppercase tracking-[0.14em] text-muted-foreground/70 transition-colors hover:text-foreground"
+            >
+              <Lock aria-hidden="true" className="h-3 w-3" />
+              Beheer
+            </Link>
+          ) : null}
         </nav>
+
 
         <button
           type="button"
