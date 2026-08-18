@@ -18,7 +18,13 @@ export const Route = createFileRoute("/ploegen/$slug")({
       context.queryClient.ensureQueryData(upcomingMatchesQuery({ teamId: team.id, limit: 4 })),
       context.queryClient.ensureQueryData(teamCalendarQuery(team.id)),
     ]);
-    return { teamId: team.id, name: team.name, level: team.level, summary: team.shortDescription };
+    return {
+      teamId: team.id,
+      name: text(team.name, "Ploeg"),
+      level: text(team.level),
+      summary: text(team.shortDescription, text(team.description)),
+    };
+
   },
   head: ({ loaderData }) => {
     if (!loaderData) {
