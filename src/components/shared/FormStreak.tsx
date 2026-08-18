@@ -1,18 +1,27 @@
 import type { FormResult } from "@/content/types";
+import { list } from "@/lib/safe";
 import { cn } from "@/lib/utils";
 
 /** Visualises the last five results, oldest first. */
-export function FormStreak({ form, className }: { form: FormResult[]; className?: string }) {
-  if (form.length === 0) {
+export function FormStreak({
+  form,
+  className,
+}: {
+  form?: FormResult[] | null;
+  className?: string;
+}) {
+  const results = list(form).filter((result) => result === "W" || result === "L");
+
+  if (results.length === 0) {
     return <span className="text-xs text-muted-foreground">Geen vorm beschikbaar</span>;
   }
 
   return (
     <div className={cn("flex items-center gap-1.5", className)}>
       <span className="sr-only">
-        Laatste vijf wedstrijden: {form.map((r) => (r === "W" ? "gewonnen" : "verloren")).join(", ")}
+        Laatste wedstrijden: {results.map((r) => (r === "W" ? "gewonnen" : "verloren")).join(", ")}
       </span>
-      {form.map((result, index) => (
+      {results.map((result, index) => (
         <span
           key={`${result}-${index}`}
           aria-hidden="true"
