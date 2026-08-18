@@ -45,3 +45,9 @@ export const VENUES: Venue[] = [
 export function getVenue(id: string): Venue | undefined {
   return VENUES.find((venue) => venue.id === id);
 }
+
+/** Main hall, or null when no venues are configured (never throws). */
+export function getPrimaryVenue(): Venue | null {
+  return VENUES[0] ?? null;
+}
+
