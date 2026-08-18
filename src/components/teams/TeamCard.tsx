@@ -25,7 +25,7 @@ export function TeamCard({ team }: { team: Team }) {
           image={team?.photo}
           className="h-full w-full transition-transform duration-700 group-hover:scale-[1.04]"
           fallback={
-            <BrandTile label={shortName} caption={level || undefined} className="h-full w-full" />
+            <BrandTile label={shortName} {...(level ? { caption: level } : {})} className="h-full w-full" />
           }
         />
         {level ? (
