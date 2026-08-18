@@ -1,8 +1,10 @@
 import { Link } from "@tanstack/react-router";
-import { Menu, X } from "lucide-react";
+import { Lock, Menu, X } from "lucide-react";
 import { useEffect, useState } from "react";
 import logo from "@/assets/bow-logo.png.asset.json";
+import { adminConfig } from "@/lib/config";
 import { cn } from "@/lib/utils";
+
 
 const NAV = [
   { to: "/", label: "Home" },
