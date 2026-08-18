@@ -32,45 +32,60 @@ function ClubPage() {
         {...(text(CLUB_INFO?.mission) ? { intro: text(CLUB_INFO.mission) } : {})}
       />
 
-      <Section eyebrow="Ons verhaal" title="Hoe Berg-Op groeide">
-        <div className="grid gap-5 md:grid-cols-3">
-          {storyBlocks.map((block, index) => (
-            <Reveal key={block.title} delay={index * 80}>
-              <article className="surface-card h-full p-6 sm:p-8">
-                <span className="font-display text-sm font-bold text-club-deep">
-                  0{index + 1}
-                </span>
-                <h3 className="mt-3 font-display text-xl font-bold">{block.title}</h3>
-                <p className="mt-3 text-sm leading-relaxed text-muted-foreground">{block.body}</p>
-              </article>
-            </Reveal>
-          ))}
-        </div>
-      </Section>
+      {storyBlocks.length > 0 ? (
+        <Section eyebrow="Ons verhaal" title="Hoe Berg-Op groeide">
+          <div className="grid gap-5 md:grid-cols-3">
+            {storyBlocks.map((block, index) => (
+              <Reveal key={`${text(block?.title)}-${index}`} delay={index * 80}>
+                <article className="surface-card h-full p-6 sm:p-8">
+                  <span className="font-display text-sm font-bold text-club-deep">
+                    0{index + 1}
+                  </span>
+                  <h3 className="mt-3 font-display text-xl font-bold">
+                    {text(block?.title, "Ons verhaal")}
+                  </h3>
+                  {text(block?.body) ? (
+                    <p className="mt-3 text-sm leading-relaxed text-muted-foreground">
+                      {text(block.body)}
+                    </p>
+                  ) : null}
+                </article>
+              </Reveal>
+            ))}
+          </div>
+        </Section>
+      ) : null}
 
-      <Section
-        tone="ink"
-        eyebrow="Waarden"
-        title="Waar we voor staan"
-        intro="Vier principes die bepalen hoe we trainen, spelen en met elkaar omgaan."
-      >
-        <div className="grid gap-4 sm:grid-cols-2">
-          {values.map((value, index) => (
-            <Reveal key={value.id} delay={index * 70}>
-              <article className="relative isolate h-full overflow-hidden rounded-2xl border border-ink-foreground/12 bg-ink-foreground/5 p-6 sm:p-8">
-                <BrandGraphic
-                  variant="stroke"
-                  className="absolute -right-16 -top-10 h-48 w-48 text-club"
-                />
-                <h3 className="font-display text-xl font-bold">{value.title}</h3>
-                <p className="mt-3 text-sm leading-relaxed text-ink-foreground/70">
-                  {value.description}
-                </p>
-              </article>
-            </Reveal>
-          ))}
-        </div>
-      </Section>
+      {values.length > 0 ? (
+        <Section
+          tone="ink"
+          eyebrow="Waarden"
+          title="Waar we voor staan"
+          intro="De principes die bepalen hoe we trainen, spelen en met elkaar omgaan."
+        >
+          <div className="grid gap-4 sm:grid-cols-2">
+            {values.map((value, index) => (
+              <Reveal key={text(value?.id, `value-${index}`)} delay={index * 70}>
+                <article className="relative isolate h-full overflow-hidden rounded-2xl border border-ink-foreground/12 bg-ink-foreground/5 p-6 sm:p-8">
+                  <BrandGraphic
+                    variant="stroke"
+                    className="absolute -right-16 -top-10 h-48 w-48 text-club"
+                  />
+                  <h3 className="font-display text-xl font-bold">
+                    {text(value?.title, "Clubwaarde")}
+                  </h3>
+                  {text(value?.description) ? (
+                    <p className="mt-3 text-sm leading-relaxed text-ink-foreground/70">
+                      {text(value.description)}
+                    </p>
+                  ) : null}
+                </article>
+              </Reveal>
+            ))}
+          </div>
+        </Section>
+      ) : null}
+
 
       <Section
         tone="tint"
