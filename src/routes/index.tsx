@@ -23,8 +23,8 @@ export const Route = createFileRoute("/")({
       context.queryClient.ensureQueryData(teamsQuery()),
       context.queryClient.ensureQueryData(upcomingMatchesQuery({ limit: 5 })),
       context.queryClient.ensureQueryData(standingsQuery()),
-      matchProvider.getLastUpdated(),
-      rankingProvider.getLastUpdated(),
+      matchProvider.getLastUpdated().catch(() => null),
+      rankingProvider.getLastUpdated().catch(() => null),
     ]);
     return { matchesUpdatedAt, rankingsUpdatedAt };
   },
@@ -37,14 +37,18 @@ export const Route = createFileRoute("/")({
 
 function HomePage() {
   const { matchesUpdatedAt, rankingsUpdatedAt } = Route.useLoaderData();
-  const { data: teams } = useSuspenseQuery(teamsQuery());
-  const { data: matches } = useSuspenseQuery(upcomingMatchesQuery({ limit: 5 }));
-  const { data: standings } = useSuspenseQuery(standingsQuery());
-  const nextHomeMatch = matches.find((match) => match.isHome);
+  const { data: teamsData } = useSuspenseQuery(teamsQuery());
+  const { data: matchesData } = useSuspenseQuery(upcomingMatchesQuery({ limit: 5 }));
+  const { data: standingsData } = useSuspenseQuery(standingsQuery());
+  const teams = list(teamsData);
+  const matches = list(matchesData);
+  const standings = list(standingsData);
+  const nextHomeMatch = matches.find((match) => match.isHome === true);
   const nextHomeMatchTeam = nextHomeMatch
     ? teams.find((team) => team.id === nextHomeMatch.teamId)
     : undefined;
-  const activeMembers = teams.reduce((total, team) => total + (team.players?.length ?? 0), 0);
+  const activeMembers = teams.reduce((total, team) => total + list(team?.players).length, 0);
+
 
   return (
     <>
