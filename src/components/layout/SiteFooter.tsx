@@ -1,10 +1,13 @@
 import { Link } from "@tanstack/react-router";
 import logo from "@/assets/bow-logo.png.asset.json";
-import { CLUB_INFO, VENUES } from "@/content";
+import { CLUB_INFO, getPrimaryVenue } from "@/content";
+import { list, text } from "@/lib/safe";
 import { SocialLinks } from "@/components/shared/SocialLinks";
 
 export function SiteFooter() {
-  const hall = VENUES[0]!;
+  const hall = getPrimaryVenue();
+  const email = text(CLUB_INFO?.email);
+  const socials = list(CLUB_INFO?.socials).slice(0, 2);
 
   return (
     <footer className="bg-ink text-ink-foreground">
@@ -15,10 +18,10 @@ export function SiteFooter() {
             <span className="font-display text-lg font-bold">Berg-Op Wijgmaal</span>
           </div>
           <p className="mt-4 max-w-sm text-sm leading-relaxed text-ink-foreground/70">
-            {CLUB_INFO.tagline}. Volleybal in Wijgmaal sinds {CLUB_INFO.foundingYear}, voor
-            competitie én recreatie.
+            {text(CLUB_INFO?.tagline, "Familiale volleybalclub met sportieve ambitie")}. Volleybal
+            in Wijgmaal, voor competitie én recreatie.
           </p>
-          <SocialLinks socials={CLUB_INFO.socials.slice(0, 2)} className="mt-6" />
+          <SocialLinks socials={socials} className="mt-6" />
         </div>
 
         <nav aria-label="Footernavigatie">
@@ -49,26 +52,30 @@ export function SiteFooter() {
 
         <div>
           <h2 className="text-eyebrow text-club">Sporthal</h2>
-          <address className="mt-4 space-y-1 text-sm not-italic text-ink-foreground/70">
-            <p>{hall.name}</p>
-            <p>{hall.street}</p>
-            <p>
-              {hall.postalCode} {hall.city}
-            </p>
-          </address>
-          <a
-            href={`mailto:${CLUB_INFO.email}`}
-            className="mt-4 inline-block text-sm transition-colors hover:text-club"
-          >
-            {CLUB_INFO.email}
-          </a>
+          {hall ? (
+            <address className="mt-4 space-y-1 text-sm not-italic text-ink-foreground/70">
+              <p>{text(hall.name, "Sporthal")}</p>
+              {text(hall.street) ? <p>{text(hall.street)}</p> : null}
+              <p>{`${text(hall.postalCode)} ${text(hall.city)}`.trim()}</p>
+            </address>
+          ) : (
+            <p className="mt-4 text-sm text-ink-foreground/70">Adres volgt binnenkort.</p>
+          )}
+          {email ? (
+            <a
+              href={`mailto:${email}`}
+              className="mt-4 inline-block text-sm transition-colors hover:text-club"
+            >
+              {email}
+            </a>
+          ) : null}
         </div>
       </div>
 
       <div className="border-t border-ink-foreground/10">
         <div className="mx-auto flex max-w-6xl flex-col gap-2 px-5 py-6 text-xs text-ink-foreground/50 sm:flex-row sm:items-center sm:justify-between sm:px-8">
           <p>
-            © {new Date().getFullYear()} {CLUB_INFO.name}
+            © {new Date().getFullYear()} {text(CLUB_INFO?.name, "VC Berg-Op Wijgmaal")}
           </p>
           <p>Wedstrijden en standen worden automatisch aangevuld.</p>
         </div>
