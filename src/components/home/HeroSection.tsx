@@ -3,6 +3,7 @@ import { ArrowRight, CalendarDays } from "lucide-react";
 import heroImage from "@/assets/brand-hero.jpg";
 import { CLUB_INFO } from "@/content";
 import { num, text } from "@/lib/safe";
+import { cn } from "@/lib/utils";
 import type { Match, Team } from "@/content/types";
 import { BrandGraphic, BrandTile } from "@/components/shared/BrandGraphic";
 import { CountUp } from "@/components/shared/CountUp";
