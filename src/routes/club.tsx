@@ -1,6 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { Building2, HeartHandshake, Target } from "lucide-react";
-import { BOARD_MEMBERS, CLUB_INFO, VENUES } from "@/content";
+import { BOARD_MEMBERS, CLUB_INFO, getPrimaryVenue } from "@/content";
+import { list, text } from "@/lib/safe";
 import { pageMeta } from "@/lib/seo";
 import { PageHero } from "@/components/layout/PageHero";
 import { Section } from "@/components/layout/Section";
@@ -18,19 +19,22 @@ export const Route = createFileRoute("/club")({
 });
 
 function ClubPage() {
-  const hall = VENUES[0]!;
+  const hall = getPrimaryVenue();
+  const storyBlocks = list(CLUB_INFO?.storyBlocks);
+  const values = list(CLUB_INFO?.values);
+  const board = list(BOARD_MEMBERS);
 
   return (
     <>
       <PageHero
         eyebrow="De club"
         title="Meer dan vijftig jaar volleybal in Wijgmaal"
-        intro={CLUB_INFO.mission}
+        {...(text(CLUB_INFO?.mission) ? { intro: text(CLUB_INFO.mission) } : {})}
       />
 
       <Section eyebrow="Ons verhaal" title="Hoe Berg-Op groeide">
         <div className="grid gap-5 md:grid-cols-3">
-          {CLUB_INFO.storyBlocks.map((block, index) => (
+          {storyBlocks.map((block, index) => (
             <Reveal key={block.title} delay={index * 80}>
               <article className="surface-card h-full p-6 sm:p-8">
                 <span className="font-display text-sm font-bold text-club-deep">
@@ -51,7 +55,7 @@ function ClubPage() {
         intro="Vier principes die bepalen hoe we trainen, spelen en met elkaar omgaan."
       >
         <div className="grid gap-4 sm:grid-cols-2">
-          {CLUB_INFO.values.map((value, index) => (
+          {values.map((value, index) => (
             <Reveal key={value.id} delay={index * 70}>
               <article className="relative isolate h-full overflow-hidden rounded-2xl border border-ink-foreground/12 bg-ink-foreground/5 p-6 sm:p-8">
                 <BrandGraphic
@@ -101,7 +105,7 @@ function ClubPage() {
 
       <Section eyebrow="Bestuur" title="Het bestuur">
         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-          {BOARD_MEMBERS.map((member, index) => (
+          {board.map((member, index) => (
             <Reveal key={member.name} delay={index * 60}>
               <article className="surface-card flex h-full items-center gap-4 p-5">
                 <span className="grid h-12 w-12 shrink-0 place-items-center rounded-full bg-club/15 font-display text-sm font-bold text-club-deep">
