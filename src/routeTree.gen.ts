@@ -13,6 +13,7 @@ import { Route as IndexRouteImport } from './routes/index'
 import { Route as AdminRouteImport } from './routes/admin'
 import { Route as ClubRouteImport } from './routes/club'
 import { Route as ContactRouteImport } from './routes/contact'
+import { Route as LoginRouteImport } from './routes/login'
 import { Route as PloegenRouteImport } from './routes/ploegen'
 import { Route as StudioRouteImport } from './routes/studio'
 import { Route as PloegenIndexRouteImport } from './routes/ploegen.index'
@@ -36,6 +37,11 @@ const ClubRoute = ClubRouteImport.update({
 const ContactRoute = ContactRouteImport.update({
   id: '/contact',
   path: '/contact',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const LoginRoute = LoginRouteImport.update({
+  id: '/login',
+  path: '/login',
   getParentRoute: () => rootRouteImport,
 } as any)
 const PloegenRoute = PloegenRouteImport.update({
@@ -64,6 +70,7 @@ export interface FileRoutesByFullPath {
   '/admin': typeof AdminRoute
   '/club': typeof ClubRoute
   '/contact': typeof ContactRoute
+  '/login': typeof LoginRoute
   '/ploegen': typeof PloegenRouteWithChildren
   '/studio': typeof StudioRoute
   '/ploegen/$slug': typeof PloegenSlugRoute
@@ -74,6 +81,7 @@ export interface FileRoutesByTo {
   '/admin': typeof AdminRoute
   '/club': typeof ClubRoute
   '/contact': typeof ContactRoute
+  '/login': typeof LoginRoute
   '/studio': typeof StudioRoute
   '/ploegen/$slug': typeof PloegenSlugRoute
   '/ploegen': typeof PloegenIndexRoute
@@ -84,6 +92,7 @@ export interface FileRoutesById {
   '/admin': typeof AdminRoute
   '/club': typeof ClubRoute
   '/contact': typeof ContactRoute
+  '/login': typeof LoginRoute
   '/ploegen': typeof PloegenRouteWithChildren
   '/studio': typeof StudioRoute
   '/ploegen/$slug': typeof PloegenSlugRoute
@@ -96,6 +105,7 @@ export interface FileRouteTypes {
     | '/admin'
     | '/club'
     | '/contact'
+    | '/login'
     | '/ploegen'
     | '/studio'
     | '/ploegen/$slug'
@@ -106,6 +116,7 @@ export interface FileRouteTypes {
     | '/admin'
     | '/club'
     | '/contact'
+    | '/login'
     | '/studio'
     | '/ploegen/$slug'
     | '/ploegen'
@@ -115,6 +126,7 @@ export interface FileRouteTypes {
     | '/admin'
     | '/club'
     | '/contact'
+    | '/login'
     | '/ploegen'
     | '/studio'
     | '/ploegen/$slug'
@@ -126,6 +138,7 @@ export interface RootRouteChildren {
   AdminRoute: typeof AdminRoute
   ClubRoute: typeof ClubRoute
   ContactRoute: typeof ContactRoute
+  LoginRoute: typeof LoginRoute
   PloegenRoute: typeof PloegenRouteWithChildren
   StudioRoute: typeof StudioRoute
 }
@@ -158,6 +171,13 @@ declare module '@tanstack/react-router' {
       path: '/contact'
       fullPath: '/contact'
       preLoaderRoute: typeof ContactRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/login': {
+      id: '/login'
+      path: '/login'
+      fullPath: '/login'
+      preLoaderRoute: typeof LoginRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/ploegen': {
@@ -209,6 +229,7 @@ const rootRouteChildren: RootRouteChildren = {
   AdminRoute: AdminRoute,
   ClubRoute: ClubRoute,
   ContactRoute: ContactRoute,
+  LoginRoute: LoginRoute,
   PloegenRoute: PloegenRouteWithChildren,
   StudioRoute: StudioRoute,
 }
