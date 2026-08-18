@@ -124,6 +124,13 @@ function RootShell({ children }: { children: ReactNode }) {
 function RootComponent() {
   const { queryClient } = Route.useRouteContext();
 
+  // Enables scroll-reveal only when JS runs; SSR HTML stays fully visible.
+  useEffect(() => {
+    document.documentElement.setAttribute("data-js", "ready");
+  }, []);
+
+
+
   return (
     <QueryClientProvider client={queryClient}>
       <a
