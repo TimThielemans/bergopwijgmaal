@@ -1,4 +1,5 @@
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { AdminAuthProvider } from "@/lib/admin/auth";
 import {
   Outlet,
   Link,
@@ -129,22 +130,22 @@ function RootComponent() {
     document.documentElement.setAttribute("data-js", "ready");
   }, []);
 
-
-
   return (
     <QueryClientProvider client={queryClient}>
-      <a
-        href="#main"
-        className="sr-only focus:not-sr-only focus:absolute focus:left-4 focus:top-4 focus:z-[60] focus:rounded-full focus:bg-ink focus:px-4 focus:py-2 focus:font-display focus:text-sm focus:text-ink-foreground"
-      >
-        Naar hoofdinhoud
-      </a>
-      <SiteHeader />
-      <main id="main">
-        {/* Required: nested routes render here. Removing <Outlet /> breaks all child routes. */}
-        <Outlet />
-      </main>
-      <SiteFooter />
+      <AdminAuthProvider>
+        <a
+          href="#main"
+          className="sr-only focus:not-sr-only focus:absolute focus:left-4 focus:top-4 focus:z-[60] focus:rounded-full focus:bg-ink focus:px-4 focus:py-2 focus:font-display focus:text-sm focus:text-ink-foreground"
+        >
+          Naar hoofdinhoud
+        </a>
+        <SiteHeader />
+        <main id="main">
+          {/* Required: nested routes render here. Removing <Outlet /> breaks all child routes. */}
+          <Outlet />
+        </main>
+        <SiteFooter />
+      </AdminAuthProvider>
     </QueryClientProvider>
   );
 }
