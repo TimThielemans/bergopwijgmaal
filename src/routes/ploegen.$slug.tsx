@@ -1,6 +1,8 @@
 import { createFileRoute, notFound } from "@tanstack/react-router";
 import { useSuspenseQuery } from "@tanstack/react-query";
+import { text } from "@/lib/safe";
 import { jsonLdScript, pageMeta, sportsTeamJsonLd } from "@/lib/seo";
+
 import {
   standingQuery,
   teamCalendarQuery,
