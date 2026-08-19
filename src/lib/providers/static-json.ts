@@ -70,7 +70,7 @@ function normalizeMatch(row: Partial<Match>, teamId: string, fallbackSeason: str
     opponent: text(row?.opponent, "Tegenstander nog niet gekend"),
     isHome: row?.isHome === true,
     venue: {
-      id: text(row?.venue?.id),
+      venueId: text(row?.venue?.venueId),
       name: text(row?.venue?.name, "Locatie nog niet gekend"),
       ...(text(row?.venue?.city) ? { city: text(row?.venue?.city) } : {}),
     },
@@ -154,7 +154,7 @@ export const staticJsonRankingProvider: RankingProvider = {
     );
   },
   async getAllStandings(seasonId = CURRENT_SEASON_ID) {
-    const order = new Map(teams.map((team) => [team.id, num(team.order, 99)]));
+    const order = new Map(teams.map((team) => [team.teamId, num(team.order, 99)]));
     return rankings
       .filter((entry) => entry.seasonId === seasonId)
       .sort((a, b) => (order.get(a.teamId) ?? 99) - (order.get(b.teamId) ?? 99));
