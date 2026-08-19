@@ -17,6 +17,7 @@ import { Route as LoginRouteImport } from './routes/login'
 import { Route as PloegenRouteImport } from './routes/ploegen'
 import { Route as StudioRouteImport } from './routes/studio'
 import { Route as AdminIndexRouteImport } from './routes/admin.index'
+import { Route as AdminExcelImportRouteImport } from './routes/admin.excel-import'
 import { Route as PloegenIndexRouteImport } from './routes/ploegen.index'
 import { Route as PloegenSlugRouteImport } from './routes/ploegen.$slug'
 
@@ -60,6 +61,11 @@ const AdminIndexRoute = AdminIndexRouteImport.update({
   path: '/',
   getParentRoute: () => AdminRoute,
 } as any)
+const AdminExcelImportRoute = AdminExcelImportRouteImport.update({
+  id: '/excel-import',
+  path: '/excel-import',
+  getParentRoute: () => AdminRoute,
+} as any)
 const PloegenIndexRoute = PloegenIndexRouteImport.update({
   id: '/',
   path: '/',
@@ -79,6 +85,7 @@ export interface FileRoutesByFullPath {
   '/login': typeof LoginRoute
   '/ploegen': typeof PloegenRouteWithChildren
   '/studio': typeof StudioRoute
+  '/admin/excel-import': typeof AdminExcelImportRoute
   '/ploegen/$slug': typeof PloegenSlugRoute
   '/admin/': typeof AdminIndexRoute
   '/ploegen/': typeof PloegenIndexRoute
@@ -89,6 +96,7 @@ export interface FileRoutesByTo {
   '/contact': typeof ContactRoute
   '/login': typeof LoginRoute
   '/studio': typeof StudioRoute
+  '/admin/excel-import': typeof AdminExcelImportRoute
   '/ploegen/$slug': typeof PloegenSlugRoute
   '/admin': typeof AdminIndexRoute
   '/ploegen': typeof PloegenIndexRoute
@@ -102,6 +110,7 @@ export interface FileRoutesById {
   '/login': typeof LoginRoute
   '/ploegen': typeof PloegenRouteWithChildren
   '/studio': typeof StudioRoute
+  '/admin/excel-import': typeof AdminExcelImportRoute
   '/ploegen/$slug': typeof PloegenSlugRoute
   '/admin/': typeof AdminIndexRoute
   '/ploegen/': typeof PloegenIndexRoute
@@ -116,6 +125,7 @@ export interface FileRouteTypes {
     | '/login'
     | '/ploegen'
     | '/studio'
+    | '/admin/excel-import'
     | '/ploegen/$slug'
     | '/admin/'
     | '/ploegen/'
@@ -126,6 +136,7 @@ export interface FileRouteTypes {
     | '/contact'
     | '/login'
     | '/studio'
+    | '/admin/excel-import'
     | '/ploegen/$slug'
     | '/admin'
     | '/ploegen'
@@ -138,6 +149,7 @@ export interface FileRouteTypes {
     | '/login'
     | '/ploegen'
     | '/studio'
+    | '/admin/excel-import'
     | '/ploegen/$slug'
     | '/admin/'
     | '/ploegen/'
@@ -211,6 +223,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminIndexRouteImport
       parentRoute: typeof AdminRoute
     }
+    '/admin/excel-import': {
+      id: '/admin/excel-import'
+      path: '/excel-import'
+      fullPath: '/admin/excel-import'
+      preLoaderRoute: typeof AdminExcelImportRouteImport
+      parentRoute: typeof AdminRoute
+    }
     '/ploegen/': {
       id: '/ploegen/'
       path: '/'
@@ -229,10 +248,12 @@ declare module '@tanstack/react-router' {
 }
 
 interface AdminRouteChildren {
+  AdminExcelImportRoute: typeof AdminExcelImportRoute
   AdminIndexRoute: typeof AdminIndexRoute
 }
 
 const AdminRouteChildren: AdminRouteChildren = {
+  AdminExcelImportRoute: AdminExcelImportRoute,
   AdminIndexRoute: AdminIndexRoute,
 }
 
