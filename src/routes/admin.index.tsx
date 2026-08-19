@@ -1,5 +1,5 @@
 import { Link, createFileRoute } from "@tanstack/react-router";
-import { CalendarDays, Handshake, Info, LogOut, Users } from "lucide-react";
+import { CalendarDays, FileSpreadsheet, Handshake, Info, LogOut, Users } from "lucide-react";
 import { sanityConfig } from "@/lib/config";
 import { useAdminAuth } from "@/lib/admin/auth";
 import { PageHero } from "@/components/layout/PageHero";
