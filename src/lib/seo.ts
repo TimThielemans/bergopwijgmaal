@@ -33,7 +33,7 @@ export const sportsClubJsonLd = {
   telephone: CLUB_INFO.phone,
   address: {
     "@type": "PostalAddress",
-    streetAddress: hall.street,
+    streetAddress: hall.address,
     postalCode: hall.postalCode,
     addressLocality: hall.city,
     addressCountry: "BE",

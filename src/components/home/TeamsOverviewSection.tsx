@@ -37,7 +37,7 @@ export function TeamsOverviewSection({ teams }: { teams?: Team[] | null }) {
       ) : (
         <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
           {items.map((team, index) => (
-            <Reveal key={team.id} delay={index * 60}>
+            <Reveal key={team.teamId} delay={index * 60}>
               <TeamCard team={team} />
             </Reveal>
           ))}

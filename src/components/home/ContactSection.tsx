@@ -23,7 +23,7 @@ export function ContactSection() {
           {hall ? (
             <address className="mt-3 space-y-1 text-sm not-italic leading-relaxed text-muted-foreground">
               <p className="font-medium text-foreground">{text(hall.name, "Sporthal")}</p>
-              {text(hall.street) ? <p>{text(hall.street)}</p> : null}
+              {text(hall.address) ? <p>{text(hall.address)}</p> : null}
               {hallAddress ? <p>{hallAddress}</p> : null}
               {text(hall.notes) ? <p className="pt-2">{text(hall.notes)}</p> : null}
             </address>

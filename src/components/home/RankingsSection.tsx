@@ -19,7 +19,7 @@ interface Props {
  * Row count comes from the data, never hardcoded.
  */
 export function RankingsSection({ standings, teams, lastUpdated }: Props) {
-  const teamById = new Map(list(teams).map((team) => [team.id, team]));
+  const teamById = new Map(list(teams).map((team) => [team.teamId, team]));
   const rows = list(standings).filter((entry) => teamById.has(entry.teamId));
 
   return (

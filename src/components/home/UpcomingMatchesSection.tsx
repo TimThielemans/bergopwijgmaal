@@ -16,7 +16,7 @@ interface Props {
 /** Primary homepage feature: the next matches across all teams. */
 export function UpcomingMatchesSection({ matches, teams, lastUpdated }: Props) {
   const rows = list(matches);
-  const teamById = new Map(list(teams).map((team) => [team.id, team]));
+  const teamById = new Map(list(teams).map((team) => [team.teamId, team]));
 
   return (
     <Section
