@@ -1,4 +1,5 @@
 import type { Season, Venue } from "./types";
+import { VENUE_RECORDS } from "./sheets/venues";
 
 export const SEASONS: Season[] = [
   {
@@ -19,35 +20,14 @@ export const SEASONS: Season[] = [
 
 export const CURRENT_SEASON_ID = "2026-2027";
 
-export const VENUES: Venue[] = [
-  {
-    id: "sporthal-wijgmaal",
-    name: "Sporthal Ymeria",
-    street: "Pastoor Bellonstraat 29",
-    postalCode: "3018",
-    city: "Wijgmaal (Leuven)",
-    mapUrl:
-      "https://www.google.com/maps/place/Sportcentrum+Ymeria/@50.9258217,4.7037821,1841m/data=!3m2!1e3!4b1!4m6!3m5!1s0x47c15e1a4a36e29f:0x443ac624152b673e!8m2!3d50.9258217!4d4.706357!16s%2Fg%2F11c54f5fhr?entry=ttu&g_ep=EgoyMDI2MDgwNS4xIKXMDSoASAFQAw%3D%3D",
-    notes: "Onze thuiszaal met 1 volleybalunit, tribune en eigen BOW Kaffee.",
-  },
-  {
-    id: "sportoase-wilsele",
-    name: "Sportoase Philipssite",
-    street: "Pastoor Eralystraat 2",
-    postalCode: "3012",
-    city: "Wilsele-Putkapel",
-    mapUrl:
-      "https://www.google.com/maps/dir//Sportoase+Wilsele-Putkapel,+Pastoor+Eralystraat+2,+3012+Leuven/@50.8667299,4.6753913,7373m/data=!3m1!1e3!4m8!4m7!1m0!1m5!1m1!1s0x47c15dda622ff279:0x9ead1619badea21c!2m2!1d4.7248446!2d50.9283516?entry=ttu&g_ep=EgoyMDI2MDgwNS4xIKXMDSoASAFQAw%3D%3D",
-    notes: "Extra trainingsuren voor Dames A en occassionele thuiswedstrijden voor Heren A.",
-  },
-];
+/** Venues come straight from the Locations sheet, keyed by `venueId`. */
+export const VENUES: Venue[] = VENUE_RECORDS;
 
-export function getVenue(id: string): Venue | undefined {
-  return VENUES.find((venue) => venue.id === id);
+export function getVenue(venueId: string): Venue | undefined {
+  return VENUES.find((venue) => venue.venueId === venueId);
 }
 
 /** Main hall, or null when no venues are configured (never throws). */
 export function getPrimaryVenue(): Venue | null {
   return VENUES[0] ?? null;
 }
-
