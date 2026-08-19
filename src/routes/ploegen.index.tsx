@@ -69,7 +69,7 @@ function TeamsPage() {
         >
           <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
             {group.teams.map((team, cardIndex) => (
-              <Reveal key={team.id} delay={cardIndex * 60}>
+              <Reveal key={team.teamId} delay={cardIndex * 60}>
                 <TeamCard team={team} />
               </Reveal>
             ))}
@@ -85,7 +85,7 @@ function TeamsPage() {
         >
           <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
             {ungrouped.map((team, cardIndex) => (
-              <Reveal key={team.id} delay={cardIndex * 60}>
+              <Reveal key={team.teamId} delay={cardIndex * 60}>
                 <TeamCard team={team} />
               </Reveal>
             ))}

@@ -26,7 +26,7 @@ tijdens de build.
 ## Koppeling met ploegen
 
 Rijen worden aan een ploeg gekoppeld via `teamId` (zie `src/content/teams.ts`) of via
-`sourceId` ↔ `team.externalRefs.volleyScoresTeamId`. Rijen zonder match met een
+`slug` ↔ `ParserData.slug`. Rijen zonder match met een
 bestaande ploeg worden genegeerd, niet gerenderd.
 
 ## Seizoenen

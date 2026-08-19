@@ -1,5 +1,5 @@
 import { Link, createFileRoute } from "@tanstack/react-router";
-import { CalendarDays, Handshake, Info, LogOut, Users } from "lucide-react";
+import { CalendarDays, FileSpreadsheet, Handshake, Info, LogOut, Users } from "lucide-react";
 import { sanityConfig } from "@/lib/config";
 import { useAdminAuth } from "@/lib/admin/auth";
 import { PageHero } from "@/components/layout/PageHero";
@@ -50,6 +50,17 @@ function AdminDashboard() {
         </div>
 
         <div className="mt-8 grid gap-4 sm:grid-cols-2">
+          <Link to="/admin/excel-import" className="surface-card h-full p-6 transition-transform hover:scale-[1.01]">
+            <FileSpreadsheet aria-hidden="true" className="h-6 w-6 text-club-deep" />
+            <h2 className="mt-3 font-display text-lg font-bold">Excel-import</h2>
+            <p className="mt-2 text-sm leading-relaxed text-muted-foreground">
+              Werkwijze en verwachte structuur van het Excel-werkboek met alle sportieve data.
+            </p>
+            <span className="mt-4 inline-block rounded-full bg-club/15 px-3 py-1 text-xs font-semibold text-club-deep">
+              Documentatie bekijken
+            </span>
+          </Link>
+
           {CARDS.map((card) => (
             <article key={card.title} className="surface-card h-full p-6">
               <card.icon aria-hidden="true" className="h-6 w-6 text-club-deep" />
@@ -61,6 +72,7 @@ function AdminDashboard() {
             </article>
           ))}
         </div>
+
 
         <div className="surface-card mt-6 p-6">
           <h2 className="font-display text-lg font-bold">Sanity Studio</h2>

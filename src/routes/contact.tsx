@@ -70,7 +70,7 @@ function ContactPage() {
                 <h3 className="mt-8 font-display text-xl font-bold">Sporthal</h3>
                 <address className="mt-3 space-y-1 text-sm not-italic leading-relaxed text-muted-foreground">
                   <p className="font-medium text-foreground">{text(hall.name, "Sporthal")}</p>
-                  {text(hall.street) ? <p>{text(hall.street)}</p> : null}
+                  {text(hall.address) ? <p>{text(hall.address)}</p> : null}
                   <p>{`${text(hall.postalCode)} ${text(hall.city)}`.trim()}</p>
                 </address>
               </>

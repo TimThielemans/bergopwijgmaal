@@ -33,7 +33,7 @@ export function TeamDetail({ team, standing, upcoming, calendar }: TeamDetailPro
   const assistantName = text(team?.assistantCoach?.name);
   const trainings = list(team?.trainings);
   const players = list(team?.players);
-  const calendarUrl = safeUrl(team?.externalRefs?.calendarUrl);
+  const calendarUrl = safeUrl(team?.parser?.calendarUrl);
 
   return (
     <>

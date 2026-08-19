@@ -47,7 +47,7 @@ function HomePage() {
   const standings = list(standingsData);
   const nextHomeMatch = matches.find((match) => match.isHome === true);
   const nextHomeMatchTeam = nextHomeMatch
-    ? teams.find((team) => team.id === nextHomeMatch.teamId)
+    ? teams.find((team) => team.teamId === nextHomeMatch.teamId)
     : undefined;
   const activeMembers = teams.reduce((total, team) => total + list(team?.players).length, 0);
 

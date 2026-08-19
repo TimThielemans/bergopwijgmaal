@@ -166,7 +166,7 @@ function ClubPage() {
               <Building2 aria-hidden="true" className="h-7 w-7 text-club-deep" />
               <h3 className="mt-4 font-display text-xl font-bold">{text(hall.name, "Sporthal")}</h3>
               <address className="mt-3 space-y-1 text-sm not-italic text-muted-foreground">
-                {text(hall.street) ? <p>{text(hall.street)}</p> : null}
+                {text(hall.address) ? <p>{text(hall.address)}</p> : null}
                 <p>{`${text(hall.postalCode)} ${text(hall.city)}`.trim()}</p>
               </address>
               {text(hall.notes) ? (

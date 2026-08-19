@@ -25,6 +25,78 @@ export interface Person {
 
 export type TeamCategory = "competitief" | "recreatief";
 
+/* ------------------------------------------------------------------ *
+ * Sheet records — one interface per future Excel worksheet.
+ * These are the *storage* shapes: flat rows, stable ids, references
+ * instead of nesting. A future Excel → CMS import writes exactly these.
+ * ------------------------------------------------------------------ */
+
+/** Sheet: Teams */
+export interface TeamRecord {
+  teamId: string;
+  slug: string;
+  name: string;
+  /** Compact label for mobile rows, tables and badges, e.g. "HA". */
+  shortName: string;
+  category: TeamCategory;
+  /** Competition level, e.g. "Nationale 3", "Promo 1". */
+  level: string;
+  shortDescription: string;
+  description: string;
+  /** Optional on purpose: layouts fall back to a branded tile. */
+  photoUrl?: string;
+  photoAlt?: string;
+  coach?: string;
+  assistantCoach?: string;
+  order: number;
+}
+
+/** Sheet: Players */
+export interface PlayerRecord {
+  teamId: string;
+  name: string;
+  number?: number;
+  position?: string;
+}
+
+/** Sheet: Trainings */
+export interface TrainingRecord {
+  teamId: string;
+  day: string;
+  startTime: string;
+  endTime: string;
+  venueId: string;
+}
+
+/** Sheet: Locations */
+export interface VenueRecord {
+  venueId: string;
+  name: string;
+  address: string;
+  postalCode: string;
+  city: string;
+  googleMapsUrl: string;
+  notes?: string;
+}
+
+/** Sheet: ParserData — join keys towards external volleyball data sources. */
+export interface ParserRecord {
+  teamId: string;
+  slug: string;
+  volleyScoresUrl?: string;
+  rankingUrl?: string;
+  /** Public calendar page; when empty no link is shown. */
+  calendarUrl?: string;
+  competitionCode?: string;
+  divisionCode?: string;
+  parserEnabled: boolean;
+}
+
+/* ------------------------------------------------------------------ *
+ * View models — what components receive. Assembled from the records
+ * above by the CMS provider (see src/lib/providers/mock-cms.ts).
+ * ------------------------------------------------------------------ */
+
 export interface Player {
   name: string;
   number?: number;
@@ -39,35 +111,21 @@ export interface TrainingSlot {
   venueId: string;
 }
 
-/** Join keys towards external volleyball data sources (VolleyDataParser). */
-export interface TeamExternalRefs {
-  /** Team id as used by volleyscores/federation exports. */
-  volleyScoresTeamId?: string;
-  rankingId?: string;
-  calendarId?: string;
-  /** Public calendar page (volleyscores etc.); when empty no link is shown. */
-  calendarUrl?: string;
-  division?: string;
-}
-
 export interface Team {
-  id: string;
+  teamId: string;
   slug: string;
   name: string;
-  /** Compact label for mobile rows, tables and badges, e.g. "HA". */
   shortName: string;
   category: TeamCategory;
-  /** Competition level, e.g. "Nationale 3", "Promo 1". */
   level: string;
   shortDescription: string;
   description: string;
-  /** Optional on purpose: layouts fall back to a branded tile without a photo. */
   photo?: ImageRef;
   coach: Person;
   assistantCoach?: Person;
   trainings: TrainingSlot[];
   players: Player[];
-  externalRefs: TeamExternalRefs;
+  parser: ParserRecord;
   order: number;
 }
 
@@ -80,18 +138,12 @@ export interface Season {
 }
 
 export interface VenueRef {
-  id: string;
+  venueId: string;
   name: string;
   city?: string;
 }
 
-export interface Venue extends VenueRef {
-  street: string;
-  postalCode: string;
-  city: string;
-  mapUrl: string;
-  notes?: string;
-}
+export type Venue = VenueRecord;
 
 export type MatchStatus = "scheduled" | "played" | "postponed";
 
@@ -116,6 +168,7 @@ export interface Match {
   status: MatchStatus;
   sourceId?: string;
 }
+
 
 export type FormResult = "W" | "L";
 

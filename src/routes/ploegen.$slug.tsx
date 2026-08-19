@@ -16,12 +16,12 @@ export const Route = createFileRoute("/ploegen/$slug")({
     const team = await context.queryClient.ensureQueryData(teamQuery(params.slug));
     if (!team) throw notFound();
     await Promise.all([
-      context.queryClient.ensureQueryData(standingQuery(team.id)),
-      context.queryClient.ensureQueryData(upcomingMatchesQuery({ teamId: team.id, limit: 4 })),
-      context.queryClient.ensureQueryData(teamCalendarQuery(team.id)),
+      context.queryClient.ensureQueryData(standingQuery(team.teamId)),
+      context.queryClient.ensureQueryData(upcomingMatchesQuery({ teamId: team.teamId, limit: 4 })),
+      context.queryClient.ensureQueryData(teamCalendarQuery(team.teamId)),
     ]);
     return {
-      teamId: team.id,
+      teamId: team.teamId,
       name: text(team.name, "Ploeg"),
       level: text(team.level),
       summary: text(team.shortDescription, text(team.description)),

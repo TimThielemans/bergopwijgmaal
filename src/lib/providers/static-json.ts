@@ -1,6 +1,6 @@
 import matchesFile from "@/data/matches.json";
 import rankingsFile from "@/data/rankings.json";
-import { CURRENT_SEASON_ID, TEAMS } from "@/content";
+import { CURRENT_SEASON_ID, PARSER_RECORDS, TEAM_RECORDS } from "@/content";
 import type { DataEnvelope, FormResult, Match, MatchStatus, RankingEntry } from "@/content/types";
 import { isValidDate, list, num, text } from "@/lib/safe";
 import type { MatchProvider, RankingProvider, UpcomingMatchesQuery } from "./types";
@@ -11,21 +11,26 @@ import type { MatchProvider, RankingProvider, UpcomingMatchesQuery } from "./typ
  * Generated volleyball data (VolleyDataParser output) is read from
  * `src/data/*.json` at build time. No live API access is assumed.
  * Rows are only kept when they can be joined onto a known team, either through
- * `teamId` or through `sourceId` <-> `externalRefs.volleyScoresTeamId`, AND when
- * they normalise into a complete, renderable shape.
+ * `teamId` or through the ParserData sheet (`slug`), AND when they normalise
+ * into a complete, renderable shape.
  */
 
-const teams = list(TEAMS);
+const teams = list(TEAM_RECORDS);
+const parserRows = list(PARSER_RECORDS);
 
-function knownTeamId(row: { teamId?: string; sourceId?: string }): string | null {
-  const byId = teams.find((team) => team.id === row?.teamId);
-  if (byId) return byId.id;
-  const source = text(row?.sourceId);
-  const bySource = source
-    ? teams.find((team) => team.externalRefs?.volleyScoresTeamId === source)
-    : undefined;
-  return bySource ? bySource.id : null;
+function knownTeamId(row: { teamId?: string; slug?: string }): string | null {
+  const wantedId = text(row?.teamId);
+  const byId = teams.find((team) => team.teamId === wantedId);
+  if (byId) return byId.teamId;
+  const slug = text(row?.slug);
+  const byParserSlug = slug ? parserRows.find((parser) => parser.slug === slug) : undefined;
+  if (byParserSlug && teams.some((team) => team.teamId === byParserSlug.teamId)) {
+    return byParserSlug.teamId;
+  }
+  const bySlug = slug ? teams.find((team) => team.slug === slug) : undefined;
+  return bySlug ? bySlug.teamId : null;
 }
+
 
 function readEnvelope<T>(file: unknown): DataEnvelope<T> {
   const envelope = (file ?? {}) as Partial<DataEnvelope<T>>;
@@ -65,7 +70,7 @@ function normalizeMatch(row: Partial<Match>, teamId: string, fallbackSeason: str
     opponent: text(row?.opponent, "Tegenstander nog niet gekend"),
     isHome: row?.isHome === true,
     venue: {
-      id: text(row?.venue?.id),
+      venueId: text(row?.venue?.venueId),
       name: text(row?.venue?.name, "Locatie nog niet gekend"),
       ...(text(row?.venue?.city) ? { city: text(row?.venue?.city) } : {}),
     },
@@ -149,7 +154,7 @@ export const staticJsonRankingProvider: RankingProvider = {
     );
   },
   async getAllStandings(seasonId = CURRENT_SEASON_ID) {
-    const order = new Map(teams.map((team) => [team.id, num(team.order, 99)]));
+    const order = new Map(teams.map((team) => [team.teamId, num(team.order, 99)]));
     return rankings
       .filter((entry) => entry.seasonId === seasonId)
       .sort((a, b) => (order.get(a.teamId) ?? 99) - (order.get(b.teamId) ?? 99));

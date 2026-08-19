@@ -8,10 +8,10 @@ export function MapPlaceholder({ venue }: { venue?: Venue | null }) {
   if (!venue) return null;
 
   const name = text(venue.name, "Sporthal");
-  const address = [text(venue.street), `${text(venue.postalCode)} ${text(venue.city)}`.trim()]
+  const address = [text(venue.address), `${text(venue.postalCode)} ${text(venue.city)}`.trim()]
     .filter((part) => part.length > 0)
     .join(", ");
-  const mapUrl = safeUrl(venue.mapUrl);
+  const mapUrl = safeUrl(venue.googleMapsUrl);
 
   return (
     <div className="surface-card relative isolate flex min-h-64 flex-col justify-end overflow-hidden bg-navy text-ink-foreground">

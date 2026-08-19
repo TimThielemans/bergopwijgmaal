@@ -55,7 +55,7 @@ export function SiteFooter() {
           {hall ? (
             <address className="mt-4 space-y-1 text-sm not-italic text-ink-foreground/70">
               <p>{text(hall.name, "Sporthal")}</p>
-              {text(hall.street) ? <p>{text(hall.street)}</p> : null}
+              {text(hall.address) ? <p>{text(hall.address)}</p> : null}
               <p>{`${text(hall.postalCode)} ${text(hall.city)}`.trim()}</p>
             </address>
           ) : (
