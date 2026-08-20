@@ -101,6 +101,23 @@ singleton  clubInfo
 - Keep the same view model shapes (`Activity`, `Sponsor`, `BoardMember`, `ClubInfo`) so components do not change.
 - The mock provider continues to serve these from `src/content/club.ts` until `VITE_SANITY_PROJECT_ID` is set.
 
+### Admin board adjustments once CMS is implemented
+
+The existing `/admin` dashboard should reflect the new content sources:
+
+```text
+/admin
+  -> Teams & Locaties   link to Sanity Studio (team/location documents)
+  -> Clubgegevens       link to Sanity Studio (clubInfo singleton + board/activities/sponsors)
+  -> Excel Import        keep as documentation + future upload trigger
+  -> Website preview     link to published/preview URL
+  -> Uitloggen          existing auth action
+```
+
+- Remove any mock-only actions that imply editing local files.
+- The Excel Import card stays but changes its CTA from "Binnenkort" to a flow that parses the workbook and posts to `/api/admin/import-excel`.
+- Add direct links to the relevant Studio sections so board members can edit club content without hunting through Sanity.
+
 ### Build order with the rest
 
 ```text
@@ -108,7 +125,8 @@ step 1  deploy team + location + activity + sponsor + boardMember + clubInfo sch
 step 2  seed current mock content into Sanity (teams from sheets, club from club.ts)
 step 3  add sanity-cms.ts provider + GROQ projections; flip via env
 step 4  build the Excel -> Sanity importer for team + location only
-step 5  (later) build Studio customisations / validation rules for club content
+step 5  update /admin dashboard cards and links for CMS-based editing
+step 6  (later) build Studio customisations / validation rules for club content
 ```
 
 ## Out of scope for this review
