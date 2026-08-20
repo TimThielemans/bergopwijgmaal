@@ -64,13 +64,51 @@ Nothing in the component layer changes: the new `sanity-cms.ts` provider returns
 4. **Decide where the importer runs**: a Studio-side script/tool or a small server route. Either way it needs a write token — worth agreeing before we build, since public reads need none.
 5. **Lock the read path**: `VITE_SANITY_PROJECT_ID` flips `contentSource` to Sanity; the mock provider stays as fallback so the site never goes blank during migration. CORS origin for the preview + published domain must be added (I can do this through the connection).
 
-## 5. Suggested build order (for the next round)
+## 5. CMS strategy for the rest of the site (activities, sponsors, club info, board)
+
+These sections are currently in `src/content/club.ts`. They should move into Sanity as well, but they do NOT come from the Excel workbook. I recommend keeping them in a separate "club" content area so the Excel importer never touches them.
+
+### Proposed Sanity document types
 
 ```text
-step 1  deploy team + location schemas to Sanity
-step 2  seed the current mock content into Sanity (one-off, from existing sheets)
+document  activity
+  id (slug-safe string, unique)  slug  title  date  endDate  location
+  excerpt  body (portable text)  image  ctaLabel  ctaUrl
+
+document  sponsor
+  id (slug-safe string, unique)  name  websiteUrl  tier
+  logo (image asset)
+
+document  boardMember
+  id (slug-safe string, unique)  name  role  email  phone  photo  order
+
+singleton  clubInfo
+  name  tagline  foundingYear  mission
+  storyBlocks[] { title, body }
+  values[] { id, title, description }
+  email  phone  socials[] { platform, label, url }
+```
+
+### Why separate from the Excel flow
+
+- Activities, sponsors and board members are edited independently from the sports-data cycle.
+- They benefit from rich fields (portable text body, image uploads, social links) that Excel does not express well.
+- A singleton `clubInfo` document lets non-technical club members edit the about/contact copy without touching code.
+
+### Frontend impact
+
+- Add a `clubProvider` or extend the CMS provider with `getActivities`, `getSponsors`, `getBoardMembers`, `getClubInfo`.
+- Keep the same view model shapes (`Activity`, `Sponsor`, `BoardMember`, `ClubInfo`) so components do not change.
+- The mock provider continues to serve these from `src/content/club.ts` until `VITE_SANITY_PROJECT_ID` is set.
+
+### Build order with the rest
+
+```text
+step 1  deploy team + location + activity + sponsor + boardMember + clubInfo schemas
+step 2  seed current mock content into Sanity (teams from sheets, club from club.ts)
 step 3  add sanity-cms.ts provider + GROQ projections; flip via env
-step 4  build the Excel -> Sanity importer against the agreed template
+step 4  build the Excel -> Sanity importer for team + location only
+step 5  (later) build Studio customisations / validation rules for club content
 ```
 
 ## Out of scope for this review
