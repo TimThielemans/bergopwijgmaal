@@ -118,17 +118,39 @@ The existing `/admin` dashboard should reflect the new content sources:
 - The Excel Import card stays but changes its CTA from "Binnenkort" to a flow that parses the workbook and posts to `/api/admin/import-excel`.
 - Add direct links to the relevant Studio sections so board members can edit club content without hunting through Sanity.
 
-### Build order with the rest
+## 6. Build order — two iterations
+
+### Iteration A (next: complete the Website <-> Sanity integration)
 
 ```text
-step 1  deploy team + location + activity + sponsor + boardMember + clubInfo schemas
-step 2  seed current mock content into Sanity (teams from sheets, club from club.ts)
-step 3  add sanity-cms.ts provider + GROQ projections; flip via env
-step 4  build the Excel -> Sanity importer for team + location only
-step 5  update /admin dashboard cards and links for CMS-based editing
-step 6  (later) build Studio customisations / validation rules for club content
+step 1  deploy schemas: team, location, activity, sponsor, boardMember, clubInfo
+step 2  seed the current mock content into Sanity
+        (teams/players/trainings/locations/parser from src/content/sheets,
+         activities/sponsors/board/clubInfo from src/content/club.ts)
+step 3  add sanity-cms.ts provider + GROQ projections; flip via VITE_SANITY_PROJECT_ID
+        mock provider stays as fallback; add CORS origins
+step 5  update the /admin dashboard for CMS-based editing (Studio deep links)
+        -> then review together
 ```
 
-## Out of scope for this review
+### Iteration B (after review: Excel import)
+
+```text
+step 4  Excel -> Sanity importer (team + location only), idempotent upsert
+        server route /api/admin/import-excel + Zod validation + write token
+step 6  optional Studio customisations / validation rules
+```
+
+## 7. Excel workbook with the current mock data (delivered)
+
+A workbook containing all seven current teams, 42 players, 9 training slots, 2 locations and the parser rows is generated from the live mock data, using the corrected template columns:
+
+- Teams: `teamId, slug, name, shortName, category, level, shortDescription, description, photoAlt, coach, assistantCoach, order` — `photoUrl` removed (Studio-managed photos), `shortDescription`, `order` and `photoAlt` added.
+- Players / Trainings / Locations / ParserData: unchanged column sets, `notes` present on both Locations and ParserData.
+- README sheet documents the id stability, idempotent-upsert and child-array-replacement rules.
+
+This workbook is the reference for the Iteration B importer, and can also be used to review/edit the content before seeding Sanity in step 2.
+
+## Out of scope for this iteration
 
 No schema deployment, no provider code, no Excel parsing yet.
