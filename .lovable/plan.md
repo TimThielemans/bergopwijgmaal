@@ -58,10 +58,10 @@ Nothing in the component layer changes: the new `sanity-cms.ts` provider returns
 
 ## 4. What I recommend before building the import
 
-1. **Add `shortDescription` and `order` columns** to the Teams sheet (and optionally `photoAlt`); align `notes` on Locations. I can produce the updated template workbook.
-2. **Decide the photo policy**: keep photos Studio-managed (recommended — Excel never carries images) so the importer never touches the `photo` field and manual uploads are not overwritten.
-3. **Decide import semantics**: I recommend `teamId`/`venueId` as deterministic document `_id`s (`team.heren-a`, `location.ymeria`) so a re-import is an idempotent upsert rather than a duplicate-creating insert, and child arrays (players/trainings) are replaced wholesale per team.
-4. **Decide where the importer runs**: a Studio-side script/tool or a small server route. Either way it needs a write token — worth agreeing before we build, since public reads need none.
+1. **Add `shortDescription` and `order` columns** to the Teams sheet; add `photoAlt` column; align `notes` on Locations. Remove `photoUrl` from the Excel template — photos are Studio-managed only. I can produce the updated template workbook.
+2. **Photo policy confirmed**: photos are uploaded and managed in Sanity Studio. The Excel importer never creates or overwrites images; it only reads the optional `photoAlt` value from the Teams sheet and applies it to the existing image asset if one is present.
+3. **Import semantics confirmed**: idempotent upsert. Document `_id`s are deterministic (`team.heren-a`, `location.ymeria`). A re-import patches top-level team/location fields and **replaces** child arrays (`players`, `trainings`) and the nested `parser` object wholesale. No duplicate teams are created.
+4. **Import location**: the easy and most convenient route is a small server route under `/api/admin/import-excel` in the TanStack Start app. It accepts the parsed workbook payload, validates it with Zod, and writes to Sanity with a server-side write token. This keeps everything in one codebase and avoids Studio-plugin deployment complexity. The actual file parsing can happen client-side with `xlsx` before posting, or server-side after upload — we can decide tomorrow.
 5. **Lock the read path**: `VITE_SANITY_PROJECT_ID` flips `contentSource` to Sanity; the mock provider stays as fallback so the site never goes blank during migration. CORS origin for the preview + published domain must be added (I can do this through the connection).
 
 ## 5. CMS strategy for the rest of the site (activities, sponsors, club info, board)
@@ -101,6 +101,23 @@ singleton  clubInfo
 - Keep the same view model shapes (`Activity`, `Sponsor`, `BoardMember`, `ClubInfo`) so components do not change.
 - The mock provider continues to serve these from `src/content/club.ts` until `VITE_SANITY_PROJECT_ID` is set.
 
+### Admin board adjustments once CMS is implemented
+
+The existing `/admin` dashboard should reflect the new content sources:
+
+```text
+/admin
+  -> Teams & Locaties   link to Sanity Studio (team/location documents)
+  -> Clubgegevens       link to Sanity Studio (clubInfo singleton + board/activities/sponsors)
+  -> Excel Import        keep as documentation + future upload trigger
+  -> Website preview     link to published/preview URL
+  -> Uitloggen          existing auth action
+```
+
+- Remove any mock-only actions that imply editing local files.
+- The Excel Import card stays but changes its CTA from "Binnenkort" to a flow that parses the workbook and posts to `/api/admin/import-excel`.
+- Add direct links to the relevant Studio sections so board members can edit club content without hunting through Sanity.
+
 ### Build order with the rest
 
 ```text
@@ -108,7 +125,8 @@ step 1  deploy team + location + activity + sponsor + boardMember + clubInfo sch
 step 2  seed current mock content into Sanity (teams from sheets, club from club.ts)
 step 3  add sanity-cms.ts provider + GROQ projections; flip via env
 step 4  build the Excel -> Sanity importer for team + location only
-step 5  (later) build Studio customisations / validation rules for club content
+step 5  update /admin dashboard cards and links for CMS-based editing
+step 6  (later) build Studio customisations / validation rules for club content
 ```
 
 ## Out of scope for this review
