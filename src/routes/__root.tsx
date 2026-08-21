@@ -12,6 +12,7 @@ import { useEffect, type ReactNode } from "react";
 
 import appCss from "../styles.css?url";
 import { reportLovableError } from "../lib/lovable-error-reporting";
+import { siteContentQuery } from "@/lib/providers";
 import { SiteHeader } from "@/components/layout/SiteHeader";
 import { SiteFooter } from "@/components/layout/SiteFooter";
 
@@ -76,6 +77,9 @@ function ErrorComponent({ error, reset }: { error: Error; reset: () => void }) {
 }
 
 export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()({
+  // Shared editorial content (club info, venues, activities, sponsors, board)
+  // is prefetched once so header, footer and sections render on the server.
+  loader: ({ context }) => context.queryClient.ensureQueryData(siteContentQuery()),
   head: () => ({
     meta: [
       { charSet: "utf-8" },

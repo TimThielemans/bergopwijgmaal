@@ -1,5 +1,5 @@
 import { Mail, Phone } from "lucide-react";
-import { CLUB_INFO, getPrimaryVenue } from "@/content";
+import { primaryVenue, useSiteContent } from "@/lib/site-content";
 import { list, safeUrl, text } from "@/lib/safe";
 import { Section } from "@/components/layout/Section";
 import { MapPlaceholder } from "@/components/shared/MapPlaceholder";
@@ -7,10 +7,11 @@ import { Reveal } from "@/components/shared/Reveal";
 import { SocialLinks } from "@/components/shared/SocialLinks";
 
 export function ContactSection() {
-  const hall = getPrimaryVenue();
-  const email = text(CLUB_INFO?.email);
-  const phone = text(CLUB_INFO?.phone);
-  const socials = list(CLUB_INFO?.socials).slice(0, 2);
+  const { clubInfo, venues } = useSiteContent();
+  const hall = primaryVenue(venues);
+  const email = text(clubInfo?.email);
+  const phone = text(clubInfo?.phone);
+  const socials = list(clubInfo?.socials).slice(0, 2);
   const hallAddress = hall
     ? `${text(hall.postalCode)} ${text(hall.city)}`.trim()
     : "";

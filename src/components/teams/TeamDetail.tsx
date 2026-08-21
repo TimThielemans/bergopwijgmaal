@@ -1,7 +1,7 @@
 import { Link } from "@tanstack/react-router";
 import { CalendarDays, ExternalLink, Trophy, Users } from "lucide-react";
 import type { Match, RankingEntry, Team } from "@/content/types";
-import { getVenue } from "@/content";
+import { findVenue, useSiteContent } from "@/lib/site-content";
 import { formatPosition } from "@/lib/format";
 import { list, safeUrl, text } from "@/lib/safe";
 import { Section } from "@/components/layout/Section";
@@ -20,6 +20,7 @@ interface TeamDetailProps {
 }
 
 export function TeamDetail({ team, standing, upcoming, calendar }: TeamDetailProps) {
+  const { venues } = useSiteContent();
   const upcomingMatches = list(upcoming);
   const calendarMatches = list(calendar);
   const played = calendarMatches.filter((match) => match.status === "played");
@@ -126,7 +127,7 @@ export function TeamDetail({ team, standing, upcoming, calendar }: TeamDetailPro
                         : ""}
                     </span>
                     <span className="text-muted-foreground">
-                      {text(getVenue(text(slot?.venueId))?.name, "Sporthal")}
+                      {text(findVenue(venues, text(slot?.venueId))?.name, "Sporthal")}
                     </span>
                   </li>
                 ))}

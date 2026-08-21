@@ -1,6 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { Mail, Phone } from "lucide-react";
-import { BOARD_MEMBERS, CLUB_INFO, getPrimaryVenue } from "@/content";
+import { primaryVenue, useSiteContent } from "@/lib/site-content";
 import { list, safeUrl, text } from "@/lib/safe";
 import { pageMeta } from "@/lib/seo";
 import { PageHero } from "@/components/layout/PageHero";
@@ -18,11 +18,12 @@ export const Route = createFileRoute("/contact")({
 });
 
 function ContactPage() {
-  const hall = getPrimaryVenue();
-  const email = text(CLUB_INFO?.email);
-  const phone = text(CLUB_INFO?.phone);
-  const socials = list(CLUB_INFO?.socials).filter((social) => safeUrl(social?.url));
-  const contactPeople = list(BOARD_MEMBERS)
+  const { clubInfo, venues, boardMembers } = useSiteContent();
+  const hall = primaryVenue(venues);
+  const email = text(clubInfo?.email);
+  const phone = text(clubInfo?.phone);
+  const socials = list(clubInfo?.socials).filter((social) => safeUrl(social?.url));
+  const contactPeople = list(boardMembers)
     .filter((member) => text(member?.email).length > 0)
     .slice(0, 3);
 
