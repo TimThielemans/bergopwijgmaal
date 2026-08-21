@@ -1,6 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { Building2, HeartHandshake, Target } from "lucide-react";
-import { BOARD_MEMBERS, CLUB_INFO, getPrimaryVenue } from "@/content";
+import { primaryVenue, useSiteContent } from "@/lib/site-content";
 import { list, text } from "@/lib/safe";
 import { pageMeta } from "@/lib/seo";
 import { PageHero } from "@/components/layout/PageHero";
@@ -19,17 +19,18 @@ export const Route = createFileRoute("/club")({
 });
 
 function ClubPage() {
-  const hall = getPrimaryVenue();
-  const storyBlocks = list(CLUB_INFO?.storyBlocks);
-  const values = list(CLUB_INFO?.values);
-  const board = list(BOARD_MEMBERS);
+  const { clubInfo, venues, boardMembers } = useSiteContent();
+  const hall = primaryVenue(venues);
+  const storyBlocks = list(clubInfo?.storyBlocks);
+  const values = list(clubInfo?.values);
+  const board = list(boardMembers);
 
   return (
     <>
       <PageHero
         eyebrow="De club"
         title="Meer dan vijftig jaar volleybal in Wijgmaal"
-        {...(text(CLUB_INFO?.mission) ? { intro: text(CLUB_INFO.mission) } : {})}
+        {...(text(clubInfo?.mission) ? { intro: text(clubInfo.mission) } : {})}
       />
 
       {storyBlocks.length > 0 ? (

@@ -1,21 +1,22 @@
 import { Link } from "@tanstack/react-router";
 import { ArrowRight } from "lucide-react";
-import { CLUB_INFO } from "@/content";
+import { useClubInfo } from "@/lib/site-content";
 import { list, text } from "@/lib/safe";
 import { Section } from "@/components/layout/Section";
 import { BrandGraphic } from "@/components/shared/BrandGraphic";
 import { Reveal } from "@/components/shared/Reveal";
 
 export function AboutSection() {
-  const storyBlocks = list(CLUB_INFO?.storyBlocks);
+  const clubInfo = useClubInfo();
+  const storyBlocks = list(clubInfo?.storyBlocks);
   const paragraphs = [text(storyBlocks[0]?.body), text(storyBlocks[1]?.body)].filter(
     (body) => body.length > 0,
   );
-  const values = list(CLUB_INFO?.values).slice(0, 4);
+  const values = list(clubInfo?.values).slice(0, 4);
   const intro =
     paragraphs.length > 0
       ? paragraphs
-      : [text(CLUB_INFO?.mission, "Volleybal in Wijgmaal, voor competitie én recreatie.")];
+      : [text(clubInfo?.mission, "Volleybal in Wijgmaal, voor competitie én recreatie.")];
 
   return (
     <Section id="over-ons">

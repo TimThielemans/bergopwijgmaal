@@ -1,4 +1,14 @@
-import { PARSER_RECORDS, PLAYER_RECORDS, TEAM_RECORDS, TRAINING_RECORDS } from "@/content";
+import {
+  ACTIVITIES,
+  BOARD_MEMBERS,
+  CLUB_INFO,
+  PARSER_RECORDS,
+  PLAYER_RECORDS,
+  SPONSORS,
+  TEAM_RECORDS,
+  TRAINING_RECORDS,
+  VENUE_RECORDS,
+} from "@/content";
 import type {
   ParserRecord,
   Player,
@@ -112,5 +122,20 @@ export const mockCmsProvider: CmsProvider = {
     const wanted = text(slug);
     if (!wanted) return null;
     return allTeams().find((team) => team.slug === wanted) ?? null;
+  },
+  async getVenues() {
+    return list(VENUE_RECORDS);
+  },
+  async getActivities() {
+    return list(ACTIVITIES);
+  },
+  async getSponsors() {
+    return list(SPONSORS);
+  },
+  async getBoardMembers() {
+    return list(BOARD_MEMBERS).sort((a, b) => num(a?.order, 99) - num(b?.order, 99));
+  },
+  async getClubInfo() {
+    return CLUB_INFO;
   },
 };

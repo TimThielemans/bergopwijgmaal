@@ -1,22 +1,47 @@
 import { queryOptions } from "@tanstack/react-query";
 import { CURRENT_SEASON_ID } from "@/content";
+import { contentSource } from "@/lib/config";
 import { mockCmsProvider } from "./mock-cms";
+import { sanityCmsProvider } from "./sanity-cms";
 import { staticJsonMatchProvider, staticJsonRankingProvider } from "./static-json";
-import type { CmsProvider, MatchProvider, RankingProvider, UpcomingMatchesQuery } from "./types";
+import type {
+  CmsProvider,
+  MatchProvider,
+  RankingProvider,
+  SiteContent,
+  UpcomingMatchesQuery,
+} from "./types";
 
 /**
  * Active provider selection — the only place to change when the data source changes.
  *
  * matches/rankings -> generated static JSON (VolleyDataParser output)
- * teams/content    -> typed mock modules (future: Sanity CMS)
+ * teams/content    -> Sanity CMS when VITE_SANITY_PROJECT_ID is set, otherwise
+ *                     the typed mock modules in src/content/
  */
 export const matchProvider: MatchProvider = staticJsonMatchProvider;
 export const rankingProvider: RankingProvider = staticJsonRankingProvider;
-export const cmsProvider: CmsProvider = mockCmsProvider;
+export const cmsProvider: CmsProvider =
+  contentSource === "sanity" ? sanityCmsProvider : mockCmsProvider;
 
-export type { CmsProvider, MatchProvider, RankingProvider, UpcomingMatchesQuery };
+export type { CmsProvider, MatchProvider, RankingProvider, SiteContent, UpcomingMatchesQuery };
 
 /* Query options — shared by route loaders and components. */
+
+export const siteContentQuery = () =>
+  queryOptions({
+    queryKey: ["site-content", contentSource] as const,
+    queryFn: async (): Promise<SiteContent> => {
+      const [clubInfo, venues, activities, sponsors, boardMembers] = await Promise.all([
+        cmsProvider.getClubInfo(),
+        cmsProvider.getVenues(),
+        cmsProvider.getActivities(),
+        cmsProvider.getSponsors(),
+        cmsProvider.getBoardMembers(),
+      ]);
+      return { clubInfo, venues, activities, sponsors, boardMembers };
+    },
+  });
 
 export const teamsQuery = () =>
   queryOptions({

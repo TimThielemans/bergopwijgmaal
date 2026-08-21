@@ -1,6 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useSuspenseQuery } from "@tanstack/react-query";
-import { ACTIVITIES, SPONSORS } from "@/content";
+import { useSiteContent } from "@/lib/site-content";
 import { formatRelativeUpdate } from "@/lib/format";
 import { list } from "@/lib/safe";
 
@@ -39,6 +39,7 @@ export const Route = createFileRoute("/")({
 
 function HomePage() {
   const { matchesUpdatedAt, rankingsUpdatedAt } = Route.useLoaderData();
+  const { activities, sponsors } = useSiteContent();
   const { data: teamsData } = useSuspenseQuery(teamsQuery());
   const { data: matchesData } = useSuspenseQuery(upcomingMatchesQuery({ limit: 5 }));
   const { data: standingsData } = useSuspenseQuery(standingsQuery());
@@ -62,10 +63,10 @@ function HomePage() {
       />
       <UpcomingMatchesSection matches={matches} teams={teams} lastUpdated={formatRelativeUpdate(matchesUpdatedAt)} />
       <RankingsSection standings={standings} teams={teams} lastUpdated={formatRelativeUpdate(rankingsUpdatedAt)} />
-      <ActivitiesSection activities={ACTIVITIES} />
+      <ActivitiesSection activities={activities} />
       <TeamsOverviewSection teams={teams} />
       <AboutSection />
-      <SponsorsSection sponsors={SPONSORS} />
+      <SponsorsSection sponsors={sponsors} />
       <ContactSection />
     </>
   );

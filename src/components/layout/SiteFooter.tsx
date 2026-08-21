@@ -1,13 +1,14 @@
 import { Link } from "@tanstack/react-router";
 import logo from "@/assets/bow-logo.png.asset.json";
-import { CLUB_INFO, getPrimaryVenue } from "@/content";
+import { primaryVenue, useSiteContent } from "@/lib/site-content";
 import { list, text } from "@/lib/safe";
 import { SocialLinks } from "@/components/shared/SocialLinks";
 
 export function SiteFooter() {
-  const hall = getPrimaryVenue();
-  const email = text(CLUB_INFO?.email);
-  const socials = list(CLUB_INFO?.socials).slice(0, 2);
+  const { clubInfo, venues } = useSiteContent();
+  const hall = primaryVenue(venues);
+  const email = text(clubInfo?.email);
+  const socials = list(clubInfo?.socials).slice(0, 2);
 
   return (
     <footer className="bg-ink text-ink-foreground">
@@ -18,7 +19,7 @@ export function SiteFooter() {
             <span className="font-display text-lg font-bold">Berg-Op Wijgmaal</span>
           </div>
           <p className="mt-4 max-w-sm text-sm leading-relaxed text-ink-foreground/70">
-            {text(CLUB_INFO?.tagline, "Familiale volleybalclub met sportieve ambitie")}. Volleybal
+            {text(clubInfo?.tagline, "Familiale volleybalclub met sportieve ambitie")}. Volleybal
             in Wijgmaal, voor competitie én recreatie.
           </p>
           <SocialLinks socials={socials} className="mt-6" />
@@ -75,7 +76,7 @@ export function SiteFooter() {
       <div className="border-t border-ink-foreground/10">
         <div className="mx-auto flex max-w-6xl flex-col gap-2 px-5 py-6 text-xs text-ink-foreground/50 sm:flex-row sm:items-center sm:justify-between sm:px-8">
           <p>
-            © {new Date().getFullYear()} {text(CLUB_INFO?.name, "VC Berg-Op Wijgmaal")}
+            © {new Date().getFullYear()} {text(clubInfo?.name, "VC Berg-Op Wijgmaal")}
           </p>
           <p>Wedstrijden en standen worden automatisch aangevuld.</p>
         </div>

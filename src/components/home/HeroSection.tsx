@@ -1,7 +1,7 @@
 import { Link } from "@tanstack/react-router";
 import { ArrowRight, CalendarDays } from "lucide-react";
 import heroImage from "@/assets/brand-hero.jpg";
-import { CLUB_INFO } from "@/content";
+import { useClubInfo } from "@/lib/site-content";
 import { num, text } from "@/lib/safe";
 import { cn } from "@/lib/utils";
 import type { Match, Team } from "@/content/types";
@@ -23,7 +23,8 @@ export function HeroSection({
   nextHomeMatch,
   nextHomeMatchTeam,
 }: HeroSectionProps) {
-  const foundingYear = num(CLUB_INFO?.foundingYear, 0);
+  const clubInfo = useClubInfo();
+  const foundingYear = num(clubInfo?.foundingYear, 0);
   const years = foundingYear > 1900 ? new Date().getFullYear() - foundingYear : 0;
   const stats = [
     ...(years > 0 ? [{ value: years, suffix: "+", label: "jaar club" }] : []),
@@ -52,7 +53,7 @@ export function HeroSection({
                 Familiale volleybalclub met <span className="text-club">sportieve ambitie</span>
               </h1>
               <p className="mt-5 max-w-xl text-base leading-relaxed text-ink-foreground/75 sm:text-lg">
-                {text(CLUB_INFO?.mission, "Volleybal in Wijgmaal, voor competitie én recreatie.")}
+                {text(clubInfo?.mission, "Volleybal in Wijgmaal, voor competitie én recreatie.")}
               </p>
             </Reveal>
 
