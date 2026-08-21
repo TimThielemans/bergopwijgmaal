@@ -103,6 +103,12 @@ function AdminDashboard() {
                 ? `Sanity · project ${sanityConfig.projectId} · dataset ${sanityConfig.dataset}`
                 : "Ingebouwde voorbeeldcontent (VITE_SANITY_PROJECT_ID ontbreekt)."}
             </p>
+            {live ? (
+              <p className="mt-2 text-xs text-muted-foreground">
+                Zolang de dataset geen publieke leesrechten heeft, valt de site automatisch terug op de
+                ingebouwde voorbeeldcontent. Zet in sanity.io/manage de dataset op publiek.
+              </p>
+            ) : null}
           </div>
           <span
             className={
