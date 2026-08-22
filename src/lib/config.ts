@@ -38,16 +38,22 @@ export interface AdminConfig {
 }
 
 export const sanityConfig: SanityConfig = (() => {
-  const projectId = str(env["VITE_SANITY_PROJECT_ID"]);
+  const projectId = str(env["VITE_SANITY_PROJECT_ID"], "utlbxtd6");
+
   const dataset = str(env["VITE_SANITY_DATASET"], "production");
+
   const apiVersion = str(env["VITE_SANITY_API_VERSION"], "2024-01-01");
+
   return {
     projectId,
     dataset,
     apiVersion,
-    studioUrl: str(env["VITE_SANITY_STUDIO_URL"]),
+
+    studioUrl: str(env["VITE_SANITY_STUDIO_URL"], "https://bergop-wijgmaal.sanity.studio"),
+
     useCdn: bool(env["VITE_SANITY_USE_CDN"], true),
-    enabled: projectId.length > 0,
+
+    enabled: true,
   };
 })();
 

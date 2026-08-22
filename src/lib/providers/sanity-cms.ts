@@ -1,13 +1,4 @@
-import type {
-  Activity,
-  BoardMember,
-  ClubInfo,
-  Player,
-  Sponsor,
-  Team,
-  TrainingSlot,
-  Venue,
-} from "@/content/types";
+import type { Activity, BoardMember, ClubInfo, Player, Sponsor, Team, TrainingSlot, Venue } from "@/content/types";
 import { sanityConfig } from "@/lib/config";
 import { list, num, text } from "@/lib/safe";
 import { sanityImageUrl } from "@/lib/sanity/client";
@@ -123,14 +114,10 @@ function mapTeam(raw: RawTeam | null | undefined): Team | null {
     parser: {
       teamId,
       slug,
-      ...(text(raw?.parser?.volleyScoresUrl)
-        ? { volleyScoresUrl: text(raw?.parser?.volleyScoresUrl) }
-        : {}),
+      ...(text(raw?.parser?.volleyScoresUrl) ? { volleyScoresUrl: text(raw?.parser?.volleyScoresUrl) } : {}),
       ...(text(raw?.parser?.rankingUrl) ? { rankingUrl: text(raw?.parser?.rankingUrl) } : {}),
       ...(text(raw?.parser?.calendarUrl) ? { calendarUrl: text(raw?.parser?.calendarUrl) } : {}),
-      ...(text(raw?.parser?.competitionCode)
-        ? { competitionCode: text(raw?.parser?.competitionCode) }
-        : {}),
+      ...(text(raw?.parser?.competitionCode) ? { competitionCode: text(raw?.parser?.competitionCode) } : {}),
       ...(text(raw?.parser?.divisionCode) ? { divisionCode: text(raw?.parser?.divisionCode) } : {}),
       parserEnabled: raw?.parser?.parserEnabled === true,
     },
