@@ -1,16 +1,40 @@
 # Fix: Sanity content is not reaching the site
 
-You are right on the first point, and there is a second, deeper cause. Both are verified.
+Two separate causes, both verified. Note up front: this is **not** a CORS issue — the tests below were run server-side with no `Origin` header at all, so the CORS allowlist never applies to them.
 
-## What I verified just now
+## Exact evidence (re-run at 20:22)
 
-1. **There is no `.env` file** in the project — only `.env.example`. So `VITE_SANITY_PROJECT_ID` is undefined at runtime, `sanityConfig.enabled` is `false`, `contentSource` stays `"mock"`, and the Sanity provider is never selected. Confirmed by listing the project root.
-2. **The content is in Sanity and published.** Dataset `production` of project `utlbxtd6` contains 28 published documents (`team`, `location`, `activity`, `sponsor`, `boardMember`, `clubInfo`) and 0 drafts. Team ids look like `team.dames-a`.
-3. **Anonymous (token-free) reads are refused**, even though the dataset ACL is `public`:
-   - `GET /data/query/production` for `*[_type=="team"]` returns `result: []` (no error).
-   - `GET /data/doc/production/team.dames-a` returns `omitted: [{ reason: "permission" }]`.
+- **projectId**: `utlbxtd6`
+- **dataset**: `production` (only dataset in the project; management API reports `aclMode: public`)
+- **apiVersion**: `2024-01-01`
 
-   So even after fixing `.env`, a browser-side `@sanity/client` with no token would render empty content. The project requires an authenticated read.
+Query executed (identical to `TEAMS_QUERY` in `src/lib/sanity/queries.ts`):
+
+```text
+*[_type == "team" && defined(teamId)]{teamId,"slug":slug.current,name}
+```
+
+Response, `GET https://utlbxtd6.api.sanity.io/v2024-01-01/data/query/production` (no token), HTTP 200:
+
+```json
+{"query":"*[_type == \"team\" && defined(teamId)]{...}","result":[],"syncTags":["s1:FnjUcw"],"ms":6}
+```
+
+Same empty result on `apicdn.sanity.io`. Single-document fetch is explicit about why:
+
+```json
+GET /v2024-01-01/data/doc/production/team.dames-a  ->  HTTP 200
+{"documents":[],"omitted":[{"id":"team.dames-a","reason":"permission"}]}
+```
+
+The same query **with** the MCP connector's authenticated session returns the data: 7 published team documents (`team.dames-a`, `team.dames-b`, `team.dames-recrea`, …), 0 drafts, 0 release versions, 28 published documents in total across `team`, `location`, `activity`, `sponsor`, `boardMember`, `clubInfo`.
+
+So: there is no error message and no HTTP failure. Sanity silently strips every document from a token-less read (`reason: "permission"`). An authenticated read is required, regardless of the dataset ACL and regardless of CORS.
+
+Second, independent cause:
+
+- **There is no `.env` file** in the project — only `.env.example`. So `VITE_SANITY_PROJECT_ID` is undefined at runtime, `sanityConfig.enabled` is `false`, `contentSource` stays `"mock"`, and the Sanity provider is never even selected. That is why you also never saw a query error in the browser: no query is being made.
+
 
 ## Proposed fix — two steps
 
