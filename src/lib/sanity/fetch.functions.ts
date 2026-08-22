@@ -1,5 +1,6 @@
 import { createServerFn } from "@tanstack/react-start";
 import { sanityConfig } from "@/lib/config";
+import type { JsonValue } from "@/lib/sanity/json";
 
 /**
  * Server-side Sanity read.
@@ -13,7 +14,7 @@ export const sanityFetch = createServerFn({ method: "POST" })
     query: String(input?.query ?? ""),
     params: (input?.params ?? {}) as Record<string, unknown>,
   }))
-  .handler(async ({ data }): Promise<unknown> => {
+  .handler(async ({ data }): Promise<JsonValue> => {
     const { projectId, dataset, apiVersion } = sanityConfig;
     if (!projectId || !data.query) return null;
 
@@ -33,6 +34,6 @@ export const sanityFetch = createServerFn({ method: "POST" })
     if (!response.ok) {
       throw new Error(`Sanity query mislukt (${response.status})`);
     }
-    const body = (await response.json()) as { result?: unknown };
+    const body = (await response.json()) as { result?: JsonValue };
     return body.result ?? null;
   });
