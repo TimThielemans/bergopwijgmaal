@@ -8,8 +8,10 @@ import type {
   TrainingSlot,
   Venue,
 } from "@/content/types";
+import { sanityConfig } from "@/lib/config";
 import { list, num, text } from "@/lib/safe";
-import { sanityClient, sanityImageUrl } from "@/lib/sanity/client";
+import { sanityImageUrl } from "@/lib/sanity/client";
+import { sanityFetch } from "@/lib/sanity/fetch.functions";
 import {
   ACTIVITIES_QUERY,
   BOARD_MEMBERS_QUERY,
@@ -25,15 +27,17 @@ import type { CmsProvider } from "./types";
 /**
  * Sanity CMS provider — the single source of truth once configured.
  *
- * Every read is mapped onto the website view models, so components stay
- * unchanged. If a query fails or returns nothing, the typed mock content is
- * used instead: the site keeps rendering, never a blank page.
+ * Reads go through a server function (`sanityFetch`) because the Sanity project
+ * requires an authenticated read token; the token stays server-side. Every read
+ * is mapped onto the website view models, so components stay unchanged. If a
+ * query fails or returns nothing, the typed mock content is used instead: the
+ * site keeps rendering, never a blank page.
  */
 
 async function fetchOr<T>(query: string, params: Record<string, unknown>, fallback: T): Promise<T> {
-  if (!sanityClient) return fallback;
+  if (!sanityConfig.enabled) return fallback;
   try {
-    const result = await sanityClient.fetch<T>(query, params);
+    const result = await sanityFetch({ data: { query, params } });
     return (result ?? fallback) as T;
   } catch (error) {
     console.error("[sanity] query mislukt, mock content wordt gebruikt:", error);
