@@ -55,8 +55,13 @@ that cannot be joined (or have an invalid date) are dropped rather than rendered
 
 ## 4. Studio & admin
 
-- `/studio` is reserved for the embedded studio. Mount it client-only there and
-  configure it from `sanityConfig`.
+- The Studio is deployed and hosted by Sanity at
+  <https://bergop-wijgmaal.sanity.studio> (project `utlbxtd6`, dataset
+  `production`, workspace `default`). It is not part of this repository, is not
+  built by Vite and does not affect the Vercel deploy. Sign-in uses a Sanity
+  account with access to the project.
+- `/studio` inside the app stays a pointer to that hosted Studio; it may later
+  host an embedded studio, mounted client-only and configured from `sanityConfig`.
 - `/login` and `/admin` are placeholders. `src/lib/admin/auth.tsx` is the single
   auth seam: replace `signIn`, `signOut` and the session restore with the real
   provider and the rest of the app keeps working via `useAdminAuth()`.
