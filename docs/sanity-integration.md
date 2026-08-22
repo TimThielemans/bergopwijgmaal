@@ -13,7 +13,7 @@ Copy `.env.example` to `.env` and fill in:
 | `VITE_SANITY_PROJECT_ID` | for Sanity | – | Project id; when set, the content source switches to Sanity |
 | `VITE_SANITY_DATASET` | no | `production` | Dataset name |
 | `VITE_SANITY_API_VERSION` | no | `2024-01-01` | API date string |
-| `VITE_SANITY_STUDIO_URL` | no | – | Hosted studio URL, linked from `/admin` |
+| `VITE_SANITY_STUDIO_URL` | no | `https://bergop-wijgmaal.sanity.studio` | Hosted studio URL, linked from `/admin` |
 | `VITE_SANITY_USE_CDN` | no | `true` | Cached reads for public content |
 | `VITE_ADMIN_ENABLED` | no | `true` | Mounts `/admin` + `/login` and the small header link |
 | `VITE_ADMIN_PROVIDER` | no | – | Future auth provider id |
@@ -55,8 +55,13 @@ that cannot be joined (or have an invalid date) are dropped rather than rendered
 
 ## 4. Studio & admin
 
-- `/studio` is reserved for the embedded studio. Mount it client-only there and
-  configure it from `sanityConfig`.
+- The Studio is deployed and hosted by Sanity at
+  <https://bergop-wijgmaal.sanity.studio> (project `utlbxtd6`, dataset
+  `production`, workspace `default`). It is not part of this repository, is not
+  built by Vite and does not affect the Vercel deploy. Sign-in uses a Sanity
+  account with access to the project.
+- `/studio` inside the app stays a pointer to that hosted Studio; it may later
+  host an embedded studio, mounted client-only and configured from `sanityConfig`.
 - `/login` and `/admin` are placeholders. `src/lib/admin/auth.tsx` is the single
   auth seam: replace `signIn`, `signOut` and the session restore with the real
   provider and the rest of the app keeps working via `useAdminAuth()`.
