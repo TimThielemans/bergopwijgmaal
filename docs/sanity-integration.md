@@ -13,7 +13,7 @@ Copy `.env.example` to `.env` and fill in:
 | `VITE_SANITY_PROJECT_ID` | for Sanity | – | Project id; when set, the content source switches to Sanity |
 | `VITE_SANITY_DATASET` | no | `production` | Dataset name |
 | `VITE_SANITY_API_VERSION` | no | `2024-01-01` | API date string |
-| `VITE_SANITY_STUDIO_URL` | no | – | Hosted studio URL, linked from `/admin` |
+| `VITE_SANITY_STUDIO_URL` | no | `https://bergop-wijgmaal.sanity.studio` | Hosted studio URL, linked from `/admin` |
 | `VITE_SANITY_USE_CDN` | no | `true` | Cached reads for public content |
 | `VITE_ADMIN_ENABLED` | no | `true` | Mounts `/admin` + `/login` and the small header link |
 | `VITE_ADMIN_PROVIDER` | no | – | Future auth provider id |
