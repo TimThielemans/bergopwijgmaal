@@ -113,29 +113,43 @@ export async function runVolleyDataRefresh(): Promise<RefreshResult> {
       }
 
       if (rankingUrl) {
+        let usedUrl = rankingUrl;
+        let rows: Awaited<ReturnType<typeof fetchSheetRows>> = [];
+        let liveMessage = "";
         try {
-          let usedUrl = rankingUrl;
-          let rows = await fetchSheetRows({ url: rankingUrl, headerRowIndex: 1, teamId });
-          if (rows.length === 0) {
-            // Preseason: no ranking published yet. Fall back to the validation
-            // export when one is configured for this team.
-            const testUrl = rankingTestUrl(teamId);
-            if (testUrl) {
+          rows = await fetchSheetRows({ url: rankingUrl, headerRowIndex: 1, teamId });
+        } catch (error) {
+          liveMessage = error instanceof Error ? error.message : "Onbekende fout";
+        }
+
+        if (rows.length === 0) {
+          // Preseason: no ranking published yet for this series. Fall back to the
+          // validation export when one is configured for this team.
+          const testUrl = rankingTestUrl(teamId);
+          if (testUrl) {
+            try {
               const testRows = await fetchSheetRows({ url: testUrl, headerRowIndex: 1, teamId });
               if (testRows.length > 0) {
                 rows = testRows;
                 usedUrl = testUrl;
+                liveMessage = "";
+                teamErrors.push("Stand: testexport vorig seizoen gebruikt (voorseizoen)");
               }
+            } catch {
+              /* keep the live message */
             }
           }
+        }
+
+        if (liveMessage) {
+          errors.push({ teamId, kind: "download", message: `Stand: ${liveMessage}` });
+          teamErrors.push(`Stand: ${liveMessage}`);
+        } else {
           rankingRows = rows.length;
           rankingBlocks.push({ ...base, sourceUrl: usedUrl, rows });
-        } catch (error) {
-          const message = error instanceof Error ? error.message : "Onbekende fout";
-          errors.push({ teamId, kind: "download", message: `Stand: ${message}` });
-          teamErrors.push(`Stand: ${message}`);
         }
       }
+
 
       teamErrors.push(`Matches URL: ${matchesUrl}`);
       teamErrors.push(`Ranking URL: ${rankingUrl}`);
