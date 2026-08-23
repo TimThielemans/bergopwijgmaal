@@ -31,6 +31,7 @@ function buildUrl(params: Record<string, string | number | undefined>): string {
       url.searchParams.set(key, String(value));
     }
   }
+  url.searchParams.set("w", "%25");
   url.searchParams.set("f", "1");
   url.searchParams.set("lng", "nl");
 
