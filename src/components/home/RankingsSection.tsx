@@ -33,7 +33,7 @@ export function RankingsSection({ standings, teams, lastUpdated }: Props) {
       {rows.length === 0 ? (
         <EmptyState
           tone="ink"
-          message="De standen zijn binnenkort beschikbaar"
+          message="De standen zijn beschikbaar eens de competitie is gestart."
           hint="Zodra de klassementen ingelezen zijn, verschijnen ze hier."
           icon={Trophy}
         />
@@ -64,16 +64,10 @@ export function RankingsSection({ standings, teams, lastUpdated }: Props) {
 
                   <span className="min-w-0">
                     <span className="block truncate font-display text-lg font-bold sm:text-xl">
-                      <span className="sm:hidden">
-                        {text(team.shortName, text(team.name, "Ploeg"))}
-                      </span>
+                      <span className="sm:hidden">{text(team.shortName, text(team.name, "Ploeg"))}</span>
                       <span className="hidden sm:inline">{text(team.name, "Ploeg")}</span>
                     </span>
-                    {meta ? (
-                      <span className="mt-0.5 block truncate text-sm text-ink-foreground/60">
-                        {meta}
-                      </span>
-                    ) : null}
+                    {meta ? <span className="mt-0.5 block truncate text-sm text-ink-foreground/60">{meta}</span> : null}
                   </span>
 
                   <span className="col-span-2 col-start-2 sm:col-span-1 sm:col-start-3">
@@ -90,9 +84,7 @@ export function RankingsSection({ standings, teams, lastUpdated }: Props) {
           })}
         </div>
       )}
-      {lastUpdated ? (
-        <p className="mt-6 text-xs text-ink-foreground/45">{lastUpdated}</p>
-      ) : null}
+      {lastUpdated ? <p className="mt-6 text-xs text-ink-foreground/45">{lastUpdated}</p> : null}
     </Section>
   );
 }
