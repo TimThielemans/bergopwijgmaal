@@ -53,9 +53,9 @@ type RawTeam = {
   trainings?: Array<{ day?: string; startTime?: string; endTime?: string; venueId?: string }>;
   players?: Array<{ name?: string; number?: number; position?: string }>;
   parser?: {
-    volleyScoresUrl?: string;
-    rankingUrl?: string;
-    calendarUrl?: string;
+    volleyClubId?: string;
+    volleyTeamId?: string;
+    volleySeriesId?: string;
     competitionCode?: string;
     divisionCode?: string;
     parserEnabled?: boolean;
