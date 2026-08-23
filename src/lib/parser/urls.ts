@@ -37,13 +37,19 @@ function buildUrl(params: Record<string, string | number | undefined>): string {
   return url.toString();
 }
 
-/** XLS-export of the match calendar. Returns "" when ids are incomplete. */
 export function buildMatchesExportUrl(ids: VolleyIds): string {
   const ci = clean(ids.volleyClubId);
-  const ti = clean(ids.volleyTeamId);
   const ssi = clean(ids.volleySeriesId);
-  if (!ci || !ti || !ssi) return "";
-  return buildUrl({ a: "me", ci, ti, ssi });
+
+  if (!ci || !ssi) return "";
+
+  return buildUrl({
+    a: "me",
+    ci,
+    ssi,
+    st: "%",
+    w: "%",
+  });
 }
 
 /** XLS-export of the series ranking. Returns "" when the series id is missing. */
