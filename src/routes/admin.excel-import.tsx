@@ -2,15 +2,7 @@ import { useState } from "react";
 import { Link, createFileRoute } from "@tanstack/react-router";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
-import {
-  AlertTriangle,
-  ArrowLeft,
-  CheckCircle2,
-  Download,
-  FileSpreadsheet,
-  Table2,
-  Upload,
-} from "lucide-react";
+import { AlertTriangle, ArrowLeft, CheckCircle2, Download, FileSpreadsheet, Table2, Upload } from "lucide-react";
 import { PageHero } from "@/components/layout/PageHero";
 import { Section } from "@/components/layout/Section";
 import { analyzeExcelImport, applyExcelImport } from "@/lib/import/excel.functions";
@@ -26,10 +18,7 @@ import { IMPORT_SHEETS, type ImportAnalysis, type ImportResult } from "@/lib/imp
 export const Route = createFileRoute("/admin/excel-import")({
   ssr: false,
   head: () => ({
-    meta: [
-      { title: "Excel-import — Beheer VC Berg-Op Wijgmaal" },
-      { name: "robots", content: "noindex, nofollow" },
-    ],
+    meta: [{ title: "Excel-import — Beheer VC Berg-Op Wijgmaal" }, { name: "robots", content: "noindex, nofollow" }],
   }),
   component: AdminExcelImport,
 });
@@ -137,9 +126,8 @@ function AdminExcelImport() {
           <FileSpreadsheet aria-hidden="true" className="h-7 w-7 text-club-deep" />
           <h2 className="mt-3 font-display text-xl font-bold">Werkboek opladen</h2>
           <p className="mt-2 max-w-2xl text-sm leading-relaxed text-muted-foreground">
-            Het bestand wordt server-side gecontroleerd. Je ziet eerst een voorbeeld van de
-            wijzigingen; er wordt niets weggeschreven zonder je bevestiging. Documenten die niet in
-            het werkboek staan, blijven ongewijzigd.
+            Het bestand wordt server-side gecontroleerd. Je ziet eerst een voorbeeld van de wijzigingen; er wordt niets
+            weggeschreven zonder je bevestiging. Documenten die niet in het werkboek staan, blijven ongewijzigd.
           </p>
 
           <div className="mt-5 flex flex-wrap items-center gap-3">
@@ -175,8 +163,7 @@ function AdminExcelImport() {
           ) : null}
           {analyze.isError ? (
             <p className="mt-3 text-sm text-loss">
-              Controle mislukt:{" "}
-              {analyze.error instanceof Error ? analyze.error.message : "onbekende fout"}
+              Controle mislukt: {analyze.error instanceof Error ? analyze.error.message : "onbekende fout"}
             </p>
           ) : null}
         </div>
@@ -195,9 +182,7 @@ function AdminExcelImport() {
               </div>
               <div>
                 <dt className="text-xs uppercase text-muted-foreground">Ongewijzigd</dt>
-                <dd className="mt-1 font-display text-2xl font-bold">
-                  {analysis.summary.unchanged}
-                </dd>
+                <dd className="mt-1 font-display text-2xl font-bold">{analysis.summary.unchanged}</dd>
               </div>
             </dl>
 
@@ -230,9 +215,7 @@ function AdminExcelImport() {
 
             {analysis.warnings.length > 0 ? (
               <div className="mt-5">
-                <h3 className="font-display text-sm font-bold">
-                  Waarschuwingen ({analysis.warnings.length})
-                </h3>
+                <h3 className="font-display text-sm font-bold">Waarschuwingen ({analysis.warnings.length})</h3>
                 <ul className="mt-2 space-y-1 text-sm text-muted-foreground">
                   {analysis.warnings.slice(0, 15).map((issue, index) => (
                     <li key={`${issue.sheet}-${issue.row}-w${index}`}>
@@ -263,9 +246,7 @@ function AdminExcelImport() {
                       <tr key={change.documentId} className="border-t border-border">
                         <td className="py-2 pr-4 font-semibold">{change.label}</td>
                         <td className="py-2 pr-4 text-muted-foreground">{change.type}</td>
-                        <td className="py-2 pr-4">
-                          {change.kind === "new" ? "Nieuw" : "Gewijzigd"}
-                        </td>
+                        <td className="py-2 pr-4">{change.kind === "new" ? "Nieuw" : "Gewijzigd"}</td>
                         <td className="py-2 text-muted-foreground">
                           {change.fields.slice(0, 6).join(", ")}
                           {change.fields.length > 6 ? " …" : ""}
@@ -276,9 +257,7 @@ function AdminExcelImport() {
                 </table>
               </div>
             ) : (
-              <p className="mt-5 text-sm text-muted-foreground">
-                Geen wijzigingen tegenover de huidige CMS-data.
-              </p>
+              <p className="mt-5 text-sm text-muted-foreground">Geen wijzigingen tegenover de huidige CMS-data.</p>
             )}
 
             <div className="mt-6 flex flex-wrap items-center gap-3">
@@ -291,16 +270,13 @@ function AdminExcelImport() {
                 {apply.isPending ? "Wegschrijven…" : "Import bevestigen"}
               </button>
               {!analysis.ok ? (
-                <span className="text-sm text-muted-foreground">
-                  Los eerst de fouten op in het werkboek.
-                </span>
+                <span className="text-sm text-muted-foreground">Los eerst de fouten op in het werkboek.</span>
               ) : null}
             </div>
 
             {apply.isError ? (
               <p className="mt-3 text-sm text-loss">
-                Import mislukt:{" "}
-                {apply.error instanceof Error ? apply.error.message : "onbekende fout"}
+                Import mislukt: {apply.error instanceof Error ? apply.error.message : "onbekende fout"}
               </p>
             ) : null}
             {result?.ok ? (
@@ -314,8 +290,8 @@ function AdminExcelImport() {
 
         <h2 className="mt-10 font-display text-xl font-bold">Structuur van het werkboek</h2>
         <p className="mt-2 max-w-2xl text-sm leading-relaxed text-muted-foreground">
-          De kolomnamen hieronder zijn wat de import verwacht. Extra kolommen worden genegeerd, de
-          volgorde maakt niet uit.
+          De kolomnamen hieronder zijn wat de import verwacht. Extra kolommen worden genegeerd, de volgorde maakt niet
+          uit.
         </p>
 
         <div className="mt-6 grid gap-4 md:grid-cols-2">
@@ -328,10 +304,7 @@ function AdminExcelImport() {
               <p className="mt-2 text-sm leading-relaxed text-muted-foreground">{sheet.body}</p>
               <ul className="mt-4 flex flex-wrap gap-2">
                 {IMPORT_SHEETS[sheet.name].columns.map((column) => (
-                  <li
-                    key={column}
-                    className="rounded-full bg-secondary px-3 py-1 font-mono text-xs text-foreground"
-                  >
+                  <li key={column} className="rounded-full bg-secondary px-3 py-1 font-mono text-xs text-foreground">
                     {column}
                     {IMPORT_SHEETS[sheet.name].required.includes(column) ? " *" : ""}
                   </li>
@@ -344,12 +317,50 @@ function AdminExcelImport() {
         <div className="surface-card mt-6 p-6">
           <h2 className="font-display text-lg font-bold">Hoe de synchronisatie werkt</h2>
           <p className="mt-2 text-sm leading-relaxed text-muted-foreground">
-            Elke rij wordt een document in de CMS met een stabiel id (team.&lt;teamId&gt;,
-            location.&lt;venueId&gt;), dus opnieuw importeren overschrijft netjes dezelfde
-            documenten en de revisiehistoriek blijft bewaard. Wedstrijden en klassementen komen niet
-            uit Excel: die worden opgehaald door de VolleyDataParser op basis van de ids uit het
-            blad ParserData.
+            Elke rij wordt een document in de CMS met een stabiel id (team.&lt;teamId&gt;, location.&lt;venueId&gt;),
+            dus opnieuw importeren overschrijft netjes dezelfde documenten en de revisiehistoriek blijft bewaard.
+            Wedstrijden en klassementen komen niet uit Excel: die worden opgehaald door de VolleyDataParser op basis van
+            de ids uit het blad ParserData.
           </p>
+        </div>
+
+        <div className="surface-card mt-6 p-6">
+          <h2 className="font-display text-lg font-bold">Bekomen van VolleyScores-data</h2>
+
+          <p className="mt-2 text-sm leading-relaxed text-muted-foreground">
+            Elke ploeg heeft een aantal VolleyScores-identifiers die gebruikt worden door de parser:
+          </p>
+
+          <ul className="mt-4 list-disc space-y-2 pl-5 text-sm text-muted-foreground">
+            <li>
+              <strong>clubId (ci)</strong>: verkrijg je via <em>Alle wedstrijden van BOW</em>.
+            </li>
+            <li>
+              <strong>teamId (ti)</strong>: verkrijg je via de detailpagina van een ploeg.
+            </li>
+            <li>
+              <strong>seriesId (ssi)</strong>: verkrijg je via de detailpagina van een reeks/klassement.
+            </li>
+          </ul>
+
+          <p className="mt-4 text-sm text-muted-foreground">
+            Open de browser DevTools (F12) en voer onderstaande code uit in de console:
+          </p>
+
+          <pre className="mt-3 overflow-x-auto rounded-lg bg-secondary p-4 text-xs">
+            {`Object.fromEntries(
+  [...document.querySelectorAll('.gts')]
+    .map(x => [x.dataset.gt, x.value])
+)`}
+          </pre>
+
+          <p className="mt-4 text-sm text-muted-foreground">
+            Voor Berg-op Wijgmaal is de <strong>clubId (ci)</strong> momenteel:
+          </p>
+
+          <code className="mt-2 inline-block rounded bg-club/10 px-3 py-1 text-sm font-semibold text-club-deep">
+            10754
+          </code>
         </div>
       </Section>
     </>
