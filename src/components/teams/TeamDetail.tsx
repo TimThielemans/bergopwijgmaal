@@ -43,39 +43,25 @@ export function TeamDetail({ team, standing, rankingTable, upcoming, calendar }:
   return (
     <>
       <section className="relative isolate overflow-hidden bg-ink text-ink-foreground">
-        <BrandGraphic
-          variant="grid"
-          className="absolute inset-0 h-full w-full text-club opacity-60"
-        />
+        <BrandGraphic variant="grid" className="absolute inset-0 h-full w-full text-club opacity-60" />
         <div className="relative mx-auto grid w-full max-w-6xl gap-10 px-5 pb-16 pt-14 sm:px-8 sm:pb-20 sm:pt-20 lg:grid-cols-[1.15fr_1fr] lg:items-center">
           <div>
-            <Link
-              to="/ploegen"
-              className="text-eyebrow text-club transition-opacity hover:opacity-70"
-            >
+            <Link to="/ploegen" className="text-eyebrow text-club transition-opacity hover:opacity-70">
               ← Alle ploegen
             </Link>
             <h1 className="mt-5 text-display-lg">{name}</h1>
-            {level ? (
-              <p className="mt-3 font-display text-lg font-semibold text-club">{level}</p>
-            ) : null}
+            {level ? <p className="mt-3 font-display text-lg font-semibold text-club">{level}</p> : null}
             {description ? (
-              <p className="mt-5 max-w-xl text-base leading-relaxed text-ink-foreground/75">
-                {description}
-              </p>
+              <p className="mt-5 max-w-xl text-base leading-relaxed text-ink-foreground/75">{description}</p>
             ) : null}
             <dl className="mt-8 grid max-w-md grid-cols-3 gap-4 border-t border-ink-foreground/15 pt-6 text-sm">
               <div>
                 <dt className="text-ink-foreground/55">Coach</dt>
-                <dd className="mt-1 font-display font-semibold">
-                  {coachName || "Nog niet gekend"}
-                </dd>
+                <dd className="mt-1 font-display font-semibold">{coachName || "Nog niet gekend"}</dd>
               </div>
               <div>
                 <dt className="text-ink-foreground/55">Spelers</dt>
-                <dd className="mt-1 font-display font-semibold">
-                  {players.length > 0 ? players.length : "—"}
-                </dd>
+                <dd className="mt-1 font-display font-semibold">{players.length > 0 ? players.length : "—"}</dd>
               </div>
               <div>
                 <dt className="text-ink-foreground/55">Stand</dt>
@@ -92,11 +78,7 @@ export function TeamDetail({ team, standing, rankingTable, upcoming, calendar }:
               loading="eager"
               className="aspect-[4/3] w-full"
               fallback={
-                <BrandTile
-                  label={shortName}
-                  {...(level ? { caption: level } : {})}
-                  className="aspect-[4/3] w-full"
-                />
+                <BrandTile label={shortName} {...(level ? { caption: level } : {})} className="aspect-[4/3] w-full" />
               }
             />
           </div>
@@ -182,9 +164,7 @@ export function TeamDetail({ team, standing, rankingTable, upcoming, calendar }:
                         {text(player?.name, "Speler")}
                       </span>
                       {text(player?.position) ? (
-                        <span className="block truncate text-xs text-muted-foreground">
-                          {text(player?.position)}
-                        </span>
+                        <span className="block truncate text-xs text-muted-foreground">{text(player?.position)}</span>
                       ) : null}
                     </span>
                   </li>
@@ -207,9 +187,7 @@ export function TeamDetail({ team, standing, rankingTable, upcoming, calendar }:
           <Reveal className="surface-card grid gap-6 p-6 sm:grid-cols-2 sm:p-8 lg:grid-cols-4">
             <div>
               <span className="text-eyebrow text-muted-foreground">Positie</span>
-              <p className="mt-2 font-display text-4xl font-bold text-club-deep">
-                {formatPosition(standing.position)}
-              </p>
+              <p className="mt-2 font-display text-4xl font-bold text-club-deep">{formatPosition(standing.position)}</p>
             </div>
             <div>
               <span className="text-eyebrow text-muted-foreground">Punten</span>
@@ -234,8 +212,8 @@ export function TeamDetail({ team, standing, rankingTable, upcoming, calendar }:
           </Reveal>
         ) : (
           <EmptyState
-            message="Geen klassement beschikbaar"
-            hint="Deze ploeg speelt geen competitie met klassement, of de stand is nog niet ingelezen."
+            message="Nog geen klassement beschikbaar"
+            hint="Want het seizoen is nog niet begonnen he."
             icon={Trophy}
           />
         )}
@@ -246,7 +224,6 @@ export function TeamDetail({ team, standing, rankingTable, upcoming, calendar }:
           </Reveal>
         ) : null}
       </Section>
-
 
       <Section
         eyebrow="Kalender"

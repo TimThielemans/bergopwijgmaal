@@ -5,13 +5,7 @@ import { mockCmsProvider } from "./mock-cms";
 import { sanityCmsProvider } from "./sanity-cms";
 import { sanityVolleyMatchProvider, sanityVolleyRankingProvider } from "./sanity-volley";
 import { staticJsonMatchProvider, staticJsonRankingProvider } from "./static-json";
-import type {
-  CmsProvider,
-  MatchProvider,
-  RankingProvider,
-  SiteContent,
-  UpcomingMatchesQuery,
-} from "./types";
+import type { CmsProvider, MatchProvider, RankingProvider, SiteContent, UpcomingMatchesQuery } from "./types";
 
 /**
  * Active provider selection — the only place to change when the data source changes.
@@ -26,8 +20,7 @@ export const matchProvider: MatchProvider =
 export const rankingProvider: RankingProvider =
   contentSource === "sanity" ? sanityVolleyRankingProvider : staticJsonRankingProvider;
 
-export const cmsProvider: CmsProvider =
-  contentSource === "sanity" ? sanityCmsProvider : mockCmsProvider;
+export const cmsProvider: CmsProvider = contentSource === "sanity" ? sanityCmsProvider : mockCmsProvider;
 
 export type { CmsProvider, MatchProvider, RankingProvider, SiteContent, UpcomingMatchesQuery };
 
@@ -67,7 +60,7 @@ export const upcomingMatchesQuery = (query: UpcomingMatchesQuery = {}) =>
       "upcoming",
       query.seasonId ?? CURRENT_SEASON_ID,
       query.teamId ?? "all",
-      query.limit ?? 5,
+      query.limit ?? 8,
     ] as const,
     queryFn: () => matchProvider.getUpcoming(query),
   });
