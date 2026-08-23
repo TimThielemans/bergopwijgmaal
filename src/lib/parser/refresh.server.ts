@@ -4,7 +4,7 @@ import { sanityCreateOrReplace } from "@/lib/sanity/write.server";
 import { sanityConfig } from "@/lib/config";
 import { fetchSheetRows } from "./sheet.server";
 import { type RawEnvelope, type RawError, type RawTeamBlock, type RefreshResult, type VolleyDataStatus } from "./types";
-import { buildMatchesExportUrl, buildRankingExportUrl, missingParserIds, rankingTestUrl } from "./urls";
+import { buildMatchesExportUrl, buildRankingExportUrl, missingParserIds, rankingTestUrl, matchesTestUrl } from "./urls";
 
 /**
  * Shared VolleyDataParser runner — used by the admin button and by the cron
@@ -102,7 +102,13 @@ export async function runVolleyDataRefresh(): Promise<RefreshResult> {
 
       if (matchesUrl) {
         try {
-          const rows = await fetchSheetRows({ url: matchesUrl, headerRowIndex: 0, teamId });
+          const testUrl = matchesTestUrl(teamId);
+          if (testUrl) {
+            const rows = await fetchSheetRows({ url: testUrl, headerRowIndex: 0, teamId });
+          } else {
+            const matchesUrl = rankingTestUrl(teamId);
+            const rows = await fetchSheetRows({ url: matchesUrl, headerRowIndex: 0, teamId });
+          }
           matchRows = rows.length;
           matchBlocks.push({ ...base, sourceUrl: matchesUrl, rows });
         } catch (error) {
@@ -150,10 +156,8 @@ export async function runVolleyDataRefresh(): Promise<RefreshResult> {
         }
       }
 
-
       teamErrors.push(`Matches URL: ${matchesUrl}`);
       teamErrors.push(`Ranking URL: ${rankingUrl}`);
-
 
       perTeam.push({
         teamId,
