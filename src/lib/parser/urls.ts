@@ -22,15 +22,18 @@ function clean(value: unknown): string {
   return typeof value === "string" ? value.trim() : "";
 }
 
-function buildUrl(params: Record<string, string>): string {
+function buildUrl(params: Record<string, string | number | undefined>): string {
   const url = new URL(`${VOLLEYSCORES_ORIGIN}/index.php`);
   url.searchParams.set("v", "2");
   url.searchParams.set("isActiveSeason", "1");
   for (const [key, value] of Object.entries(params)) {
-    url.searchParams.set(key, value);
+    if (value !== undefined && value !== null && value !== "") {
+      url.searchParams.set(key, String(value));
+    }
   }
   url.searchParams.set("f", "1");
   url.searchParams.set("lng", "nl");
+
   return url.toString();
 }
 
