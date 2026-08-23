@@ -23,7 +23,7 @@ export const Route = createFileRoute("/")({
   loader: async ({ context }) => {
     const [, , , matchesUpdatedAt, rankingsUpdatedAt] = await Promise.all([
       context.queryClient.ensureQueryData(teamsQuery()),
-      context.queryClient.ensureQueryData(upcomingMatchesQuery({ limit: 5 })),
+      context.queryClient.ensureQueryData(upcomingMatchesQuery({ limit: 8 })),
       context.queryClient.ensureQueryData(standingsQuery()),
       matchProvider.getLastUpdated().catch(() => null),
       rankingProvider.getLastUpdated().catch(() => null),
@@ -47,11 +47,8 @@ function HomePage() {
   const matches = list(matchesData);
   const standings = list(standingsData);
   const nextHomeMatch = matches.find((match) => match.isHome === true);
-  const nextHomeMatchTeam = nextHomeMatch
-    ? teams.find((team) => team.teamId === nextHomeMatch.teamId)
-    : undefined;
+  const nextHomeMatchTeam = nextHomeMatch ? teams.find((team) => team.teamId === nextHomeMatch.teamId) : undefined;
   const activeMembers = teams.reduce((total, team) => total + list(team?.players).length, 0);
-
 
   return (
     <>
