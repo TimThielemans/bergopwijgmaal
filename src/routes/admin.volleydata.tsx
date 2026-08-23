@@ -203,6 +203,73 @@ function VolleyDataAdmin() {
             ) : null}
           </ul>
         </div>
+
+        <div className="surface-card mt-4 p-6">
+          <h2 className="font-display text-lg font-bold">Adapter (ruwe data → website)</h2>
+          <p className="mt-2 text-sm text-muted-foreground">
+            De ruwe documenten blijven ongewijzigd. De adapterlaag zet ze om naar het
+            websitemodel: datums in Brusselse tijd, setstanden, tegenstander en vorm. Enkel het
+            hoofdklassement wordt gebruikt, het reserveklassement wordt genegeerd.
+          </p>
+
+          {adapter.isLoading ? (
+            <p className="mt-3 text-sm text-muted-foreground">Adapter wordt uitgevoerd…</p>
+          ) : adapter.isError ? (
+            <p className="mt-3 text-sm text-muted-foreground">
+              Adapter kon niet worden uitgevoerd:{" "}
+              {adapter.error instanceof Error ? adapter.error.message : "onbekende fout"}
+            </p>
+          ) : (
+            <>
+              <dl className="mt-3 grid gap-4 sm:grid-cols-2">
+                <div>
+                  <dt className="text-xs uppercase text-muted-foreground">Wedstrijden</dt>
+                  <dd className="mt-1 text-sm">
+                    {adapter.data?.matches.length ?? 0} omgezet · bron:{" "}
+                    {adapter.data?.matchSource === "sanity" ? "Sanity (ruwe data)" : "fallback JSON"}
+                  </dd>
+                </div>
+                <div>
+                  <dt className="text-xs uppercase text-muted-foreground">Standen</dt>
+                  <dd className="mt-1 text-sm">
+                    {adapter.data?.rankings.length ?? 0} omgezet · bron:{" "}
+                    {adapter.data?.rankingSource === "sanity"
+                      ? "Sanity (ruwe data)"
+                      : "fallback JSON"}
+                  </dd>
+                </div>
+              </dl>
+
+              {(adapter.data?.tables ?? []).length > 0 ? (
+                <ul className="mt-4 space-y-1 text-sm">
+                  {(adapter.data?.tables ?? []).map((table) => (
+                    <li key={`${table.teamId}-${table.division}`} className="text-muted-foreground">
+                      <span className="font-semibold text-foreground">{table.teamId}</span> ·{" "}
+                      {table.division || "reeks onbekend"} · {table.rows.length} ploegen in het
+                      hoofdklassement
+                    </li>
+                  ))}
+                </ul>
+              ) : (
+                <p className="mt-4 text-sm text-muted-foreground">
+                  Nog geen gepubliceerd klassement (voorseizoen).
+                </p>
+              )}
+
+              {(adapter.data?.warnings ?? []).length > 0 ? (
+                <div className="mt-4">
+                  <h3 className="text-xs uppercase text-muted-foreground">Meldingen</h3>
+                  <ul className="mt-2 space-y-1 text-sm text-muted-foreground">
+                    {(adapter.data?.warnings ?? []).slice(0, 12).map((warning) => (
+                      <li key={warning}>{warning}</li>
+                    ))}
+                  </ul>
+                </div>
+              ) : null}
+            </>
+          )}
+        </div>
+
       </Section>
     </>
   );
