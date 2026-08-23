@@ -3,13 +3,7 @@ import { PARSER_TEAMS_QUERY, VOLLEY_RAW_STATUS_QUERY } from "@/lib/sanity/querie
 import { sanityCreateOrReplace } from "@/lib/sanity/write.server";
 import { sanityConfig } from "@/lib/config";
 import { fetchSheetRows } from "./sheet.server";
-import {
-  type RawEnvelope,
-  type RawError,
-  type RawTeamBlock,
-  type RefreshResult,
-  type VolleyDataStatus,
-} from "./types";
+import { type RawEnvelope, type RawError, type RawTeamBlock, type RefreshResult, type VolleyDataStatus } from "./types";
 import { buildMatchesExportUrl, buildRankingExportUrl, missingParserIds } from "./urls";
 
 /**
@@ -100,6 +94,9 @@ export async function runVolleyDataRefresh(): Promise<RefreshResult> {
 
       const matchesUrl = buildMatchesExportUrl(ids);
       const rankingUrl = buildRankingExportUrl(ids);
+
+      console.log(`[VolleyParser][${teamName}] Matches URL:`, matchesUrl);
+      console.log(`[VolleyParser][${teamName}] Ranking URL:`, rankingUrl);
       let matchRows = 0;
       let rankingRows = 0;
 
@@ -165,7 +162,9 @@ export async function readVolleyDataStatus(): Promise<VolleyDataStatus> {
     loadParserTeams(),
   ]);
 
-  const summarize = (raw: { generatedAt?: string; teamCount?: number; rowCount?: number; errorCount?: number } | null | undefined) =>
+  const summarize = (
+    raw: { generatedAt?: string; teamCount?: number; rowCount?: number; errorCount?: number } | null | undefined,
+  ) =>
     raw
       ? {
           generatedAt: str(raw.generatedAt),
