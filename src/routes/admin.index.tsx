@@ -18,10 +18,7 @@ import { Section } from "@/components/layout/Section";
 export const Route = createFileRoute("/admin/")({
   ssr: false,
   head: () => ({
-    meta: [
-      { title: "Beheer — VC Berg-Op Wijgmaal" },
-      { name: "robots", content: "noindex, nofollow" },
-    ],
+    meta: [{ title: "Beheer — VC Berg-Op Wijgmaal" }, { name: "robots", content: "noindex, nofollow" }],
   }),
   component: AdminDashboard,
 });
@@ -97,6 +94,33 @@ function AdminDashboard() {
         </div>
 
         <div className="surface-card mt-8 flex flex-wrap items-center justify-between gap-4 p-6">
+          <Link
+            to="/admin/excel-import"
+            className="surface-card border-2 border-club h-full p-6 transition-transform hover:scale-[1.01]"
+          >
+            <FileSpreadsheet aria-hidden="true" className="h-6 w-6 text-club-deep" />
+            <h2 className="mt-3 font-display text-lg font-bold">Excel-import</h2>
+            <p className="mt-2 text-sm leading-relaxed text-muted-foreground">
+              Werkwijze en verwachte structuur van het Excel-werkboek met alle sportieve data.
+            </p>
+            <span className="mt-4 inline-block rounded-full bg-club/15 px-3 py-1 text-xs font-semibold text-club-deep">
+              Documentatie bekijken
+            </span>
+          </Link>
+
+          <Link to="/admin/volleydata" className="surface-card h-full p-6 transition-transform hover:scale-[1.01]">
+            <RefreshCw aria-hidden="true" className="h-6 w-6 text-club-deep" />
+            <h2 className="mt-3 font-display text-lg font-bold">Volley-data verversen</h2>
+            <p className="mt-2 text-sm leading-relaxed text-muted-foreground">
+              Haal kalenders en standen op bij VolleyScores op basis van de ids per ploeg en bewaar ze in Sanity.
+            </p>
+            <span className="mt-4 inline-block rounded-full bg-club/15 px-3 py-1 text-xs font-semibold text-club-deep">
+              Parser openen
+            </span>
+          </Link>
+        </div>
+
+        <div className="surface-card mt-8 flex flex-wrap items-center justify-between gap-4 p-6">
           <div>
             <h2 className="font-display text-lg font-bold">Databron</h2>
             <p className="mt-1 text-sm text-muted-foreground">
@@ -106,8 +130,8 @@ function AdminDashboard() {
             </p>
             {live ? (
               <p className="mt-2 text-xs text-muted-foreground">
-                Zolang de dataset geen publieke leesrechten heeft, valt de site automatisch terug op de
-                ingebouwde voorbeeldcontent. Zet in sanity.io/manage de dataset op publiek.
+                Zolang de dataset geen publieke leesrechten heeft, valt de site automatisch terug op de ingebouwde
+                voorbeeldcontent. Zet in sanity.io/manage de dataset op publiek.
               </p>
             ) : null}
           </div>
@@ -148,36 +172,13 @@ function AdminDashboard() {
               </article>
             );
           })}
-
-          <Link to="/admin/excel-import" className="surface-card h-full p-6 transition-transform hover:scale-[1.01]">
-            <FileSpreadsheet aria-hidden="true" className="h-6 w-6 text-club-deep" />
-            <h2 className="mt-3 font-display text-lg font-bold">Excel-import</h2>
-            <p className="mt-2 text-sm leading-relaxed text-muted-foreground">
-              Werkwijze en verwachte structuur van het Excel-werkboek met alle sportieve data.
-            </p>
-            <span className="mt-4 inline-block rounded-full bg-club/15 px-3 py-1 text-xs font-semibold text-club-deep">
-              Documentatie bekijken
-            </span>
-          </Link>
-
-          <Link to="/admin/volleydata" className="surface-card h-full p-6 transition-transform hover:scale-[1.01]">
-            <RefreshCw aria-hidden="true" className="h-6 w-6 text-club-deep" />
-            <h2 className="mt-3 font-display text-lg font-bold">Volley-data verversen</h2>
-            <p className="mt-2 text-sm leading-relaxed text-muted-foreground">
-              Haal kalenders en standen op bij VolleyScores op basis van de ids per ploeg en bewaar
-              ze in Sanity.
-            </p>
-            <span className="mt-4 inline-block rounded-full bg-club/15 px-3 py-1 text-xs font-semibold text-club-deep">
-              Parser openen
-            </span>
-          </Link>
         </div>
 
         <div className="surface-card mt-6 p-6">
           <h2 className="font-display text-lg font-bold">Sanity Studio</h2>
           <p className="mt-2 text-sm leading-relaxed text-muted-foreground">
-            Foto's van ploegen, activiteiten en sponsorlogo's beheer je uitsluitend in de Studio.
-            Excel levert later enkel tekstuele data en de alt-teksten aan.
+            Foto's van ploegen, activiteiten en sponsorlogo's beheer je uitsluitend in de Studio. Excel levert later
+            enkel tekstuele data en de alt-teksten aan.
           </p>
           <div className="mt-4 flex flex-wrap gap-3">
             <Link
