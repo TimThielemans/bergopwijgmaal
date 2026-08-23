@@ -3,6 +3,7 @@ import { Link, createFileRoute } from "@tanstack/react-router";
 import { useServerFn } from "@tanstack/react-start";
 import { AlertTriangle, ArrowLeft, CheckCircle2, RefreshCw } from "lucide-react";
 import { getVolleyDataStatus, refreshVolleyData } from "@/lib/parser/refresh.functions";
+import { loadAdaptedVolleyData } from "@/lib/providers/sanity-volley";
 import { PageHero } from "@/components/layout/PageHero";
 import { Section } from "@/components/layout/Section";
 
@@ -38,7 +39,7 @@ function VolleyDataAdmin() {
   });
 
   const adapter = useQuery({
-    queryKey: ["volleydata", "adapter", refresh_key],
+    queryKey: ["volleydata", "adapter"],
     queryFn: () => loadAdaptedVolleyData(),
   });
 
@@ -47,6 +48,7 @@ function VolleyDataAdmin() {
     mutationFn: () => runRefresh(),
     onSettled: () => {
       void status.refetch();
+      void adapter.refetch();
     },
   });
 
