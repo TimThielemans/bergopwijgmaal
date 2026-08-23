@@ -1,139 +1,172 @@
-# VolleyDataParser — modernisation, Sanity storage & one-click refresh
+# VolleyDataParser — ID-based config, Sanity storage & one-click refresh
 
 ## 1. Analyse of the uploaded PHP
 
 `get_and_convert_xls_files.php`:
 
 1. A hardcoded `$xlsurls` map (VolleyScores URL -> local filename), manually split
-   into match files (`heren1.xls`, ...) and ranking files (`AHP3A.xls`, ...). The
-   sample URLs still point to another club (Osta Berchem) and the rankings TODO is
-   unresolved.
+   into match files and ranking files. The sample URLs point to another club (Osta
+   Berchem) and the rankings TODO is unresolved.
 2. Downloads each URL with `fopen`/`file_put_contents`, then a blind `sleep(13)`.
 3. Converts each file with PhpSpreadsheet: active sheet to array, take a header
-   row, map every following row into `{header: value}`, write one JSON per XLS.
+   row, map every following row to `{header: value}`, write one JSON per XLS.
 
-`convert.php` is the same conversion for a single test file.
+`convert.php` is the same conversion for one test file.
 
 Details worth preserving:
 
 - **Matches use header row index 0; rankings use header row index 1** (ranking
-  exports have an extra title row).
-- Output rows are keyed by the exact Dutch VolleyScores column headers. That raw
-  shape is what we keep.
+  exports carry an extra title row).
+- Rows are keyed by the exact Dutch VolleyScores column headers.
+- The URLs are fully deterministic: only `ci` (club), `ti` (team) and `ssi`
+  (series) vary; `a=me` gives matches, `a=re` gives the ranking.
 
-Weaknesses removed: hardcoded URLs, per-team output files, temp files, the blind
-sleep, no error handling, no team identity in the rows.
+Removed: hardcoded URLs, per-team files, temp files, the blind sleep, no error
+handling, no team identity in the output.
 
-PHP cannot run on this stack (TypeScript, serverless runtime). The two files are
-committed to `docs/legacy/` as reference only, with a README noting they are not
-executed; the logic is reimplemented in TypeScript.
+PHP cannot run on this stack. Both files are committed to `docs/legacy/` as
+reference documentation only, with a README stating they are never executed.
 
-## 2. Target flow — no manual file handling
+## 2. ID-based parser configuration
+
+`team.parserData` in Sanity replaces the URL fields. Everything except
+`parserEnabled` is optional (and ignored) when the parser is off:
+
+```ts
+{
+  parserEnabled: boolean;
+  volleyClubId?: string;    // ci
+  volleyTeamId?: string;    // ti
+  volleySeriesId?: string;  // ssi
+  competitionCode?: string;
+  divisionCode?: string;
+}
+```
+
+No full VolleyScores URLs are stored anywhere. A shared builder is the single
+source of truth:
+
+```ts
+// src/lib/parser/urls.ts
+buildMatchesExportUrl({ clubId, teamId, seriesId })
+// https://www.volleyscores.be/index.php?v=2&isActiveSeason=1&a=me&ci=..&ti=..&ssi=..&f=1&lng=nl
+
+buildRankingExportUrl({ seriesId })
+// https://www.volleyscores.be/index.php?v=2&isActiveSeason=1&a=re&ssi=..&f=1&lng=nl
+```
+
+The public "Volledig overzicht" link on the team page is derived from the same
+ids through the same module, so nothing needs a stored URL. Teams missing a
+required id are reported as a configuration error instead of being fetched.
+
+Migration: the Sanity `parser`/`parserData` object type is redeployed with the
+new fields, the existing team documents get their ids filled in, and the local
+mock `ParserRecord` type in `src/content/types.ts` +
+`src/content/sheets/parser-data.ts` is updated to the same ID-based shape so the
+fallback content stays consistent.
+
+## 3. Target flow
 
 ```text
-Sanity team.parser (config)
+Sanity team.parserData (ci/ti/ssi)
         |
         v
-refreshVolleyData (server fn, admin button)   <---- also called by cron route
-        |- fetch calendarUrl per enabled team -> parse sheet -> match rows
-        |- fetch rankingUrl  per enabled team -> parse sheet -> ranking rows
+refreshVolleyData (admin button)   <---- same runner called by cron route
+        |- buildMatchesExportUrl -> fetch -> parse sheet (header row 0)
+        |- buildRankingExportUrl -> fetch -> parse sheet (header row 1)
         v
-Sanity singletons  volleyMatchesRaw / volleyRankingsRaw   (write token)
+Sanity singletons volleyMatchesRaw / volleyRankingsRaw   (write token)
         |
         v
 website reads them server-side (adapter step) -> live update, no redeploy
 ```
 
-The generated JSON is stored in two Sanity singleton documents. No download, no
-commit, no redeploy. This intentionally reverses the earlier "no generated data
-in Sanity" rule, for these two blobs only.
+## 4. Sanity storage — structured, not stringified
 
-## 3. Sanity storage
+Two singleton documents, written with `createOrReplace` on a fixed `_id` so a
+refresh is idempotent and Studio keeps revision history for rollback.
 
-Two new document types, one document each:
+```text
+volleyMatchesRaw / volleyRankingsRaw
+  generatedAt: datetime
+  source: string
+  teamCount, rowCount: number
+  blocks: [ rawTeamBlock ]
+  errors: [ { teamId, kind, message } ]
 
-| Type | Fields |
-| --- | --- |
-| `volleyMatchesRaw` | `_id: "volleyMatchesRaw"`, `generatedAt`, `source`, `payload` (JSON string), `teamCount`, `rowCount`, `errors[]` |
-| `volleyRankingsRaw` | same shape |
+rawTeamBlock
+  teamId        (always present — every block carries its originating team)
+  slug, teamName
+  volleyClubId, volleyTeamId, volleySeriesId
+  competitionCode, divisionCode
+  sourceUrl     (built at run time, stored for traceability only)
+  rows: [ rawRow ]
 
-- `payload` is a stringified JSON envelope (raw rows), so no Sanity schema has to
-  mirror VolleyScores columns and the document stays small and cheap to write.
-- Writes use `createOrReplace` on the fixed `_id`, so a refresh is idempotent and
-  Sanity keeps the revision history (easy rollback via Studio).
-- Requires a new **server-only** secret `SANITY_WRITE_TOKEN` (Editor role).
-  Never `VITE_`-prefixed, read inside the handler only.
-- Schemas are deployed to the existing Studio so the documents are inspectable.
-
-Envelope inside `payload`:
-
-```json
-{
-  "version": 1,
-  "generatedAt": "2026-08-23T09:00:00.000Z",
-  "source": "VolleyDataParser (VolleyScores)",
-  "items": [
-    {
-      "teamId": "heren-a",
-      "slug": "heren-a",
-      "competitionCode": "AHP3",
-      "divisionCode": "A",
-      "sourceUrl": "https://www.volleyscores.be/...",
-      "rows": [{ "Datum": "13-09-2026", "Thuisploeg": "..." }]
-    }
-  ],
-  "errors": [{ "teamId": "dames-b", "url": "...", "message": "HTTP 500" }]
-}
+rawRow
+  teamId        (repeated on every row, so rows stay attributable when flattened)
+  cells: [ { key: string, value: string } ]   // key = original Dutch column header
 ```
 
-## 4. Refresh triggers
+`cells` as key/value pairs is what keeps this *structured* while still tolerating
+arbitrary VolleyScores column headers — Sanity documents cannot hold free-form
+object keys, and this avoids a stringified blob that Studio can't show. TypeScript
+helpers (`rowToRecord`, `recordToCells`) convert between `cells` and a plain
+`Record<string, string>` so the later adapter works with ordinary objects.
 
-- **Admin button** on a new `/admin/volleydata` page: "Volley-data verversen",
-  showing per-team result (rows found / error), last run timestamp and row counts
-  read back from the singletons.
-- **Scheduled refresh** via `src/routes/api/public/refresh-volley-data.ts`
-  (`POST`). It requires a `x-cron-secret` header compared timing-safely against a
-  new `CRON_SECRET` secret, then calls the same shared runner. Configure a nightly
-  call from cron-job.org / pg_cron against
+Writes need a new **server-only** secret `SANITY_WRITE_TOKEN` (Editor role), read
+inside the handler and never `VITE_`-prefixed.
+
+## 5. Refresh triggers
+
+- **Admin button** on `/admin/volleydata`: "Volley-data verversen", showing the
+  last run timestamp, per-team row counts and any errors (including teams with
+  `parserEnabled` but missing ids).
+- **Scheduled refresh**: `src/routes/api/public/refresh-volley-data.ts` (`POST`)
+  requiring an `x-cron-secret` header compared timing-safely against a new
+  `CRON_SECRET`; it calls the same runner. Configure a nightly call to
   `https://project--<id>.lovable.app/api/public/refresh-volley-data`.
 
 Both paths share one server-only module, so behaviour cannot drift.
 
-## 5. Files
+## 6. Files
 
 | File | Purpose |
 | --- | --- |
-| `src/lib/parser/types.ts` | `RawSheetRow`, `RawTeamBlock`, `RawEnvelope`, `RefreshResult` |
-| `src/lib/parser/sheet.server.ts` | download + SheetJS -> row objects (header index param) |
-| `src/lib/parser/refresh.server.ts` | shared runner: read config, fetch in parallel, build envelopes, write singletons |
-| `src/lib/parser/refresh.functions.ts` | `refreshVolleyData` + `getVolleyDataStatus` server fns for the admin UI |
+| `src/lib/parser/urls.ts` | `buildMatchesExportUrl`, `buildRankingExportUrl`, id validation |
+| `src/lib/parser/types.ts` | `RawRow`, `RawTeamBlock`, `RawEnvelope`, `RefreshResult`, cell helpers |
+| `src/lib/parser/sheet.server.ts` | download + SheetJS -> rows (header row index param) |
+| `src/lib/parser/refresh.server.ts` | shared runner: read config, parallel fetch, build blocks, write singletons |
+| `src/lib/parser/refresh.functions.ts` | `refreshVolleyData` + `getVolleyDataStatus` server fns |
 | `src/lib/sanity/write.server.ts` | `createOrReplace` mutation with `SANITY_WRITE_TOKEN` |
-| `src/lib/sanity/queries.ts` | `PARSER_TEAMS_QUERY`, `VOLLEY_RAW_STATUS_QUERY` |
+| `src/lib/sanity/queries.ts` | `PARSER_TEAMS_QUERY` (ids only), `VOLLEY_RAW_STATUS_QUERY` |
+| `src/content/types.ts`, `src/content/sheets/parser-data.ts` | ID-based `ParserRecord` |
+| `src/components/teams/TeamDetail.tsx` | calendar link built from ids instead of a stored URL |
 | `src/routes/admin.volleydata.tsx` | refresh button, per-team result, last-run info |
-| `src/routes/admin.index.tsx` | one extra card linking to `/admin/volleydata` |
+| `src/routes/admin.index.tsx` | extra card linking to `/admin/volleydata` |
 | `src/routes/api/public/refresh-volley-data.ts` | secret-protected cron endpoint |
 | `docs/legacy/` | the two PHP files + README (reference only) |
-| `docs/volleydata-parser.md` | architecture, secrets, cron setup |
+| `docs/volleydata-parser.md` | architecture, ids, secrets, cron setup |
 
 Dependency: `bun add xlsx` (pure JS, worker-safe, also reads the HTML-table "xls"
 responses VolleyScores sometimes returns).
 
-## 6. Scope of this step vs next
+## 7. Scope of this step vs next
 
-This step: parser + Sanity storage + both refresh triggers + admin page. The
-website still renders from `src/data/*.json`, so nothing visible changes yet.
+This step: ID-based config, parser, Sanity storage, admin button, cron endpoint.
+The website still renders matches/rankings from `src/data/*.json`, so the visible
+site is unchanged apart from the calendar link source.
 
-Next step (adapter, separate approval): map the raw rows onto the existing
-`Match` / `RankingEntry` shapes and let `matchProvider` / `rankingProvider` read
-the Sanity singletons with the committed JSON as fallback. From that moment the
-admin button visibly updates the site.
+Next step (separate approval): the adapter that maps raw blocks onto the existing
+`Match` / `RankingEntry` shapes and lets `matchProvider` / `rankingProvider` read
+the Sanity singletons, with the committed JSON as fallback. From then on the admin
+button visibly refreshes the site.
 
-## 7. Security
+## 8. Security
 
-- `SANITY_WRITE_TOKEN` and `CRON_SECRET` are server-only secrets, read inside
-  handlers.
-- The parser only fetches URLs coming from Sanity `team.parser`, restricted to
-  `https://` on `volleyscores.be`, so it cannot be abused as an open proxy.
-- `/admin/*` stays `noindex, nofollow` and behind the existing admin gate; the
-  cron route rejects requests without the correct secret and returns no data.
-- No database, no user data involved.
+- `SANITY_WRITE_TOKEN` and `CRON_SECRET` are server-only, read inside handlers.
+- URLs are built from ids by our own builder and pinned to
+  `https://www.volleyscores.be`, so no user-supplied URL is ever fetched — the
+  endpoint cannot be abused as a proxy.
+- `/admin/*` stays `noindex, nofollow` behind the existing admin gate; the cron
+  route returns 401 without the secret and never returns data.
+- No database, no personal data.
