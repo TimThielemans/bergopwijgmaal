@@ -1,0 +1,12 @@
+import { sanityFetchServer } from "@/lib/sanity/read.server";
+import { VOLLEY_RAW_QUERY, TEAMS_QUERY, VENUES_QUERY } from "@/lib/sanity/queries";
+import { adaptVolleyData } from "@/lib/adapters";
+const raw: any = await sanityFetchServer(VOLLEY_RAW_QUERY, {});
+const teams: any = await sanityFetchServer(TEAMS_QUERY, {});
+const venues: any = await sanityFetchServer(VENUES_QUERY, {});
+const out = adaptVolleyData({ matchesRaw: raw.matches, rankingsRaw: raw.rankings, teams: (teams||[]).map((t:any)=>({...t, shortName:t.shortName??"", level:t.level??"", players:[],trainings:[]})), venues: venues||[], seasonId: "2026-2027" });
+console.log("matches", out.matches.length, "rankings", out.rankings.length, "tables", out.tables.map(t=>[t.teamId,t.division,t.rows.length]));
+console.log(JSON.stringify(out.matches.slice(0,3),null,1));
+console.log(JSON.stringify(out.rankings,null,1));
+console.log(JSON.stringify(out.tables[0]?.rows,null,0));
+console.log("warnings", out.warnings.slice(0,10));
