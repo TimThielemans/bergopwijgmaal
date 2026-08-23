@@ -3,6 +3,7 @@ import { CURRENT_SEASON_ID } from "@/content";
 import { contentSource } from "@/lib/config";
 import { mockCmsProvider } from "./mock-cms";
 import { sanityCmsProvider } from "./sanity-cms";
+import { sanityVolleyMatchProvider, sanityVolleyRankingProvider } from "./sanity-volley";
 import { staticJsonMatchProvider, staticJsonRankingProvider } from "./static-json";
 import type {
   CmsProvider,
@@ -15,12 +16,16 @@ import type {
 /**
  * Active provider selection — the only place to change when the data source changes.
  *
- * matches/rankings -> generated static JSON (VolleyDataParser output)
+ * matches/rankings -> raw VolleyScores data in Sanity, transformed by the adapter
+ *                     layer, with the generated static JSON as fallback
  * teams/content    -> Sanity CMS when VITE_SANITY_PROJECT_ID is set, otherwise
  *                     the typed mock modules in src/content/
  */
-export const matchProvider: MatchProvider = staticJsonMatchProvider;
-export const rankingProvider: RankingProvider = staticJsonRankingProvider;
+export const matchProvider: MatchProvider =
+  contentSource === "sanity" ? sanityVolleyMatchProvider : staticJsonMatchProvider;
+export const rankingProvider: RankingProvider =
+  contentSource === "sanity" ? sanityVolleyRankingProvider : staticJsonRankingProvider;
+
 export const cmsProvider: CmsProvider =
   contentSource === "sanity" ? sanityCmsProvider : mockCmsProvider;
 

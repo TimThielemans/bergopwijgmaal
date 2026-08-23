@@ -47,9 +47,17 @@ export async function fetchSheetRows(options: {
     blankrows: false,
   });
 
-  const headers = (matrix[headerRowIndex] ?? []).map((cell) =>
-    cell === null || cell === undefined ? "" : String(cell).trim(),
-  );
+  // Empty headers get a positional name (`Kolom1`, `Kolom2`, …) so leading
+  // columns such as the ranking position are preserved instead of dropped.
+  const autoNamed = new Set<string>();
+  const headers = (matrix[headerRowIndex] ?? []).map((cell, index) => {
+    const value = cell === null || cell === undefined ? "" : String(cell).trim();
+    if (value) return value;
+    const generated = `Kolom${index + 1}`;
+    autoNamed.add(generated);
+    return generated;
+  });
+
   if (headers.length === 0) return [];
 
   const rows: RawRow[] = [];
@@ -61,9 +69,12 @@ export async function fetchSheetRows(options: {
       if (!header) return;
       const cell = raw[column];
       const value = cell === null || cell === undefined ? "" : String(cell).trim();
+      // Unnamed columns are only kept when they actually carry data.
+      if (!value && autoNamed.has(header)) return;
       record[header] = value;
       if (value) hasValue = true;
     });
+
     if (!hasValue) continue;
     rows.push({ teamId, cells: recordToCells(record) });
   }

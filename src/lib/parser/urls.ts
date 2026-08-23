@@ -53,13 +53,33 @@ export function buildMatchesExportUrl(ids: VolleyIds): string {
   });
 }
 
-/** XLS-export of the series ranking. Returns "" when the series id is missing. */
+/**
+ * XLS-export of the series ranking. Returns "" when the series id is missing.
+ * `se=13` is required by VolleyScores and stays part of the URL.
+ */
 export function buildRankingExportUrl(ids: VolleyIds): string {
   const ssi = clean(ids.volleySeriesId);
   if (!ssi) return "";
-  /*return buildUrl({ a: "re", ssi });*/
-  return "https://www.volleyscores.be/index.php?v=2&isActiveSeason=&t=Ploeg%20(NAT3H-B)%20Berg-op%20Wijgmaal%20A&a=re&se=12&pi=&si=&ti=96174&ci=&mm=&ssi=&st=&w=%&f=&lng=nl";
+  return buildUrl({ a: "re", ssi });
 }
+
+/**
+ * Temporary preseason validation source.
+ *
+ * There is no published ranking yet for the current series, so the ranking flow
+ * is validated against last season's export of Heren A. As soon as the real
+ * ranking appears, the ID-based URL above returns rows and this fallback is no
+ * longer used (it only kicks in when the live export is empty).
+ */
+export const RANKING_TEST_URLS: Record<string, string> = {
+  "heren-a":
+    "https://www.volleyscores.be/index.php?v=2&isActiveSeason=&a=re&se=12&ti=96174&st=&w=%&f=1&lng=nl",
+};
+
+export function rankingTestUrl(teamId: string): string {
+  return RANKING_TEST_URLS[clean(teamId)] ?? "";
+}
+
 
 /** Public (HTML) overview page for supporters — same ids, no XLS flag. */
 export function buildPublicOverviewUrl(ids: VolleyIds): string {

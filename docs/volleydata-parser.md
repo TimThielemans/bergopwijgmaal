@@ -67,3 +67,29 @@ Alle drie zijn server-only: nooit met `VITE_`-prefix.
 | `src/routes/admin.volleydata.tsx` | beheerpagina met knop, rapport en status |
 | `src/routes/api/public/refresh-volley-data.ts` | cron-route met shared secret |
 | `studio/schemaTypes/` | versiebeheerde Sanity-schema's (parserData, raw-types) |
+
+## Adapterlaag (ruwe data → websitemodel)
+
+De ruwe documenten `volleyMatchesRaw` en `volleyRankingsRaw` blijven de bron van waarheid en
+worden nooit herschreven. De omzetting naar het websitemodel (`Match` / `RankingEntry`) gebeurt
+in `src/lib/adapters/`:
+
+| Bestand | Verantwoordelijkheid |
+| --- | --- |
+| `columns.ts` | Tolerante kolomnamen + herstel van Latin-1 tekens (`La LouviÃ¨re` → `La Louvière`). |
+| `dates.ts` | `19/09/2026` + `16:30` → ISO met de juiste Brusselse offset (zomer/winteruur). |
+| `scores.ts` | `Uitslag` (`3-1`) en `Setstanden` → sets en leesbare setlijn. |
+| `teams.ts` | Eigen ploeg vs. tegenstander (ook bij derby's) en matching van de sporthal. |
+| `matches.ts` | Rijen → `Match[]` met stabiele id op basis van wedstrijdnummer + teamId. |
+| `rankings.ts` | Rijen → `RankingEntry[]`, **enkel het hoofdklassement**: het lezen stopt zodra het reserveklassement begint. Vorm wordt afgeleid uit de laatste vijf gespeelde wedstrijden. |
+| `index.ts` | `adaptVolleyData(...)` → `{ matches, rankings, tables, warnings }`. |
+
+`src/lib/providers/sanity-volley.ts` leest de ruwe documenten, voert de adapter uit en valt
+automatisch terug op `src/data/*.json` wanneer er nog geen ruwe rijen zijn.
+
+### Voorseizoen
+
+`se=13` blijft deel van de stand-URL. Zolang er nog geen klassement gepubliceerd is voor de
+huidige reeks, levert die export geen rijen op. Voor validatie is er één tijdelijke
+testexport (Heren A, vorig seizoen) in `RANKING_TEST_URLS`; die wordt enkel gebruikt wanneer de
+echte export leeg is en verdwijnt zodra het klassement live staat.

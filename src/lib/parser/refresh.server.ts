@@ -4,7 +4,7 @@ import { sanityCreateOrReplace } from "@/lib/sanity/write.server";
 import { sanityConfig } from "@/lib/config";
 import { fetchSheetRows } from "./sheet.server";
 import { type RawEnvelope, type RawError, type RawTeamBlock, type RefreshResult, type VolleyDataStatus } from "./types";
-import { buildMatchesExportUrl, buildRankingExportUrl, missingParserIds } from "./urls";
+import { buildMatchesExportUrl, buildRankingExportUrl, missingParserIds, rankingTestUrl } from "./urls";
 
 /**
  * Shared VolleyDataParser runner — used by the admin button and by the cron
@@ -113,19 +113,47 @@ export async function runVolleyDataRefresh(): Promise<RefreshResult> {
       }
 
       if (rankingUrl) {
+        let usedUrl = rankingUrl;
+        let rows: Awaited<ReturnType<typeof fetchSheetRows>> = [];
+        let liveMessage = "";
         try {
-          const rows = await fetchSheetRows({ url: rankingUrl, headerRowIndex: 1, teamId });
-          rankingRows = rows.length;
-          rankingBlocks.push({ ...base, sourceUrl: rankingUrl, rows });
+          rows = await fetchSheetRows({ url: rankingUrl, headerRowIndex: 1, teamId });
         } catch (error) {
-          const message = error instanceof Error ? error.message : "Onbekende fout";
-          errors.push({ teamId, kind: "download", message: `Stand: ${message}` });
-          teamErrors.push(`Stand: ${message}`);
+          liveMessage = error instanceof Error ? error.message : "Onbekende fout";
+        }
+
+        if (rows.length === 0) {
+          // Preseason: no ranking published yet for this series. Fall back to the
+          // validation export when one is configured for this team.
+          const testUrl = rankingTestUrl(teamId);
+          if (testUrl) {
+            try {
+              const testRows = await fetchSheetRows({ url: testUrl, headerRowIndex: 1, teamId });
+              if (testRows.length > 0) {
+                rows = testRows;
+                usedUrl = testUrl;
+                liveMessage = "";
+                teamErrors.push("Stand: testexport vorig seizoen gebruikt (voorseizoen)");
+              }
+            } catch {
+              /* keep the live message */
+            }
+          }
+        }
+
+        if (liveMessage) {
+          errors.push({ teamId, kind: "download", message: `Stand: ${liveMessage}` });
+          teamErrors.push(`Stand: ${liveMessage}`);
+        } else {
+          rankingRows = rows.length;
+          rankingBlocks.push({ ...base, sourceUrl: usedUrl, rows });
         }
       }
 
+
       teamErrors.push(`Matches URL: ${matchesUrl}`);
       teamErrors.push(`Ranking URL: ${rankingUrl}`);
+
 
       perTeam.push({
         teamId,

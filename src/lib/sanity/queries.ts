@@ -84,3 +84,25 @@ export const VOLLEY_RAW_STATUS_QUERY = `{
     generatedAt, teamCount, rowCount, "errorCount": count(coalesce(errors, []))
   }
 }`;
+
+/** Full raw envelopes for the adapter layer (rows included). */
+export const VOLLEY_RAW_QUERY = `{
+  "matches": *[_id == "volleyMatchesRaw"][0]{
+    version, generatedAt, source, teamCount, rowCount,
+    "blocks": coalesce(blocks[]{
+      teamId, slug, teamName, volleyClubId, volleyTeamId, volleySeriesId,
+      competitionCode, divisionCode, sourceUrl,
+      "rows": coalesce(rows[]{ teamId, "cells": coalesce(cells[]{ key, value }, []) }, [])
+    }, []),
+    "errors": coalesce(errors[]{ teamId, kind, message }, [])
+  },
+  "rankings": *[_id == "volleyRankingsRaw"][0]{
+    version, generatedAt, source, teamCount, rowCount,
+    "blocks": coalesce(blocks[]{
+      teamId, slug, teamName, volleyClubId, volleyTeamId, volleySeriesId,
+      competitionCode, divisionCode, sourceUrl,
+      "rows": coalesce(rows[]{ teamId, "cells": coalesce(cells[]{ key, value }, []) }, [])
+    }, []),
+    "errors": coalesce(errors[]{ teamId, kind, message }, [])
+  }
+}`;
