@@ -37,6 +37,12 @@ function VolleyDataAdmin() {
     queryFn: () => fetchStatus(),
   });
 
+  const adapter = useQuery({
+    queryKey: ["volleydata", "adapter", refresh_key],
+    queryFn: () => loadAdaptedVolleyData(),
+  });
+
+
   const refresh = useMutation({
     mutationFn: () => runRefresh(),
     onSettled: () => {
