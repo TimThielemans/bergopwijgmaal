@@ -1,57 +1,116 @@
-# Fix: Sanity config missing in the published deployment
+# VolleyDataParser — modernisation & integration layer
 
-## What's happening
+## 1. Analyse of the uploaded PHP
 
-Verified in this project:
+`get_and_convert_xls_files.php` does three things:
 
-- `.env` exists locally but `.gitignore` contains `.env` — so the file is **not** part of the repository and is **not** part of the published build.
-- `src/lib/config.ts` reads `VITE_SANITY_PROJECT_ID` from `import.meta.env` with **no fallback**, and `contentSource` is `"sanity"` only when that value is non-empty.
+1. A hardcoded `$xlsurls` map (VolleyScores URL -> local filename), split by hand
+   into match files (`heren1.xls`, `dames1.xls`, ...) and ranking files
+   (`AHP3A.xls`, `ADP4A.xls`, ...). Note: the sample URLs still point to another
+   club (Osta Berchem) and the ranking TODO is unresolved.
+2. Downloads each URL with `fopen`/`file_put_contents`, then `sleep(13)` to wait
+   for the writes.
+3. Converts every file with PhpSpreadsheet: read the active sheet as an array,
+   take a header row, map each following row into `{header: value}` objects, and
+   write one JSON file per XLS.
 
-Consequence for the published deployment:
+Two important details to preserve:
+
+- **Matches use header row index 0; rankings use header row index 1.** The
+  ranking export has one extra title row above the header.
+- Output is a flat array of row objects keyed by the exact Dutch column headers
+  from VolleyScores. That raw shape is what we keep in `*_raw.json`.
+
+Weaknesses to remove: hardcoded URLs, one output file per team, temp files on
+disk, the blind `sleep`, no error handling, no team identity in the output (so
+you cannot tell which row belongs to which team).
+
+## 2. Target architecture
+
+The parser becomes a server function inside this app. No PHP, no temp files, no
+Sanity writes.
 
 ```text
-sanityConfig.projectId = ""            (empty)
-sanityConfig.dataset   = "production"  (default in config.ts)
-contentSource          = "mock"
+Sanity (team.parser)  ->  runVolleyParser (server fn)
+                            |- fetch calendarUrl  -> parse sheet -> match rows
+                            |- fetch rankingUrl   -> parse sheet -> ranking rows
+                            v
+                    { matches_raw, rankings_raw }  ->  /admin/parser
+                                                        (preview + download)
 ```
 
-In preview it works because the sandbox has the real `.env` on disk.
+- Configuration source: `TEAMS_QUERY` already projects `parser`. A new
+  `PARSER_TEAMS_QUERY` returns only `teamId`, `slug`, `name`, `shortName` and the
+  `parser` object, filtered on `parser.parserEnabled == true`.
+- Reads go through the existing token-based server fetch, so nothing changes
+  about Sanity access.
+- Sheet parsing uses SheetJS (`xlsx`, pure JS, works in the worker runtime). It
+  reads real XLS and also the HTML-table "xls" responses VolleyScores sometimes
+  returns. Header row: 0 for calendars, 1 for rankings, matching the PHP.
+- Each team is fetched independently: one failing URL is recorded as an error and
+  the rest still produce output. Downloads run in parallel (no `sleep`).
 
-Answer to the direct question: the published runtime does **not** receive `.env`
-(gitignored, never uploaded). It does receive **runtime secrets** (e.g.
-`SANITY_READ_TOKEN`) inside server code, but those are server-only and are not
-`VITE_*` build variables.
+## 3. Output shape
 
-## Fix
+Both files use the same envelope style as the existing `src/data/*.json`, with
+raw rows untouched plus the team identity the PHP version lacked:
 
-`projectId`, `dataset`, `apiVersion` and the Studio URL are public, non-secret
-values. Make them committed defaults so any checkout (GitHub, Vercel, Lovable
-publish) works without a local `.env`, while `.env` can still override them.
+```json
+{
+  "version": 1,
+  "generatedAt": "2026-08-23T09:00:00.000Z",
+  "source": "VolleyDataParser (VolleyScores)",
+  "items": [
+    {
+      "teamId": "heren-a",
+      "slug": "heren-a",
+      "competitionCode": "AHP3",
+      "divisionCode": "A",
+      "sourceUrl": "https://www.volleyscores.be/...",
+      "rows": [{ "Datum": "13-09-2026", "Thuisploeg": "...", "...": "..." }]
+    }
+  ],
+  "errors": [{ "teamId": "dames-b", "url": "...", "message": "HTTP 500" }]
+}
+```
 
-1. In `src/lib/config.ts`, add fallbacks:
-   - `projectId`: `VITE_SANITY_PROJECT_ID` or `"utlbxtd6"`
-   - `dataset`: unchanged default `"production"`
-   - `apiVersion`: unchanged default `"2024-01-01"`
-   - `studioUrl`: fallback `"https://bergop-wijgmaal.sanity.studio"`
-2. Keep `SANITY_READ_TOKEN` server-only: read inside the `sanityFetch` handler
-   (already the case) and stored as a project secret, never as `VITE_*`.
-   Confirm the secret is set for the published environment; if not, add it.
-3. Add a tiny diagnostics block to `/admin` (admin-only, already `noindex`)
-   showing `contentSource`, `projectId`, `dataset` and whether the server read
-   succeeded — so the exact runtime values are visible on any deployment
-   instead of being guessed.
-4. Update `.env.example` and `docs/sanity-integration.md`: the Sanity values are
-   now built-in defaults; `.env` is optional and only overrides them. Document
-   that `SANITY_READ_TOKEN` must be configured as a hosting env var on Vercel
-   for a portable self-hosted deploy.
+`matches_raw.json` groups per team from `calendarUrl`; `rankings_raw.json` from
+`rankingUrl`. `volleyScoresUrl` stays untouched (it is the public link used on
+the team page).
 
-## Verification
+## 4. Files to add
 
-- Rebuild and check `/admin` diagnostics report `sanity` + `utlbxtd6` + `production`.
-- Confirm a Sanity-only value (e.g. a team's short description edited in Studio)
-  renders on `/ploegen` in the published deployment, not the mock text.
+| File | Purpose |
+| --- | --- |
+| `src/lib/parser/types.ts` | `RawSheetRow`, `RawTeamBlock`, `RawEnvelope`, `ParserRunResult` |
+| `src/lib/parser/sheet.server.ts` | download + SheetJS -> row objects (header index param) |
+| `src/lib/parser/run.functions.ts` | `runVolleyParser` server fn: Sanity read, parallel fetch, two envelopes |
+| `src/lib/sanity/queries.ts` | add `PARSER_TEAMS_QUERY` |
+| `src/routes/admin.parser.tsx` | "Genereer JSON" button, per-team result table, download buttons |
+| `src/routes/admin.index.tsx` | one extra card linking to `/admin/parser` |
+| `docs/volleydata-parser.md` | how it works, how to refresh the committed JSON |
 
-## Notes
+Dependency: `bun add xlsx`.
 
-No schema, database or backend service changes. Only config defaults, one admin
-diagnostics panel, and documentation.
+## 5. How the JSON reaches the repo
+
+The published app runs in a serverless worker with no writable repo, so the
+parser cannot commit files. The admin page therefore offers the two files as
+downloads (and shows them inline). Refresh flow: run the parser in `/admin`,
+download `matches_raw.json` + `rankings_raw.json`, drop them into `src/data/`.
+The later adapter step converts them into the existing `matches.json` /
+`rankings.json` shapes, which is where team joins, season ids and form streaks
+are produced.
+
+## 6. Out of scope for this step
+
+- No adapter to `matches.json` / `rankings.json` yet.
+- No website/component changes; only the new admin page and its link.
+- No Sanity writes, no schema changes, no database.
+
+## 7. Security note
+
+`/admin/parser` is `noindex, nofollow` and behind the existing placeholder admin
+gate. The server fn only fetches URLs coming from Sanity `team.parser` fields and
+only accepts `https://` hosts on `volleyscores.be`, so the endpoint cannot be
+used as an open proxy.
