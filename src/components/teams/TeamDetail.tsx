@@ -124,7 +124,7 @@ export function TeamDetail({ team, standing, rankingTable, upcoming, calendar }:
                     key={`${text(slot?.day)}-${text(slot?.startTime)}-${index}`}
                     className="flex flex-col gap-0.5 border-b border-border pb-3 last:border-b-0 last:pb-0"
                   >
-                    <span className="font-display font-semibold">
+                    <span className="font-display font-semibold first-letter:uppercase">
                       {text(slot?.day, "Dag n.n.b.")}
                       {text(slot?.startTime) && text(slot?.endTime)
                         ? ` · ${text(slot?.startTime)}–${text(slot?.endTime)}`
