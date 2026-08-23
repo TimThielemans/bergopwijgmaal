@@ -75,7 +75,8 @@ export function adaptMatches({
       const matchNumber = cells.get("Wedstrijdnr", "Wedstrijdnummer", "Nr");
 
       matches.push({
-        id: matchNumber ? `vs-${matchNumber}` : `${teamId}-${dateTime}`,
+        // Include the teamId: a derby shares one match number across two blocks.
+        id: matchNumber ? `${teamId}-vs-${matchNumber}` : `${teamId}-${dateTime}`,
         teamId,
         seasonId,
         dateTime,
