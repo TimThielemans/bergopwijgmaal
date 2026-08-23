@@ -124,7 +124,7 @@ export async function runVolleyDataRefresh(): Promise<RefreshResult> {
         }
       }
 
-      perTeam.push({ teamId, teamName, matchRows, rankingRows, errors: teamErrors });
+      perTeam.push({ teamId, teamName, matchRows, rankingRows, matchesUrl, rankingUrl, errors: teamErrors });
     }),
   );
 
