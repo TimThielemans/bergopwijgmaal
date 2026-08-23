@@ -20,6 +20,7 @@ import { Route as AdminIndexRouteImport } from './routes/admin.index'
 import { Route as AdminExcelImportRouteImport } from './routes/admin.excel-import'
 import { Route as PloegenIndexRouteImport } from './routes/ploegen.index'
 import { Route as PloegenSlugRouteImport } from './routes/ploegen.$slug'
+import { Route as ApiPublicRefreshVolleyDataRouteImport } from './routes/api/public/refresh-volley-data'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -76,6 +77,12 @@ const PloegenSlugRoute = PloegenSlugRouteImport.update({
   path: '/$slug',
   getParentRoute: () => PloegenRoute,
 } as any)
+const ApiPublicRefreshVolleyDataRoute =
+  ApiPublicRefreshVolleyDataRouteImport.update({
+    id: '/api/public/refresh-volley-data',
+    path: '/api/public/refresh-volley-data',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -89,6 +96,7 @@ export interface FileRoutesByFullPath {
   '/ploegen/$slug': typeof PloegenSlugRoute
   '/admin/': typeof AdminIndexRoute
   '/ploegen/': typeof PloegenIndexRoute
+  '/api/public/refresh-volley-data': typeof ApiPublicRefreshVolleyDataRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -100,6 +108,7 @@ export interface FileRoutesByTo {
   '/ploegen/$slug': typeof PloegenSlugRoute
   '/admin': typeof AdminIndexRoute
   '/ploegen': typeof PloegenIndexRoute
+  '/api/public/refresh-volley-data': typeof ApiPublicRefreshVolleyDataRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -114,6 +123,7 @@ export interface FileRoutesById {
   '/ploegen/$slug': typeof PloegenSlugRoute
   '/admin/': typeof AdminIndexRoute
   '/ploegen/': typeof PloegenIndexRoute
+  '/api/public/refresh-volley-data': typeof ApiPublicRefreshVolleyDataRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -129,6 +139,7 @@ export interface FileRouteTypes {
     | '/ploegen/$slug'
     | '/admin/'
     | '/ploegen/'
+    | '/api/public/refresh-volley-data'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -140,6 +151,7 @@ export interface FileRouteTypes {
     | '/ploegen/$slug'
     | '/admin'
     | '/ploegen'
+    | '/api/public/refresh-volley-data'
   id:
     | '__root__'
     | '/'
@@ -153,6 +165,7 @@ export interface FileRouteTypes {
     | '/ploegen/$slug'
     | '/admin/'
     | '/ploegen/'
+    | '/api/public/refresh-volley-data'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -163,6 +176,7 @@ export interface RootRouteChildren {
   LoginRoute: typeof LoginRoute
   PloegenRoute: typeof PloegenRouteWithChildren
   StudioRoute: typeof StudioRoute
+  ApiPublicRefreshVolleyDataRoute: typeof ApiPublicRefreshVolleyDataRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -244,6 +258,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof PloegenSlugRouteImport
       parentRoute: typeof PloegenRoute
     }
+    '/api/public/refresh-volley-data': {
+      id: '/api/public/refresh-volley-data'
+      path: '/api/public/refresh-volley-data'
+      fullPath: '/api/public/refresh-volley-data'
+      preLoaderRoute: typeof ApiPublicRefreshVolleyDataRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
@@ -280,6 +301,7 @@ const rootRouteChildren: RootRouteChildren = {
   LoginRoute: LoginRoute,
   PloegenRoute: PloegenRouteWithChildren,
   StudioRoute: StudioRoute,
+  ApiPublicRefreshVolleyDataRoute: ApiPublicRefreshVolleyDataRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
