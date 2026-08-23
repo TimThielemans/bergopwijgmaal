@@ -60,20 +60,18 @@ matches and ranking rows per team, which source is active (Sanity raw or fallbac
 and the adapter warnings (unmatched team names, invalid dates, unparsable scores).
 Purely read-only.
 
-## 4. Ranking download fix
+## 4. Ranking URL and validation
 
-`buildRankingExportUrl` no longer sends `se=13` (that is what causes the HTTP 500);
-`se=13` stays on the matches export, which works. The refresh runner keeps reporting
-per-team errors as it does now.
+- The ranking URL keeps `se=13`; `buildRankingExportUrl` is left as is. No change there.
+- Heren A is the reference team: the existing test export (last season) is used to validate
+  the whole ranking flow end to end — refresh → `volleyRankingsRaw` → adapter → team page.
+- Because it is preseason, the other teams will legitimately produce no ranking rows. The
+  adapter treats "no ranking yet" as a normal state: the team page shows the existing
+  "geen stand beschikbaar" state instead of an error, and the rankings section only lists
+  teams that do have a standing.
+- Text encoding: the export delivers Latin-1 bytes (`La LouviÃ¨re`), so the adapter
+  repairs the encoding of team names before matching and display.
 
-## Open point
-
-The ranking export currently returns a valid but *empty* workbook, so the ranking part of
-the adapter cannot be verified against real data yet. Can you open the standings of one
-series in VolleyScores in your browser, click the Excel/export icon and paste the exact URL
-from the address bar? Then I can pin the correct parameters. Until then the adapter's
-ranking path is built and tested against the column names as documented, and the site keeps
-using the fallback ranking JSON.
 
 ## Out of scope
 
