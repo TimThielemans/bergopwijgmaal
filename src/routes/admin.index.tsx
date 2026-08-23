@@ -158,6 +158,18 @@ function AdminDashboard() {
               Documentatie bekijken
             </span>
           </Link>
+
+          <Link to="/admin/volleydata" className="surface-card h-full p-6 transition-transform hover:scale-[1.01]">
+            <RefreshCw aria-hidden="true" className="h-6 w-6 text-club-deep" />
+            <h2 className="mt-3 font-display text-lg font-bold">Volley-data verversen</h2>
+            <p className="mt-2 text-sm leading-relaxed text-muted-foreground">
+              Haal kalenders en standen op bij VolleyScores op basis van de ids per ploeg en bewaar
+              ze in Sanity.
+            </p>
+            <span className="mt-4 inline-block rounded-full bg-club/15 px-3 py-1 text-xs font-semibold text-club-deep">
+              Parser openen
+            </span>
+          </Link>
         </div>
 
         <div className="surface-card mt-6 p-6">
