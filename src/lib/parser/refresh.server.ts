@@ -4,7 +4,7 @@ import { sanityCreateOrReplace } from "@/lib/sanity/write.server";
 import { sanityConfig } from "@/lib/config";
 import { fetchSheetRows } from "./sheet.server";
 import { type RawEnvelope, type RawError, type RawTeamBlock, type RefreshResult, type VolleyDataStatus } from "./types";
-import { buildMatchesExportUrl, buildRankingExportUrl, missingParserIds } from "./urls";
+import { buildMatchesExportUrl, buildRankingExportUrl, missingParserIds, rankingTestUrl } from "./urls";
 
 /**
  * Shared VolleyDataParser runner — used by the admin button and by the cron
