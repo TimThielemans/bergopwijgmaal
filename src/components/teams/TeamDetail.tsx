@@ -4,6 +4,7 @@ import type { Match, RankingEntry, Team } from "@/content/types";
 import { findVenue, useSiteContent } from "@/lib/site-content";
 import { formatPosition } from "@/lib/format";
 import { list, safeUrl, text } from "@/lib/safe";
+import { buildPublicOverviewUrl } from "@/lib/parser/urls";
 import { Section } from "@/components/layout/Section";
 import { BrandGraphic, BrandTile } from "@/components/shared/BrandGraphic";
 import { EmptyState } from "@/components/shared/EmptyState";
@@ -34,7 +35,7 @@ export function TeamDetail({ team, standing, upcoming, calendar }: TeamDetailPro
   const assistantName = text(team?.assistantCoach?.name);
   const trainings = list(team?.trainings);
   const players = list(team?.players);
-  const calendarUrl = safeUrl(team?.parser?.calendarUrl);
+  const calendarUrl = safeUrl(buildPublicOverviewUrl(team?.parser ?? {}));
 
   return (
     <>

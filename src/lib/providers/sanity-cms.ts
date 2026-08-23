@@ -53,9 +53,9 @@ type RawTeam = {
   trainings?: Array<{ day?: string; startTime?: string; endTime?: string; venueId?: string }>;
   players?: Array<{ name?: string; number?: number; position?: string }>;
   parser?: {
-    volleyScoresUrl?: string;
-    rankingUrl?: string;
-    calendarUrl?: string;
+    volleyClubId?: string;
+    volleyTeamId?: string;
+    volleySeriesId?: string;
     competitionCode?: string;
     divisionCode?: string;
     parserEnabled?: boolean;
@@ -114,9 +114,9 @@ function mapTeam(raw: RawTeam | null | undefined): Team | null {
     parser: {
       teamId,
       slug,
-      ...(text(raw?.parser?.volleyScoresUrl) ? { volleyScoresUrl: text(raw?.parser?.volleyScoresUrl) } : {}),
-      ...(text(raw?.parser?.rankingUrl) ? { rankingUrl: text(raw?.parser?.rankingUrl) } : {}),
-      ...(text(raw?.parser?.calendarUrl) ? { calendarUrl: text(raw?.parser?.calendarUrl) } : {}),
+      ...(text(raw?.parser?.volleyClubId) ? { volleyClubId: text(raw?.parser?.volleyClubId) } : {}),
+      ...(text(raw?.parser?.volleyTeamId) ? { volleyTeamId: text(raw?.parser?.volleyTeamId) } : {}),
+      ...(text(raw?.parser?.volleySeriesId) ? { volleySeriesId: text(raw?.parser?.volleySeriesId) } : {}),
       ...(text(raw?.parser?.competitionCode) ? { competitionCode: text(raw?.parser?.competitionCode) } : {}),
       ...(text(raw?.parser?.divisionCode) ? { divisionCode: text(raw?.parser?.divisionCode) } : {}),
       parserEnabled: raw?.parser?.parserEnabled === true,

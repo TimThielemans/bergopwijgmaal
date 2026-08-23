@@ -57,3 +57,30 @@ export const CLUB_INFO_QUERY = `*[_type == "clubInfo"][0] {
   email, phone,
   "socials": coalesce(socials[]{ platform, label, url }, [])
 }`;
+
+/* --- VolleyDataParser ---------------------------------------------------- */
+
+/** Parser configuration only: ids, never URLs. Filtered on parserEnabled. */
+export const PARSER_TEAMS_QUERY = `*[_type == "team" && defined(teamId) && parser.parserEnabled == true] | order(coalesce(order, 99) asc) {
+  teamId,
+  "slug": slug.current,
+  name,
+  "parser": {
+    "parserEnabled": parser.parserEnabled,
+    "volleyClubId": parser.volleyClubId,
+    "volleyTeamId": parser.volleyTeamId,
+    "volleySeriesId": parser.volleySeriesId,
+    "competitionCode": parser.competitionCode,
+    "divisionCode": parser.divisionCode
+  }
+}`;
+
+/** Last-run summary of both raw singletons (no row payload). */
+export const VOLLEY_RAW_STATUS_QUERY = `{
+  "matches": *[_id == "volleyMatchesRaw"][0]{
+    generatedAt, teamCount, rowCount, "errorCount": count(coalesce(errors, []))
+  },
+  "rankings": *[_id == "volleyRankingsRaw"][0]{
+    generatedAt, teamCount, rowCount, "errorCount": count(coalesce(errors, []))
+  }
+}`;
