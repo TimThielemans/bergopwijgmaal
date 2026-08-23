@@ -41,7 +41,7 @@ function buildUrl(params: Record<string, string | number | undefined>): string {
 export function buildMatchesExportUrl(ids: VolleyIds): string {
   const ci = clean(ids.volleyClubId);
   const ssi = clean(ids.volleySeriesId);
-  const id = clean(ids.volleyTeamId);
+  const ti = clean(ids.volleyTeamId);
 
   if (!ci || !ssi) return "";
 
