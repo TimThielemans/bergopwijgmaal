@@ -43,6 +43,11 @@ async function loadRaw(): Promise<{ matches: RawEnvelope | null; rankings: RawEn
   }
 }
 
+/** Drops the cached adapter result, e.g. right after a refresh run. */
+export function invalidateAdaptedVolleyData(): void {
+  cache = null;
+}
+
 export function loadAdaptedVolleyData(): Promise<AdaptedVolleyData> {
   if (!cache) {
     cache = (async () => {
