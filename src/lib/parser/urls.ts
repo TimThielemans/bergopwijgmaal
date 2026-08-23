@@ -72,14 +72,12 @@ export function buildRankingExportUrl(ids: VolleyIds): string {
  * longer used (it only kicks in when the live export is empty).
  */
 export const RANKING_TEST_URLS: Record<string, string> = {
-  "heren-a":
-    "https://www.volleyscores.be/index.php?v=2&isActiveSeason=&a=re&se=12&ti=96174&st=&w=%&f=1&lng=nl",
+  "heren-a": "https://www.volleyscores.be/index.php?v=2&isActiveSeason=&a=re&se=12&ti=96174&st=&w=%&f=1&lng=nl",
 };
 
 export function rankingTestUrl(teamId: string): string {
   return RANKING_TEST_URLS[clean(teamId)] ?? "";
 }
-
 
 /** Public (HTML) overview page for supporters — same ids, no XLS flag. */
 export function buildPublicOverviewUrl(ids: VolleyIds): string {
@@ -95,7 +93,7 @@ export function buildPublicOverviewUrl(ids: VolleyIds): string {
   if (ti) url.searchParams.set("ti", ti);
   url.searchParams.set("ssi", ssi);
   url.searchParams.set("lng", "nl");
-  return url.toString();
+  return VOLLEYSCORES_ORIGIN;
 }
 
 /** Lists the ids that are required but missing for a full parser run. */
