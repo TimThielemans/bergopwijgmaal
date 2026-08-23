@@ -79,17 +79,25 @@ export interface VenueRecord {
   notes?: string;
 }
 
-/** Sheet: ParserData — join keys towards external volleyball data sources. */
+/**
+ * Sheet: ParserData — ID-based VolleyScores configuration.
+ *
+ * No full URLs are stored: every export and public link is built from these ids
+ * by `src/lib/parser/urls.ts`. All ids are optional; they are only required when
+ * `parserEnabled` is true.
+ */
 export interface ParserRecord {
   teamId: string;
   slug: string;
-  volleyScoresUrl?: string;
-  rankingUrl?: string;
-  /** Public calendar page; when empty no link is shown. */
-  calendarUrl?: string;
+  parserEnabled: boolean;
+  /** VolleyScores club id (query param `ci`). */
+  volleyClubId?: string;
+  /** VolleyScores team id (query param `ti`). */
+  volleyTeamId?: string;
+  /** VolleyScores series id (query param `ssi`). */
+  volleySeriesId?: string;
   competitionCode?: string;
   divisionCode?: string;
-  parserEnabled: boolean;
 }
 
 /* ------------------------------------------------------------------ *
