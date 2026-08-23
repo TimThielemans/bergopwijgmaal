@@ -3,13 +3,7 @@ import { useSuspenseQuery } from "@tanstack/react-query";
 import { text } from "@/lib/safe";
 import { jsonLdScript, pageMeta, sportsTeamJsonLd } from "@/lib/seo";
 
-import {
-  rankingTableQuery,
-  standingQuery,
-  teamCalendarQuery,
-  teamQuery,
-  upcomingMatchesQuery,
-} from "@/lib/providers";
+import { rankingTableQuery, standingQuery, teamCalendarQuery, teamQuery, upcomingMatchesQuery } from "@/lib/providers";
 import { TeamDetail } from "@/components/teams/TeamDetail";
 
 export const Route = createFileRoute("/ploegen/$slug")({
@@ -19,7 +13,7 @@ export const Route = createFileRoute("/ploegen/$slug")({
     await Promise.all([
       context.queryClient.ensureQueryData(standingQuery(team.teamId)),
       context.queryClient.ensureQueryData(rankingTableQuery(team.teamId)),
-      context.queryClient.ensureQueryData(upcomingMatchesQuery({ teamId: team.teamId, limit: 6 })),
+      context.queryClient.ensureQueryData(upcomingMatchesQuery({ teamId: team.teamId, limit: 7 })),
       context.queryClient.ensureQueryData(teamCalendarQuery(team.teamId)),
     ]);
     return {
@@ -60,12 +54,6 @@ function TeamDetailPage() {
   if (!team) return null;
 
   return (
-    <TeamDetail
-      team={team}
-      standing={standing}
-      rankingTable={rankingTable}
-      upcoming={upcoming}
-      calendar={calendar}
-    />
+    <TeamDetail team={team} standing={standing} rankingTable={rankingTable} upcoming={upcoming} calendar={calendar} />
   );
 }
