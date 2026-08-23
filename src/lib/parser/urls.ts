@@ -32,7 +32,6 @@ function buildUrl(params: Record<string, string | number | undefined>): string {
       url.searchParams.set(key, String(value));
     }
   }
-  url.searchParams.set("w", "%");
   url.searchParams.set("f", "1");
   url.searchParams.set("lng", "nl");
 
@@ -47,8 +46,7 @@ export function buildMatchesExportUrl(ids: VolleyIds): string {
 
   return buildUrl({
     a: "me",
-    ci,
-    ssi,
+    ti,
     st: "%",
     w: "%",
   });
