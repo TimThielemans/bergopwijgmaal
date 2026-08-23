@@ -11,13 +11,15 @@ A new adapter layer sits between them and the existing `Match` / `RankingEntry` 
   `Reeks, Wedstrijdnr, Datum (19/09/2026), Uur (16:30), Thuis, Bezoekers, Sporthall, Uitslag,
   Setstanden, Uitslag reserven, Setstanden reserven, Uitgesteld`.
   Each block contains only the matches of that team (home + away), not the full series.
-- `volleyRankingsRaw`: 0 rows, 0 blocks. Every team has a `download` error
-  `"Stand: Download mislukt (HTTP 500)"`.
-  Cause found: the shared URL builder always adds `se=13`; the ranking export
-  (`a=re`) returns HTTP 500 with that parameter and HTTP 200 without it.
-  Without `se=13` the download succeeds but the returned XLS contains only a
-  formatting header and no rows, so the correct ranking export parameters still
-  have to be confirmed (see "Open point").
+- `volleyRankingsRaw`: still 0 rows — it is preseason, so no ranking is published yet for the
+  current series. `se=13` stays in the ranking URL; nothing about the URL builder is changed.
+- Validation happens against the Heren A test export (last season, `se=12`, `ti=96174`),
+  which returns a real ranking sheet: title row 0, header row 1
+  (`Ploeg, Ptn, # Wed, Gew. 3-0/3-1, Gew. 3-2, Verl. 3-0/3-1, Verl. 3-2, Gew. sets,
+  Verl. sets, Forfaits`), position in column 0 as `01. `, `05a. ` (ties possible).
+  After the main table come two blank rows, a `… (reserven)` title and a second table with
+  header `Reserve` — the **reserve classement, which is ignored**.
+
 
 ## 1. Adapter layer
 
@@ -31,7 +33,7 @@ no Sanity and no fetch inside:
 | `scores.ts` | `Uitslag` (`3-1`) → `setsFor`/`setsAgainst` from the club's perspective; `Setstanden` (`25-20 22-25 …`) → `scoreLine`. |
 | `teams.ts` | Team matching: raw `Thuis`/`Bezoekers` strings → our own team (`isHome`, opponent name), and venue matching of `Sporthall` onto the `location` documents with a text fallback. |
 | `matches.ts` | `RawTeamBlock[]` → `Match[]`: stable `id` from `Wedstrijdnr`, `status` (`played` when a result exists, `postponed` when `Uitgesteld` is filled, otherwise `scheduled`), `competition` from `Reeks`, `sourceId`. |
-| `rankings.ts` | Ranking rows → `RankingEntry[]` (position, division, played/won/lost, points, sets) **plus** `form`: the last five played matches of that team from the adapted matches, oldest first — so the streak is always available, also when the ranking export lacks it. |
+| `rankings.ts` | Ranking rows → `RankingEntry[]`: **only the main classement** — reading stops at the first blank row after the main table, so the `(reserven)` block and its `Reserve` header row are never imported. Position from `01. ` / `05a. ` (letters stripped, ties kept), `points` from `Ptn`, `played` from `# Wed`, `won` = `Gew. 3-0/3-1` + `Gew. 3-2`, `lost` = `Verl. 3-0/3-1` + `Verl. 3-2`, `setsFor`/`setsAgainst` from `Gew./Verl. sets`, `division` from the title row. Only the row matching our own club name becomes a `RankingEntry`; the full table is kept available for a possible later series view. `form` is derived from the last five played matches of that team in the adapted matches, oldest first. |
 | `index.ts` | `adaptVolleyData({ matchesRaw, rankingsRaw, teams, venues, seasonId })` → `{ matches, rankings, generatedAt, warnings }`. |
 
 Rules that apply everywhere: never throw, drop a row instead and collect a warning;
@@ -58,20 +60,18 @@ matches and ranking rows per team, which source is active (Sanity raw or fallbac
 and the adapter warnings (unmatched team names, invalid dates, unparsable scores).
 Purely read-only.
 
-## 4. Ranking download fix
+## 4. Ranking URL and validation
 
-`buildRankingExportUrl` no longer sends `se=13` (that is what causes the HTTP 500);
-`se=13` stays on the matches export, which works. The refresh runner keeps reporting
-per-team errors as it does now.
+- The ranking URL keeps `se=13`; `buildRankingExportUrl` is left as is. No change there.
+- Heren A is the reference team: the existing test export (last season) is used to validate
+  the whole ranking flow end to end — refresh → `volleyRankingsRaw` → adapter → team page.
+- Because it is preseason, the other teams will legitimately produce no ranking rows. The
+  adapter treats "no ranking yet" as a normal state: the team page shows the existing
+  "geen stand beschikbaar" state instead of an error, and the rankings section only lists
+  teams that do have a standing.
+- Text encoding: the export delivers Latin-1 bytes (`La LouviÃ¨re`), so the adapter
+  repairs the encoding of team names before matching and display.
 
-## Open point
-
-The ranking export currently returns a valid but *empty* workbook, so the ranking part of
-the adapter cannot be verified against real data yet. Can you open the standings of one
-series in VolleyScores in your browser, click the Excel/export icon and paste the exact URL
-from the address bar? Then I can pin the correct parameters. Until then the adapter's
-ranking path is built and tested against the column names as documented, and the site keeps
-using the fallback ranking JSON.
 
 ## Out of scope
 
