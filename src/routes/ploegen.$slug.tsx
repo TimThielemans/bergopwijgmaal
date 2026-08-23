@@ -3,12 +3,7 @@ import { useSuspenseQuery } from "@tanstack/react-query";
 import { text } from "@/lib/safe";
 import { jsonLdScript, pageMeta, sportsTeamJsonLd } from "@/lib/seo";
 
-import {
-  standingQuery,
-  teamCalendarQuery,
-  teamQuery,
-  upcomingMatchesQuery,
-} from "@/lib/providers";
+import { standingQuery, teamCalendarQuery, teamQuery, upcomingMatchesQuery } from "@/lib/providers";
 import { TeamDetail } from "@/components/teams/TeamDetail";
 
 export const Route = createFileRoute("/ploegen/$slug")({
@@ -17,7 +12,7 @@ export const Route = createFileRoute("/ploegen/$slug")({
     if (!team) throw notFound();
     await Promise.all([
       context.queryClient.ensureQueryData(standingQuery(team.teamId)),
-      context.queryClient.ensureQueryData(upcomingMatchesQuery({ teamId: team.teamId, limit: 4 })),
+      context.queryClient.ensureQueryData(upcomingMatchesQuery({ teamId: team.teamId, limit: 6 })),
       context.queryClient.ensureQueryData(teamCalendarQuery(team.teamId)),
     ]);
     return {
@@ -26,7 +21,6 @@ export const Route = createFileRoute("/ploegen/$slug")({
       level: text(team.level),
       summary: text(team.shortDescription, text(team.description)),
     };
-
   },
   head: ({ loaderData }) => {
     if (!loaderData) {
@@ -38,13 +32,11 @@ export const Route = createFileRoute("/ploegen/$slug")({
       ? `${loaderData.name} (${loaderData.level}) — VC Berg-Op Wijgmaal`
       : `${loaderData.name} — VC Berg-Op Wijgmaal`;
     const description =
-      loaderData.summary ||
-      `Kalender, kern, coaching en klassement van ${loaderData.name} bij VC Berg-Op Wijgmaal.`;
+      loaderData.summary || `Kalender, kern, coaching en klassement van ${loaderData.name} bij VC Berg-Op Wijgmaal.`;
     return {
       meta: pageMeta({ title, description }),
       scripts: [jsonLdScript(sportsTeamJsonLd(loaderData.name, description))],
     };
-
   },
   component: TeamDetailPage,
 });
@@ -59,7 +51,5 @@ function TeamDetailPage() {
 
   if (!team) return null;
 
-  return (
-    <TeamDetail team={team} standing={standing} upcoming={upcoming} calendar={calendar} />
-  );
+  return <TeamDetail team={team} standing={standing} upcoming={upcoming} calendar={calendar} />;
 }
