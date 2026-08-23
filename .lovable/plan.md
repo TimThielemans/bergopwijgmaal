@@ -11,13 +11,15 @@ A new adapter layer sits between them and the existing `Match` / `RankingEntry` 
   `Reeks, Wedstrijdnr, Datum (19/09/2026), Uur (16:30), Thuis, Bezoekers, Sporthall, Uitslag,
   Setstanden, Uitslag reserven, Setstanden reserven, Uitgesteld`.
   Each block contains only the matches of that team (home + away), not the full series.
-- `volleyRankingsRaw`: 0 rows, 0 blocks. Every team has a `download` error
-  `"Stand: Download mislukt (HTTP 500)"`.
-  Cause found: the shared URL builder always adds `se=13`; the ranking export
-  (`a=re`) returns HTTP 500 with that parameter and HTTP 200 without it.
-  Without `se=13` the download succeeds but the returned XLS contains only a
-  formatting header and no rows, so the correct ranking export parameters still
-  have to be confirmed (see "Open point").
+- `volleyRankingsRaw`: still 0 rows — it is preseason, so no ranking is published yet for the
+  current series. `se=13` stays in the ranking URL; nothing about the URL builder is changed.
+- Validation happens against the Heren A test export (last season, `se=12`, `ti=96174`),
+  which returns a real ranking sheet: title row 0, header row 1
+  (`Ploeg, Ptn, # Wed, Gew. 3-0/3-1, Gew. 3-2, Verl. 3-0/3-1, Verl. 3-2, Gew. sets,
+  Verl. sets, Forfaits`), position in column 0 as `01. `, `05a. ` (ties possible).
+  After the main table come two blank rows, a `… (reserven)` title and a second table with
+  header `Reserve` — the **reserve classement, which is ignored**.
+
 
 ## 1. Adapter layer
 
