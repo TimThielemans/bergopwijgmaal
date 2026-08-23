@@ -57,7 +57,8 @@ export function buildMatchesExportUrl(ids: VolleyIds): string {
 export function buildRankingExportUrl(ids: VolleyIds): string {
   const ssi = clean(ids.volleySeriesId);
   if (!ssi) return "";
-  return buildUrl({ a: "re", ssi });
+  /*return buildUrl({ a: "re", ssi });*/
+  return "https://www.volleyscores.be/index.php?v=2&isActiveSeason=&t=Ploeg%20(NAT3H-B)%20Berg-op%20Wijgmaal%20A&a=re&se=12&pi=&si=&ti=96174&ci=&mm=&ssi=&st=&w=%&f=&lng=nl";
 }
 
 /** Public (HTML) overview page for supporters — same ids, no XLS flag. */
