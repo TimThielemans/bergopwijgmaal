@@ -26,6 +26,7 @@ function buildUrl(params: Record<string, string | number | undefined>): string {
   const url = new URL(`${VOLLEYSCORES_ORIGIN}/index.php`);
   url.searchParams.set("v", "2");
   url.searchParams.set("isActiveSeason", "1");
+  url.searchParams.set("se", "13");
   for (const [key, value] of Object.entries(params)) {
     if (value !== undefined && value !== null && value !== "") {
       url.searchParams.set(key, String(value));
