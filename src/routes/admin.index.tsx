@@ -93,7 +93,9 @@ function AdminDashboard() {
           </button>
         </div>
 
-        <div className="surface-card mt-8 flex flex-wrap items-center justify-between gap-4 p-6">
+        <h2 className="mb-4 font-display text-xl font-bold">Belangrijkste taken</h2>
+
+        <div className="grid gap-4 sm:grid-cols-2">
           <Link
             to="/admin/excel-import"
             className="surface-card border-2 border-club h-full p-6 transition-transform hover:scale-[1.01]"
@@ -108,7 +110,10 @@ function AdminDashboard() {
             </span>
           </Link>
 
-          <Link to="/admin/volleydata" className="surface-card h-full p-6 transition-transform hover:scale-[1.01]">
+          <Link
+            to="/admin/volleydata"
+            className="surface-card border-2 border-club h-full p-6 transition-transform hover:scale-[1.01]"
+          >
             <RefreshCw aria-hidden="true" className="h-6 w-6 text-club-deep" />
             <h2 className="mt-3 font-display text-lg font-bold">Volley-data verversen</h2>
             <p className="mt-2 text-sm leading-relaxed text-muted-foreground">
@@ -119,6 +124,8 @@ function AdminDashboard() {
             </span>
           </Link>
         </div>
+
+        <h2 className="mb-4 font-display text-xl font-bold">CMS beheer</h2>
 
         <div className="surface-card mt-8 flex flex-wrap items-center justify-between gap-4 p-6">
           <div>
