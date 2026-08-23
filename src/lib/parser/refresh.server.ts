@@ -99,15 +99,14 @@ export async function runVolleyDataRefresh(): Promise<RefreshResult> {
       console.log(`[VolleyParser][${teamName}] Ranking URL:`, rankingUrl);
       let matchRows = 0;
       let rankingRows = 0;
-
+      let rows: Awaited<ReturnType<typeof fetchSheetRows>> = [];
       if (matchesUrl) {
         try {
           const testUrl = matchesTestUrl(teamId);
           if (testUrl) {
-            const rows = await fetchSheetRows({ url: testUrl, headerRowIndex: 0, teamId });
+            rows = await fetchSheetRows({ url: testUrl, headerRowIndex: 0, teamId });
           } else {
-            const matchesUrl = rankingTestUrl(teamId);
-            const rows = await fetchSheetRows({ url: matchesUrl, headerRowIndex: 0, teamId });
+            rows = await fetchSheetRows({ url: matchesUrl, headerRowIndex: 0, teamId });
           }
           matchRows = rows.length;
           matchBlocks.push({ ...base, sourceUrl: matchesUrl, rows });
