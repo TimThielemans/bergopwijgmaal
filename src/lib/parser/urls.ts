@@ -75,8 +75,16 @@ export const RANKING_TEST_URLS: Record<string, string> = {
   "heren-a": "https://www.volleyscores.be/index.php?v=2&isActiveSeason=&a=re&se=12&ti=96174&st=&w=%&f=1&lng=nl",
 };
 
+export const MATCHES_TEST_URLS: Record<string, string> = {
+  "heren-a": "https://www.volleyscores.be/index.php?v=2&isActiveSeason=1&a=me&se=12&ti=96174&w=%25&f=&lng=nl",
+};
+
 export function rankingTestUrl(teamId: string): string {
   return RANKING_TEST_URLS[clean(teamId)] ?? "";
+}
+
+export function matchesTestUrl(teamId: string): string {
+  return MATCHES_TEST_URLS[clean(teamId)] ?? "";
 }
 
 /** Public (HTML) overview page for supporters — same ids, no XLS flag. */
