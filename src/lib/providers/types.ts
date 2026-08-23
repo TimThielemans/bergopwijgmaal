@@ -8,6 +8,7 @@ import type {
   Team,
   Venue,
 } from "@/content/types";
+import type { RankingTable } from "@/lib/adapters";
 
 /**
  * Provider contracts.
@@ -34,6 +35,8 @@ export interface MatchProvider {
 export interface RankingProvider {
   getStanding(teamId: string, seasonId?: string): Promise<RankingEntry | null>;
   getAllStandings(seasonId?: string): Promise<RankingEntry[]>;
+  /** Complete classement of the team's division (main table only). */
+  getTable(teamId: string, seasonId?: string): Promise<RankingTable | null>;
   getLastUpdated(): Promise<string | null>;
 }
 

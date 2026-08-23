@@ -12,15 +12,18 @@ import { FormStreak } from "@/components/shared/FormStreak";
 import { MatchRow } from "@/components/shared/MatchRow";
 import { Reveal } from "@/components/shared/Reveal";
 import { SafeImage } from "@/components/shared/SafeImage";
+import { RankingTable } from "@/components/teams/RankingTable";
+import type { RankingTable as RankingTableData } from "@/lib/adapters";
 
 interface TeamDetailProps {
   team: Team;
   standing?: RankingEntry | null;
+  rankingTable?: RankingTableData | null;
   upcoming?: Match[] | null;
   calendar?: Match[] | null;
 }
 
-export function TeamDetail({ team, standing, upcoming, calendar }: TeamDetailProps) {
+export function TeamDetail({ team, standing, rankingTable, upcoming, calendar }: TeamDetailProps) {
   const { venues } = useSiteContent();
   const upcomingMatches = list(upcoming);
   const calendarMatches = list(calendar);
@@ -236,7 +239,14 @@ export function TeamDetail({ team, standing, upcoming, calendar }: TeamDetailPro
             icon={Trophy}
           />
         )}
+
+        {standing ? (
+          <Reveal delay={100} className="mt-6">
+            <RankingTable table={rankingTable} />
+          </Reveal>
+        ) : null}
       </Section>
+
 
       <Section
         eyebrow="Kalender"

@@ -124,6 +124,12 @@ export const sanityVolleyRankingProvider: RankingProvider = {
       data.rankings.find((entry) => entry.teamId === teamId && entry.seasonId === seasonId) ?? null
     );
   },
+  async getTable(teamId, seasonId = CURRENT_SEASON_ID) {
+    if (!text(teamId)) return null;
+    const data = await loadAdaptedVolleyData();
+    if (data.rankingSource !== "sanity") return staticJsonRankingProvider.getTable(teamId, seasonId);
+    return data.tables.find((table) => table.teamId === teamId) ?? null;
+  },
   async getAllStandings(seasonId = CURRENT_SEASON_ID): Promise<RankingEntry[]> {
     const data = await loadAdaptedVolleyData();
     if (data.rankingSource !== "sanity") return staticJsonRankingProvider.getAllStandings(seasonId);
