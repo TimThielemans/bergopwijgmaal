@@ -47,9 +47,13 @@ export async function fetchSheetRows(options: {
     blankrows: false,
   });
 
-  const headers = (matrix[headerRowIndex] ?? []).map((cell) =>
-    cell === null || cell === undefined ? "" : String(cell).trim(),
-  );
+  // Empty headers get a positional name (`Kolom1`, `Kolom2`, …) so leading
+  // columns such as the ranking position are preserved instead of dropped.
+  const headers = (matrix[headerRowIndex] ?? []).map((cell, index) => {
+    const value = cell === null || cell === undefined ? "" : String(cell).trim();
+    return value || `Kolom${index + 1}`;
+  });
+
   if (headers.length === 0) return [];
 
   const rows: RawRow[] = [];
