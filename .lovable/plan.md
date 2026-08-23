@@ -1,59 +1,71 @@
-# VolleyDataParser — modernisation & integration layer
+# VolleyDataParser — modernisation, Sanity storage & one-click refresh
 
 ## 1. Analyse of the uploaded PHP
 
-`get_and_convert_xls_files.php` does three things:
+`get_and_convert_xls_files.php`:
 
-1. A hardcoded `$xlsurls` map (VolleyScores URL -> local filename), split by hand
-   into match files (`heren1.xls`, `dames1.xls`, ...) and ranking files
-   (`AHP3A.xls`, `ADP4A.xls`, ...). Note: the sample URLs still point to another
-   club (Osta Berchem) and the ranking TODO is unresolved.
-2. Downloads each URL with `fopen`/`file_put_contents`, then `sleep(13)` to wait
-   for the writes.
-3. Converts every file with PhpSpreadsheet: read the active sheet as an array,
-   take a header row, map each following row into `{header: value}` objects, and
-   write one JSON file per XLS.
+1. A hardcoded `$xlsurls` map (VolleyScores URL -> local filename), manually split
+   into match files (`heren1.xls`, ...) and ranking files (`AHP3A.xls`, ...). The
+   sample URLs still point to another club (Osta Berchem) and the rankings TODO is
+   unresolved.
+2. Downloads each URL with `fopen`/`file_put_contents`, then a blind `sleep(13)`.
+3. Converts each file with PhpSpreadsheet: active sheet to array, take a header
+   row, map every following row into `{header: value}`, write one JSON per XLS.
 
-Two important details to preserve:
+`convert.php` is the same conversion for a single test file.
 
-- **Matches use header row index 0; rankings use header row index 1.** The
-  ranking export has one extra title row above the header.
-- Output is a flat array of row objects keyed by the exact Dutch column headers
-  from VolleyScores. That raw shape is what we keep in `*_raw.json`.
+Details worth preserving:
 
-Weaknesses to remove: hardcoded URLs, one output file per team, temp files on
-disk, the blind `sleep`, no error handling, no team identity in the output (so
-you cannot tell which row belongs to which team).
+- **Matches use header row index 0; rankings use header row index 1** (ranking
+  exports have an extra title row).
+- Output rows are keyed by the exact Dutch VolleyScores column headers. That raw
+  shape is what we keep.
 
-## 2. Target architecture
+Weaknesses removed: hardcoded URLs, per-team output files, temp files, the blind
+sleep, no error handling, no team identity in the rows.
 
-The parser becomes a server function inside this app. No PHP, no temp files, no
-Sanity writes.
+PHP cannot run on this stack (TypeScript, serverless runtime). The two files are
+committed to `docs/legacy/` as reference only, with a README noting they are not
+executed; the logic is reimplemented in TypeScript.
+
+## 2. Target flow — no manual file handling
 
 ```text
-Sanity (team.parser)  ->  runVolleyParser (server fn)
-                            |- fetch calendarUrl  -> parse sheet -> match rows
-                            |- fetch rankingUrl   -> parse sheet -> ranking rows
-                            v
-                    { matches_raw, rankings_raw }  ->  /admin/parser
-                                                        (preview + download)
+Sanity team.parser (config)
+        |
+        v
+refreshVolleyData (server fn, admin button)   <---- also called by cron route
+        |- fetch calendarUrl per enabled team -> parse sheet -> match rows
+        |- fetch rankingUrl  per enabled team -> parse sheet -> ranking rows
+        v
+Sanity singletons  volleyMatchesRaw / volleyRankingsRaw   (write token)
+        |
+        v
+website reads them server-side (adapter step) -> live update, no redeploy
 ```
 
-- Configuration source: `TEAMS_QUERY` already projects `parser`. A new
-  `PARSER_TEAMS_QUERY` returns only `teamId`, `slug`, `name`, `shortName` and the
-  `parser` object, filtered on `parser.parserEnabled == true`.
-- Reads go through the existing token-based server fetch, so nothing changes
-  about Sanity access.
-- Sheet parsing uses SheetJS (`xlsx`, pure JS, works in the worker runtime). It
-  reads real XLS and also the HTML-table "xls" responses VolleyScores sometimes
-  returns. Header row: 0 for calendars, 1 for rankings, matching the PHP.
-- Each team is fetched independently: one failing URL is recorded as an error and
-  the rest still produce output. Downloads run in parallel (no `sleep`).
+The generated JSON is stored in two Sanity singleton documents. No download, no
+commit, no redeploy. This intentionally reverses the earlier "no generated data
+in Sanity" rule, for these two blobs only.
 
-## 3. Output shape
+## 3. Sanity storage
 
-Both files use the same envelope style as the existing `src/data/*.json`, with
-raw rows untouched plus the team identity the PHP version lacked:
+Two new document types, one document each:
+
+| Type | Fields |
+| --- | --- |
+| `volleyMatchesRaw` | `_id: "volleyMatchesRaw"`, `generatedAt`, `source`, `payload` (JSON string), `teamCount`, `rowCount`, `errors[]` |
+| `volleyRankingsRaw` | same shape |
+
+- `payload` is a stringified JSON envelope (raw rows), so no Sanity schema has to
+  mirror VolleyScores columns and the document stays small and cheap to write.
+- Writes use `createOrReplace` on the fixed `_id`, so a refresh is idempotent and
+  Sanity keeps the revision history (easy rollback via Studio).
+- Requires a new **server-only** secret `SANITY_WRITE_TOKEN` (Editor role).
+  Never `VITE_`-prefixed, read inside the handler only.
+- Schemas are deployed to the existing Studio so the documents are inspectable.
+
+Envelope inside `payload`:
 
 ```json
 {
@@ -67,50 +79,61 @@ raw rows untouched plus the team identity the PHP version lacked:
       "competitionCode": "AHP3",
       "divisionCode": "A",
       "sourceUrl": "https://www.volleyscores.be/...",
-      "rows": [{ "Datum": "13-09-2026", "Thuisploeg": "...", "...": "..." }]
+      "rows": [{ "Datum": "13-09-2026", "Thuisploeg": "..." }]
     }
   ],
   "errors": [{ "teamId": "dames-b", "url": "...", "message": "HTTP 500" }]
 }
 ```
 
-`matches_raw.json` groups per team from `calendarUrl`; `rankings_raw.json` from
-`rankingUrl`. `volleyScoresUrl` stays untouched (it is the public link used on
-the team page).
+## 4. Refresh triggers
 
-## 4. Files to add
+- **Admin button** on a new `/admin/volleydata` page: "Volley-data verversen",
+  showing per-team result (rows found / error), last run timestamp and row counts
+  read back from the singletons.
+- **Scheduled refresh** via `src/routes/api/public/refresh-volley-data.ts`
+  (`POST`). It requires a `x-cron-secret` header compared timing-safely against a
+  new `CRON_SECRET` secret, then calls the same shared runner. Configure a nightly
+  call from cron-job.org / pg_cron against
+  `https://project--<id>.lovable.app/api/public/refresh-volley-data`.
+
+Both paths share one server-only module, so behaviour cannot drift.
+
+## 5. Files
 
 | File | Purpose |
 | --- | --- |
-| `src/lib/parser/types.ts` | `RawSheetRow`, `RawTeamBlock`, `RawEnvelope`, `ParserRunResult` |
+| `src/lib/parser/types.ts` | `RawSheetRow`, `RawTeamBlock`, `RawEnvelope`, `RefreshResult` |
 | `src/lib/parser/sheet.server.ts` | download + SheetJS -> row objects (header index param) |
-| `src/lib/parser/run.functions.ts` | `runVolleyParser` server fn: Sanity read, parallel fetch, two envelopes |
-| `src/lib/sanity/queries.ts` | add `PARSER_TEAMS_QUERY` |
-| `src/routes/admin.parser.tsx` | "Genereer JSON" button, per-team result table, download buttons |
-| `src/routes/admin.index.tsx` | one extra card linking to `/admin/parser` |
-| `docs/volleydata-parser.md` | how it works, how to refresh the committed JSON |
+| `src/lib/parser/refresh.server.ts` | shared runner: read config, fetch in parallel, build envelopes, write singletons |
+| `src/lib/parser/refresh.functions.ts` | `refreshVolleyData` + `getVolleyDataStatus` server fns for the admin UI |
+| `src/lib/sanity/write.server.ts` | `createOrReplace` mutation with `SANITY_WRITE_TOKEN` |
+| `src/lib/sanity/queries.ts` | `PARSER_TEAMS_QUERY`, `VOLLEY_RAW_STATUS_QUERY` |
+| `src/routes/admin.volleydata.tsx` | refresh button, per-team result, last-run info |
+| `src/routes/admin.index.tsx` | one extra card linking to `/admin/volleydata` |
+| `src/routes/api/public/refresh-volley-data.ts` | secret-protected cron endpoint |
+| `docs/legacy/` | the two PHP files + README (reference only) |
+| `docs/volleydata-parser.md` | architecture, secrets, cron setup |
 
-Dependency: `bun add xlsx`.
+Dependency: `bun add xlsx` (pure JS, worker-safe, also reads the HTML-table "xls"
+responses VolleyScores sometimes returns).
 
-## 5. How the JSON reaches the repo
+## 6. Scope of this step vs next
 
-The published app runs in a serverless worker with no writable repo, so the
-parser cannot commit files. The admin page therefore offers the two files as
-downloads (and shows them inline). Refresh flow: run the parser in `/admin`,
-download `matches_raw.json` + `rankings_raw.json`, drop them into `src/data/`.
-The later adapter step converts them into the existing `matches.json` /
-`rankings.json` shapes, which is where team joins, season ids and form streaks
-are produced.
+This step: parser + Sanity storage + both refresh triggers + admin page. The
+website still renders from `src/data/*.json`, so nothing visible changes yet.
 
-## 6. Out of scope for this step
+Next step (adapter, separate approval): map the raw rows onto the existing
+`Match` / `RankingEntry` shapes and let `matchProvider` / `rankingProvider` read
+the Sanity singletons with the committed JSON as fallback. From that moment the
+admin button visibly updates the site.
 
-- No adapter to `matches.json` / `rankings.json` yet.
-- No website/component changes; only the new admin page and its link.
-- No Sanity writes, no schema changes, no database.
+## 7. Security
 
-## 7. Security note
-
-`/admin/parser` is `noindex, nofollow` and behind the existing placeholder admin
-gate. The server fn only fetches URLs coming from Sanity `team.parser` fields and
-only accepts `https://` hosts on `volleyscores.be`, so the endpoint cannot be
-used as an open proxy.
+- `SANITY_WRITE_TOKEN` and `CRON_SECRET` are server-only secrets, read inside
+  handlers.
+- The parser only fetches URLs coming from Sanity `team.parser`, restricted to
+  `https://` on `volleyscores.be`, so it cannot be abused as an open proxy.
+- `/admin/*` stays `noindex, nofollow` and behind the existing admin gate; the
+  cron route rejects requests without the correct secret and returns no data.
+- No database, no user data involved.
