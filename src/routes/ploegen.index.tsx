@@ -12,7 +12,7 @@ import { TeamCard } from "@/components/teams/TeamCard";
 
 const TITLE = "Ploegen — VC Berg-Op Wijgmaal";
 const DESCRIPTION =
-  "Alle ploegen van VC Berg-Op Wijgmaal: competitieve teams van nationaal tot provinciaal en recreatieve ploegen in Wijgmaal, Leuven.";
+  "Alle ploegen van Berg-Op Wijgmaal: competitieve teams in Nationale en Provinciale reeksen of recreatieploegen in de VLM.";
 
 export const Route = createFileRoute("/ploegen/")({
   loader: ({ context }) => context.queryClient.ensureQueryData(teamsQuery()),
@@ -24,12 +24,12 @@ const GROUPS = [
   {
     key: "competitief" as const,
     title: "Competitieploegen",
-    intro: "Twee trainingen per week, een vaste kern en duidelijke sportieve doelstellingen.",
+    intro: "Een of twee trainingen per week en in de weekends een competitiematch.",
   },
   {
     key: "recreatief" as const,
     title: "Recreatieve ploegen",
-    intro: "Volleybal om het spel: één training per week, wedstrijden zonder klassementsdruk.",
+    intro: "Wanneer trainen er teveel aan wordt, enkel een wekelijks wedstrijdje.",
   },
 ];
 
@@ -40,9 +40,7 @@ function TeamsPage() {
     ...group,
     teams: teams.filter((team) => team.category === group.key),
   })).filter((group) => group.teams.length > 0);
-  const ungrouped = teams.filter(
-    (team) => !GROUPS.some((group) => group.key === team.category),
-  );
+  const ungrouped = teams.filter((team) => !GROUPS.some((group) => group.key === team.category));
 
   return (
     <>
