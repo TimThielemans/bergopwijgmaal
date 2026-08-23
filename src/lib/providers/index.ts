@@ -89,3 +89,10 @@ export const standingQuery = (teamId: string, seasonId: string = CURRENT_SEASON_
     queryKey: ["ranking", seasonId, teamId] as const,
     queryFn: () => rankingProvider.getStanding(teamId, seasonId),
   });
+
+/** Complete classement of the division the team plays in. */
+export const rankingTableQuery = (teamId: string, seasonId: string = CURRENT_SEASON_ID) =>
+  queryOptions({
+    queryKey: ["ranking-table", seasonId, teamId] as const,
+    queryFn: () => rankingProvider.getTable(teamId, seasonId),
+  });

@@ -153,6 +153,33 @@ export const staticJsonRankingProvider: RankingProvider = {
       rankings.find((entry) => entry.teamId === teamId && entry.seasonId === seasonId) ?? null
     );
   },
+  /**
+   * The static JSON only holds the club's own row, not the full division. A
+   * single-row table keeps the UI renderable without inventing opponents.
+   */
+  async getTable(teamId, seasonId = CURRENT_SEASON_ID) {
+    const entry = await staticJsonRankingProvider.getStanding(teamId, seasonId);
+    if (!entry) return null;
+    const team = teams.find((row) => row.teamId === teamId);
+    return {
+      teamId,
+      division: entry.division,
+      rows: [
+        {
+          position: entry.position,
+          positionLabel: String(entry.position || ""),
+          teamName: text(team?.name, "Onze ploeg"),
+          points: entry.points,
+          played: entry.played,
+          won: entry.won,
+          lost: entry.lost,
+          setsFor: entry.setsFor,
+          setsAgainst: entry.setsAgainst,
+          isOwnTeam: true,
+        },
+      ],
+    };
+  },
   async getAllStandings(seasonId = CURRENT_SEASON_ID) {
     const order = new Map(teams.map((team) => [team.teamId, num(team.order, 99)]));
     return rankings
