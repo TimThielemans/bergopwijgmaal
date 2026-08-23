@@ -18,6 +18,7 @@ import { Route as PloegenRouteImport } from './routes/ploegen'
 import { Route as StudioRouteImport } from './routes/studio'
 import { Route as AdminIndexRouteImport } from './routes/admin.index'
 import { Route as AdminExcelImportRouteImport } from './routes/admin.excel-import'
+import { Route as AdminVolleydataRouteImport } from './routes/admin.volleydata'
 import { Route as PloegenIndexRouteImport } from './routes/ploegen.index'
 import { Route as PloegenSlugRouteImport } from './routes/ploegen.$slug'
 import { Route as ApiPublicRefreshVolleyDataRouteImport } from './routes/api/public/refresh-volley-data'
@@ -67,6 +68,11 @@ const AdminExcelImportRoute = AdminExcelImportRouteImport.update({
   path: '/excel-import',
   getParentRoute: () => AdminRoute,
 } as any)
+const AdminVolleydataRoute = AdminVolleydataRouteImport.update({
+  id: '/volleydata',
+  path: '/volleydata',
+  getParentRoute: () => AdminRoute,
+} as any)
 const PloegenIndexRoute = PloegenIndexRouteImport.update({
   id: '/',
   path: '/',
@@ -93,6 +99,7 @@ export interface FileRoutesByFullPath {
   '/ploegen': typeof PloegenRouteWithChildren
   '/studio': typeof StudioRoute
   '/admin/excel-import': typeof AdminExcelImportRoute
+  '/admin/volleydata': typeof AdminVolleydataRoute
   '/ploegen/$slug': typeof PloegenSlugRoute
   '/admin/': typeof AdminIndexRoute
   '/ploegen/': typeof PloegenIndexRoute
@@ -105,6 +112,7 @@ export interface FileRoutesByTo {
   '/login': typeof LoginRoute
   '/studio': typeof StudioRoute
   '/admin/excel-import': typeof AdminExcelImportRoute
+  '/admin/volleydata': typeof AdminVolleydataRoute
   '/ploegen/$slug': typeof PloegenSlugRoute
   '/admin': typeof AdminIndexRoute
   '/ploegen': typeof PloegenIndexRoute
@@ -120,6 +128,7 @@ export interface FileRoutesById {
   '/ploegen': typeof PloegenRouteWithChildren
   '/studio': typeof StudioRoute
   '/admin/excel-import': typeof AdminExcelImportRoute
+  '/admin/volleydata': typeof AdminVolleydataRoute
   '/ploegen/$slug': typeof PloegenSlugRoute
   '/admin/': typeof AdminIndexRoute
   '/ploegen/': typeof PloegenIndexRoute
@@ -136,6 +145,7 @@ export interface FileRouteTypes {
     | '/ploegen'
     | '/studio'
     | '/admin/excel-import'
+    | '/admin/volleydata'
     | '/ploegen/$slug'
     | '/admin/'
     | '/ploegen/'
@@ -148,6 +158,7 @@ export interface FileRouteTypes {
     | '/login'
     | '/studio'
     | '/admin/excel-import'
+    | '/admin/volleydata'
     | '/ploegen/$slug'
     | '/admin'
     | '/ploegen'
@@ -162,6 +173,7 @@ export interface FileRouteTypes {
     | '/ploegen'
     | '/studio'
     | '/admin/excel-import'
+    | '/admin/volleydata'
     | '/ploegen/$slug'
     | '/admin/'
     | '/ploegen/'
@@ -244,6 +256,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminExcelImportRouteImport
       parentRoute: typeof AdminRoute
     }
+    '/admin/volleydata': {
+      id: '/admin/volleydata'
+      path: '/volleydata'
+      fullPath: '/admin/volleydata'
+      preLoaderRoute: typeof AdminVolleydataRouteImport
+      parentRoute: typeof AdminRoute
+    }
     '/ploegen/': {
       id: '/ploegen/'
       path: '/'
@@ -270,11 +289,13 @@ declare module '@tanstack/react-router' {
 
 interface AdminRouteChildren {
   AdminExcelImportRoute: typeof AdminExcelImportRoute
+  AdminVolleydataRoute: typeof AdminVolleydataRoute
   AdminIndexRoute: typeof AdminIndexRoute
 }
 
 const AdminRouteChildren: AdminRouteChildren = {
   AdminExcelImportRoute: AdminExcelImportRoute,
+  AdminVolleydataRoute: AdminVolleydataRoute,
   AdminIndexRoute: AdminIndexRoute,
 }
 
