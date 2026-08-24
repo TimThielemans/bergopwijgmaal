@@ -52,22 +52,22 @@ export function RankingTable({
                 Ploeg
               </th>
               <th scope="col" className="px-3 py-3 text-right">
-                Wed
+                WED
               </th>
               <th scope="col" className="px-3 py-3 text-right">
-                Gew
+                PTN
               </th>
               <th scope="col" className="px-3 py-3 text-right">
-                Verl
+                W+
               </th>
               <th scope="col" className="px-3 py-3 text-right">
-                Ptn
+                W-
               </th>
               <th scope="col" className="px-3 py-3 text-right">
-                Sets V
+                S+
               </th>
               <th scope="col" className="px-3 py-3 pr-4 text-right sm:pr-6">
-                Sets T
+                S-
               </th>
             </tr>
           </thead>
