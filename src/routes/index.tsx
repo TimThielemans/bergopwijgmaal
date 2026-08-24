@@ -18,7 +18,7 @@ import { ContactSection } from "@/components/home/ContactSection";
 /** All matches in the next two weeks, topped up to at least 5 when it is quiet. */
 const HOME_MATCHES_QUERY = { limit: 14, withinDays: 14, minCount: 5 } as const;
 
-const TITLE = "Berg-Op Wijgmaal — familiale volleybalclub in Leuven";
+const TITLE = "Welkom bij BOW";
 const DESCRIPTION =
   "Volleybal in Wijgmaal bij Leuven: competitieve en recreatieve ploegen, wedstrijdkalender, standen en clubactiviteiten";
 

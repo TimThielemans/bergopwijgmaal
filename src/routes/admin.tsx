@@ -13,10 +13,7 @@ import { EmptyState } from "@/components/shared/EmptyState";
 export const Route = createFileRoute("/admin")({
   ssr: false,
   head: () => ({
-    meta: [
-      { title: "Beheer — VC Berg-Op Wijgmaal" },
-      { name: "robots", content: "noindex, nofollow" },
-    ],
+    meta: [{ title: "Beheer — BOW" }, { name: "robots", content: "noindex, nofollow" }],
   }),
   component: AdminLayout,
 });

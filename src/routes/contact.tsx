@@ -9,7 +9,7 @@ import { MapPlaceholder } from "@/components/shared/MapPlaceholder";
 import { Reveal } from "@/components/shared/Reveal";
 import { SocialLinks } from "@/components/shared/SocialLinks";
 
-const TITLE = "Contact — Berg-Op Wijgmaal";
+const TITLE = "Contact — BOW";
 const DESCRIPTION = "Contacteer BOW, sporthallen, e-mail, telefoon en sociale media";
 
 export const Route = createFileRoute("/contact")({
@@ -61,9 +61,7 @@ function ContactPage() {
                 ) : null}
               </div>
             ) : (
-              <p className="mt-3 text-sm text-muted-foreground">
-                Contactgegevens worden binnenkort toegevoegd.
-              </p>
+              <p className="mt-3 text-sm text-muted-foreground">Contactgegevens worden binnenkort toegevoegd.</p>
             )}
 
             {hall ? (
@@ -104,9 +102,7 @@ function ContactPage() {
                     {text(member.role) ? (
                       <span className="text-eyebrow text-club-deep">{text(member.role)}</span>
                     ) : null}
-                    <h3 className="mt-2 font-display text-lg font-bold">
-                      {text(member.name, "Bestuurslid")}
-                    </h3>
+                    <h3 className="mt-2 font-display text-lg font-bold">{text(member.name, "Bestuurslid")}</h3>
                     <a
                       href={`mailto:${memberEmail}`}
                       className="mt-2 inline-flex min-h-11 items-center text-sm text-muted-foreground transition-colors hover:text-club-deep"
@@ -123,4 +119,3 @@ function ContactPage() {
     </>
   );
 }
-

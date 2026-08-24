@@ -9,8 +9,8 @@ import { Section } from "@/components/layout/Section";
 export const Route = createFileRoute("/studio")({
   head: () => ({
     meta: [
-      { title: "Studio — VC Berg-Op Wijgmaal" },
-      { name: "description", content: "Beheeromgeving van VC Berg-Op Wijgmaal." },
+      { title: "Studio — Berg op Wijgmaal" },
+      { name: "description", content: "Beheeromgeving van BOW." },
       { name: "robots", content: "noindex, nofollow" },
     ],
   }),
@@ -29,9 +29,9 @@ function StudioPage() {
         <div className="surface-card p-6 sm:p-8">
           <h2 className="font-display text-xl font-bold">Nog niet geactiveerd</h2>
           <p className="mt-3 max-w-prose text-sm leading-relaxed text-muted-foreground">
-            Zodra Sanity CMS gekoppeld wordt, verschijnt hier de studio waarin ploegen,
-            activiteiten, sponsors en clubinfo beheerd worden. De site leest die content via de
-            bestaande providers, dus er zijn geen wijzigingen nodig in de componenten.
+            Zodra Sanity CMS gekoppeld wordt, verschijnt hier de studio waarin ploegen, activiteiten, sponsors en
+            clubinfo beheerd worden. De site leest die content via de bestaande providers, dus er zijn geen wijzigingen
+            nodig in de componenten.
           </p>
         </div>
       </Section>

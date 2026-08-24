@@ -26,14 +26,11 @@ export const Route = createFileRoute("/ploegen/$slug")({
   head: ({ loaderData }) => {
     if (!loaderData) {
       return {
-        meta: [{ title: "Ploeg niet gevonden — VC Berg-Op Wijgmaal" }, { name: "robots", content: "noindex" }],
+        meta: [{ title: "Ploeg niet gevonden — BOW" }, { name: "robots", content: "noindex" }],
       };
     }
-    const title = loaderData.level
-      ? `${loaderData.name} (${loaderData.level}) — VC Berg-Op Wijgmaal`
-      : `${loaderData.name} — VC Berg-Op Wijgmaal`;
-    const description =
-      loaderData.summary || `Kalender, kern, coaching en klassement van ${loaderData.name} bij VC Berg-Op Wijgmaal.`;
+    const title = loaderData.level ? `${loaderData.name} (${loaderData.level}) — BOW` : `${loaderData.name} — BOW`;
+    const description = loaderData.summary || `Kalender, kern, coaching en klassement van ${loaderData.name} bij BOW.`;
     return {
       meta: pageMeta({ title, description }),
       scripts: [jsonLdScript(sportsTeamJsonLd(loaderData.name, description))],

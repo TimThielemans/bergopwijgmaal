@@ -10,7 +10,7 @@ import { EmptyState } from "@/components/shared/EmptyState";
 import { Reveal } from "@/components/shared/Reveal";
 import { TeamCard } from "@/components/teams/TeamCard";
 
-const TITLE = "Ploegen — VC Berg-Op Wijgmaal";
+const TITLE = "Ploegen — BOW";
 const DESCRIPTION =
   "Alle ploegen van Berg-Op Wijgmaal: competitieve teams in Nationale en Provinciale reeksen of recreatieploegen in de VLM.";
 
@@ -29,7 +29,7 @@ const GROUPS = [
   {
     key: "recreatief" as const,
     title: "Recreatieve ploegen",
-    intro: "Wanneer trainen er teveel aan wordt, enkel een wekelijks wedstrijdje.",
+    intro: "Enkel wedstrijdjes hier en daar zonder training kan dus ook.",
   },
 ];
 
