@@ -7,6 +7,7 @@
  */
 
 import type { FormResult, Match, RankingEntry, Team } from "@/content/types";
+import { formResultFromSets } from "@/lib/form";
 import { rowToRecord, type RawTeamBlock } from "@/lib/parser/types";
 import { fixEncoding, rowLookup, toNumber } from "./columns";
 import { isOwnClub, teamSuffix } from "./teams";
