@@ -87,7 +87,9 @@ function normalizeRanking(
   teamId: string,
   fallbackSeason: string,
 ): RankingEntry {
-  const form = list(row?.form).filter((value): value is FormResult => value === "W" || value === "L");
+  const form = list(row?.form)
+    .map((value) => normalizeFormResult(value))
+    .filter((value): value is FormResult => value !== null);
   return {
     teamId,
     seasonId: text(row?.seasonId, fallbackSeason),
