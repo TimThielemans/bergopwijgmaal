@@ -9,9 +9,9 @@ import { BrandGraphic } from "@/components/shared/BrandGraphic";
 import { MapPlaceholder } from "@/components/shared/MapPlaceholder";
 import { Reveal } from "@/components/shared/Reveal";
 
-const TITLE = "De club — VC Berg-Op Wijgmaal";
+const TITLE = "De club — BOW";
 const DESCRIPTION =
-  "Het verhaal van VC Berg-Op Wijgmaal: familiale volleybalclub uit Wijgmaal bij Leuven, met clubwaarden, bestuur, sporthal en sportieve ambities.";
+  "Het verhaal van BOW: familiale volleybalclub uit Wijgmaal bij Leuven, met clubwaarden, bestuur, sporthal en sportieve ambities.";
 
 export const Route = createFileRoute("/club")({
   head: () => ({ meta: pageMeta({ title: TITLE, description: DESCRIPTION }) }),
@@ -39,16 +39,10 @@ function ClubPage() {
             {storyBlocks.map((block, index) => (
               <Reveal key={`${text(block?.title)}-${index}`} delay={index * 80}>
                 <article className="surface-card h-full p-6 sm:p-8">
-                  <span className="font-display text-sm font-bold text-club-deep">
-                    0{index + 1}
-                  </span>
-                  <h3 className="mt-3 font-display text-xl font-bold">
-                    {text(block?.title, "Ons verhaal")}
-                  </h3>
+                  <span className="font-display text-sm font-bold text-club-deep">0{index + 1}</span>
+                  <h3 className="mt-3 font-display text-xl font-bold">{text(block?.title, "Ons verhaal")}</h3>
                   {text(block?.body) ? (
-                    <p className="mt-3 text-sm leading-relaxed text-muted-foreground">
-                      {text(block.body)}
-                    </p>
+                    <p className="mt-3 text-sm leading-relaxed text-muted-foreground">{text(block.body)}</p>
                   ) : null}
                 </article>
               </Reveal>
@@ -68,17 +62,10 @@ function ClubPage() {
             {values.map((value, index) => (
               <Reveal key={text(value?.id, `value-${index}`)} delay={index * 70}>
                 <article className="relative isolate h-full overflow-hidden rounded-2xl border border-ink-foreground/12 bg-ink-foreground/5 p-6 sm:p-8">
-                  <BrandGraphic
-                    variant="stroke"
-                    className="absolute -right-16 -top-10 h-48 w-48 text-club"
-                  />
-                  <h3 className="font-display text-xl font-bold">
-                    {text(value?.title, "Clubwaarde")}
-                  </h3>
+                  <BrandGraphic variant="stroke" className="absolute -right-16 -top-10 h-48 w-48 text-club" />
+                  <h3 className="font-display text-xl font-bold">{text(value?.title, "Clubwaarde")}</h3>
                   {text(value?.description) ? (
-                    <p className="mt-3 text-sm leading-relaxed text-ink-foreground/70">
-                      {text(value.description)}
-                    </p>
+                    <p className="mt-3 text-sm leading-relaxed text-ink-foreground/70">{text(value.description)}</p>
                   ) : null}
                 </article>
               </Reveal>
@@ -87,7 +74,7 @@ function ClubPage() {
         </Section>
       ) : null}
 
-
+      {/*
       <Section
         tone="tint"
         eyebrow="Ambitie & sfeer"
@@ -117,7 +104,7 @@ function ClubPage() {
             </article>
           </Reveal>
         </div>
-      </Section>
+      </Section> */}
 
       {board.length > 0 ? (
         <Section eyebrow="Bestuur" title="Het bestuur">
@@ -139,9 +126,7 @@ function ClubPage() {
                     <span className="min-w-0">
                       <span className="block truncate font-display text-base font-bold">{name}</span>
                       {text(member?.role) ? (
-                        <span className="block truncate text-sm text-muted-foreground">
-                          {text(member.role)}
-                        </span>
+                        <span className="block truncate text-sm text-muted-foreground">{text(member.role)}</span>
                       ) : null}
                       {email ? (
                         <a
@@ -171,9 +156,7 @@ function ClubPage() {
                 <p>{`${text(hall.postalCode)} ${text(hall.city)}`.trim()}</p>
               </address>
               {text(hall.notes) ? (
-                <p className="mt-4 text-sm leading-relaxed text-muted-foreground">
-                  {text(hall.notes)}
-                </p>
+                <p className="mt-4 text-sm leading-relaxed text-muted-foreground">{text(hall.notes)}</p>
               ) : null}
             </Reveal>
             <Reveal delay={100}>
@@ -182,7 +165,6 @@ function ClubPage() {
           </div>
         </Section>
       ) : null}
-
     </>
   );
 }
