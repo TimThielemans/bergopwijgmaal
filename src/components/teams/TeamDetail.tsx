@@ -254,7 +254,7 @@ export function TeamDetail({ team, standing, rankingTable, upcoming, calendar }:
         ) : (
           <Reveal className="surface-card px-5 py-2 sm:px-8 sm:py-4">
             {upcomingMatches.map((match) => (
-              <MatchRow key={match.id} match={match} team={team} />
+              <MatchRow key={match.id} match={match} team={team} variant="upcoming" />
             ))}
           </Reveal>
         )}
@@ -267,7 +267,7 @@ export function TeamDetail({ team, standing, rankingTable, upcoming, calendar }:
             </h3>
             <div className="surface-card mt-4 px-5 py-2 sm:px-8 sm:py-4">
               {played.map((match) => (
-                <MatchRow key={match.id} match={match} team={team} />
+                <MatchRow key={match.id} match={match} team={team} variant="played" />
               ))}
             </div>
           </Reveal>
