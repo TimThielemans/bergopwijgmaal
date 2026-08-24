@@ -15,6 +15,9 @@ import { AboutSection } from "@/components/home/AboutSection";
 import { SponsorsSection } from "@/components/home/SponsorsSection";
 import { ContactSection } from "@/components/home/ContactSection";
 
+/** All matches in the next two weeks, topped up to at least 5 when it is quiet. */
+const HOME_MATCHES_QUERY = { limit: 14, withinDays: 14, minCount: 5 } as const;
+
 const TITLE = "Berg-Op Wijgmaal — familiale volleybalclub in Leuven";
 const DESCRIPTION =
   "Volleybal in Wijgmaal bij Leuven: competitieve en recreatieve ploegen, wedstrijdkalender, standen en clubactiviteiten";
@@ -23,7 +26,7 @@ export const Route = createFileRoute("/")({
   loader: async ({ context }) => {
     const [, , , matchesUpdatedAt, rankingsUpdatedAt] = await Promise.all([
       context.queryClient.ensureQueryData(teamsQuery()),
-      context.queryClient.ensureQueryData(upcomingMatchesQuery({ limit: 8 })),
+      context.queryClient.ensureQueryData(upcomingMatchesQuery(HOME_MATCHES_QUERY)),
       context.queryClient.ensureQueryData(standingsQuery()),
       matchProvider.getLastUpdated().catch(() => null),
       rankingProvider.getLastUpdated().catch(() => null),
@@ -41,7 +44,7 @@ function HomePage() {
   const { matchesUpdatedAt, rankingsUpdatedAt } = Route.useLoaderData();
   const { activities, sponsors } = useSiteContent();
   const { data: teamsData } = useSuspenseQuery(teamsQuery());
-  const { data: matchesData } = useSuspenseQuery(upcomingMatchesQuery({ limit: 5 }));
+  const { data: matchesData } = useSuspenseQuery(upcomingMatchesQuery(HOME_MATCHES_QUERY));
   const { data: standingsData } = useSuspenseQuery(standingsQuery());
   const teams = list(teamsData);
   const matches = list(matchesData);
