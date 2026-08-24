@@ -23,6 +23,10 @@ export interface UpcomingMatchesQuery {
   limit?: number;
   teamId?: string;
   seasonId?: string;
+  /** Show every match inside this window (days from now). Applied in the query layer. */
+  withinDays?: number;
+  /** Keep looking beyond the window until at least this many matches are shown. */
+  minCount?: number;
 }
 
 export interface MatchProvider {
