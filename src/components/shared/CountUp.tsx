@@ -14,7 +14,7 @@ const easeOut = (t: number) => 1 - Math.pow(1 - t, 3);
  * Subtle count-up from 0 to `value` once the element scrolls into view.
  * SSR and reduced-motion render the final value immediately.
  */
-export function CountUp({ value, suffix = "", durationMs = 1000, className }: CountUpProps) {
+export function CountUp({ value, suffix = "", durationMs = 2500, className }: CountUpProps) {
   const ref = useRef<HTMLSpanElement>(null);
   const [display, setDisplay] = useState(value);
 
