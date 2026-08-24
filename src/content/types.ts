@@ -178,7 +178,11 @@ export interface Match {
 }
 
 
-export type FormResult = "W" | "L";
+/**
+ * Result class per match, following the league points system:
+ * W3 = 3-0/3-1, W2 = 3-2, L2 = 2-3, L3 = 1-3/0-3.
+ */
+export type FormResult = "W3" | "W2" | "L2" | "L3";
 
 export interface RankingEntry {
   teamId: string;
