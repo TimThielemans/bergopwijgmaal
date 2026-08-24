@@ -97,11 +97,11 @@ export function RankingTable({
                   {row.isOwnTeam ? <span className="sr-only"> (onze ploeg)</span> : null}
                 </td>
                 <td className="px-3 py-3 text-right tabular-nums">{row.played}</td>
-                <td className="px-3 py-3 text-right tabular-nums">{row.won}</td>
-                <td className="px-3 py-3 text-right tabular-nums">{row.lost}</td>
                 <td className="px-3 py-3 text-right font-display font-bold tabular-nums">
                   {row.points}
                 </td>
+                <td className="px-3 py-3 text-right tabular-nums">{row.won}</td>
+                <td className="px-3 py-3 text-right tabular-nums">{row.lost}</td>
                 <td className="px-3 py-3 text-right tabular-nums">{row.setsFor}</td>
                 <td className="px-3 py-3 pr-4 text-right tabular-nums sm:pr-6">
                   {row.setsAgainst}
@@ -112,7 +112,7 @@ export function RankingTable({
         </table>
       </div>
       <p className="px-4 py-3 text-xs text-muted-foreground sm:px-6">
-        Wed = wedstrijden · Gew/Verl = gewonnen/verloren · Sets V/T = sets voor en tegen.
+        WED = wedstrijden · PTN = punten · W+/W- = gewonnen/verloren · S+/S- = sets voor en tegen.
       </p>
     </div>
   );
