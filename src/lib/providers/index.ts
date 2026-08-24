@@ -61,8 +61,18 @@ export const upcomingMatchesQuery = (query: UpcomingMatchesQuery = {}) =>
       query.seasonId ?? CURRENT_SEASON_ID,
       query.teamId ?? "all",
       query.limit ?? 8,
+      query.withinDays ?? 0,
+      query.minCount ?? 0,
     ] as const,
-    queryFn: () => matchProvider.getUpcoming(query),
+    queryFn: async () => {
+      const matches = await matchProvider.getUpcoming(query);
+      if (!query.withinDays) return matches;
+
+      const deadline = Date.now() + query.withinDays * 24 * 60 * 60 * 1000;
+      const inWindow = matches.filter((match) => new Date(match.dateTime).getTime() <= deadline);
+      const minCount = query.minCount ?? 0;
+      return inWindow.length >= minCount ? inWindow : matches.slice(0, minCount);
+    },
   });
 
 export const teamCalendarQuery = (teamId: string, seasonId: string = CURRENT_SEASON_ID) =>
