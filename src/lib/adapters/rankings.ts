@@ -62,7 +62,7 @@ function formFor(teamId: string, matches: Match[]): FormResult[] {
     .sort((a, b) => new Date(a.dateTime).getTime() - new Date(b.dateTime).getTime())
     .slice(-5)
     .map((match): FormResult =>
-      (match.result?.setsFor ?? 0) > (match.result?.setsAgainst ?? 0) ? "W" : "L",
+      formResultFromSets(match.result?.setsFor ?? 0, match.result?.setsAgainst ?? 0),
     );
 }
 
