@@ -7,6 +7,7 @@
  */
 
 import type { FormResult, Match, RankingEntry, Team } from "@/content/types";
+import { formResultFromSets } from "@/lib/form";
 import { rowToRecord, type RawTeamBlock } from "@/lib/parser/types";
 import { fixEncoding, rowLookup, toNumber } from "./columns";
 import { isOwnClub, teamSuffix } from "./teams";
@@ -62,7 +63,7 @@ function formFor(teamId: string, matches: Match[]): FormResult[] {
     .sort((a, b) => new Date(a.dateTime).getTime() - new Date(b.dateTime).getTime())
     .slice(-5)
     .map((match): FormResult =>
-      (match.result?.setsFor ?? 0) > (match.result?.setsAgainst ?? 0) ? "W" : "L",
+      formResultFromSets(match.result?.setsFor ?? 0, match.result?.setsAgainst ?? 0),
     );
 }
 

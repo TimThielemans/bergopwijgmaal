@@ -49,8 +49,16 @@ export function HeroSection({
           <div>
             <Reveal>
               <span className="text-eyebrow text-club">Volleybal in Wijgmaal · Leuven</span>
-              <h1 className="mt-4 max-w-2xl text-display-xl">
-                Familiale volleybalclub met <span className="text-club">sportieve ambitie</span>
+              <h1 className="mt-4">
+                <span className="block font-display text-lg font-medium text-ink-foreground/70 sm:text-xl">
+                  Welkom bij
+                </span>
+                <span
+                  className="mt-1 block font-display text-[4.5rem] font-extrabold leading-[0.85] tracking-tight text-club drop-shadow-[0_18px_60px_oklch(0.7_0.106_243/0.45)] sm:text-[7rem] lg:text-[9.5rem]"
+                >
+                  BOW
+                </span>
+                <span className="sr-only">— VC Berg-Op Wijgmaal</span>
               </h1>
               <p className="mt-5 max-w-xl text-base leading-relaxed text-ink-foreground/75 sm:text-lg">
                 {text(clubInfo?.mission, "Volleybal in Wijgmaal, voor competitie én recreatie.")}

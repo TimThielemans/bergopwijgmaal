@@ -2,6 +2,7 @@ import matchesFile from "@/data/matches.json";
 import rankingsFile from "@/data/rankings.json";
 import { CURRENT_SEASON_ID, PARSER_RECORDS, TEAM_RECORDS } from "@/content";
 import type { DataEnvelope, FormResult, Match, MatchStatus, RankingEntry } from "@/content/types";
+import { normalizeFormResult } from "@/lib/form";
 import { isValidDate, list, num, text } from "@/lib/safe";
 import type { MatchProvider, RankingProvider, UpcomingMatchesQuery } from "./types";
 
@@ -87,7 +88,9 @@ function normalizeRanking(
   teamId: string,
   fallbackSeason: string,
 ): RankingEntry {
-  const form = list(row?.form).filter((value): value is FormResult => value === "W" || value === "L");
+  const form = list(row?.form)
+    .map((value) => normalizeFormResult(value))
+    .filter((value): value is FormResult => value !== null);
   return {
     teamId,
     seasonId: text(row?.seasonId, fallbackSeason),

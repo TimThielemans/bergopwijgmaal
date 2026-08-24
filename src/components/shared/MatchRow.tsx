@@ -4,10 +4,18 @@ import { formatDateShort, formatTime, formatWeekday, isValidDateTime } from "@/l
 import { text } from "@/lib/safe";
 import { cn } from "@/lib/utils";
 import { HomeAwayBadge } from "./HomeAwayBadge";
+import { ResultBadge } from "./ResultBadge";
+
+type MatchRowVariant = "default" | "upcoming" | "played";
 
 interface MatchRowProps {
   match: Match;
   team?: Team | undefined;
+  /**
+   * "default" (homepage) shows the home/away badge and the time,
+   * "upcoming" drops the badge, "played" drops badge and time and shows the result.
+   */
+  variant?: MatchRowVariant;
   className?: string | undefined;
 }
 
@@ -15,8 +23,11 @@ interface MatchRowProps {
  * One match, readable on 375px and aligned into columns from md up.
  * Never a horizontally scrolling table. Tolerates missing optional fields.
  */
-export function MatchRow({ match, team, className }: MatchRowProps) {
+export function MatchRow({ match, team, variant = "default", className }: MatchRowProps) {
   if (!match) return null;
+
+  const showHomeAway = variant === "default";
+  const showTime = variant !== "played";
 
   const slug = text(team?.slug);
   const teamName = text(team?.name, "Berg-Op");
@@ -84,15 +95,19 @@ export function MatchRow({ match, team, className }: MatchRowProps) {
       </div>
 
       <div className="col-start-2 flex items-center gap-3 md:col-start-3">
-        <HomeAwayBadge isHome={match.isHome === true} />
+        {showHomeAway ? <HomeAwayBadge isHome={match.isHome === true} /> : null}
         {match.result ? (
-          <span className="font-display text-sm font-bold">
-            {match.result.setsFor}–{match.result.setsAgainst}
-          </span>
+          variant === "played" ? (
+            <ResultBadge result={match.result} />
+          ) : (
+            <span className="font-display text-sm font-bold">
+              {match.result.setsFor}–{match.result.setsAgainst}
+            </span>
+          )
         ) : null}
       </div>
 
-      {hasDate ? (
+      {showTime && hasDate ? (
         <span className="col-start-2 font-display text-sm font-semibold tabular-nums text-muted-foreground md:col-start-4 md:text-base md:text-foreground">
           {formatTime(match.dateTime)}
         </span>
