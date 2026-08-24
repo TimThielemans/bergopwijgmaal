@@ -95,15 +95,19 @@ export function MatchRow({ match, team, variant = "default", className }: MatchR
       </div>
 
       <div className="col-start-2 flex items-center gap-3 md:col-start-3">
-        <HomeAwayBadge isHome={match.isHome === true} />
+        {showHomeAway ? <HomeAwayBadge isHome={match.isHome === true} /> : null}
         {match.result ? (
-          <span className="font-display text-sm font-bold">
-            {match.result.setsFor}–{match.result.setsAgainst}
-          </span>
+          variant === "played" ? (
+            <ResultBadge result={match.result} />
+          ) : (
+            <span className="font-display text-sm font-bold">
+              {match.result.setsFor}–{match.result.setsAgainst}
+            </span>
+          )
         ) : null}
       </div>
 
-      {hasDate ? (
+      {showTime && hasDate ? (
         <span className="col-start-2 font-display text-sm font-semibold tabular-nums text-muted-foreground md:col-start-4 md:text-base md:text-foreground">
           {formatTime(match.dateTime)}
         </span>
