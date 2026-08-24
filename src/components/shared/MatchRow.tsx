@@ -4,10 +4,18 @@ import { formatDateShort, formatTime, formatWeekday, isValidDateTime } from "@/l
 import { text } from "@/lib/safe";
 import { cn } from "@/lib/utils";
 import { HomeAwayBadge } from "./HomeAwayBadge";
+import { ResultBadge } from "./ResultBadge";
+
+type MatchRowVariant = "default" | "upcoming" | "played";
 
 interface MatchRowProps {
   match: Match;
   team?: Team | undefined;
+  /**
+   * "default" (homepage) shows the home/away badge and the time,
+   * "upcoming" drops the badge, "played" drops badge and time and shows the result.
+   */
+  variant?: MatchRowVariant;
   className?: string | undefined;
 }
 
@@ -15,8 +23,11 @@ interface MatchRowProps {
  * One match, readable on 375px and aligned into columns from md up.
  * Never a horizontally scrolling table. Tolerates missing optional fields.
  */
-export function MatchRow({ match, team, className }: MatchRowProps) {
+export function MatchRow({ match, team, variant = "default", className }: MatchRowProps) {
   if (!match) return null;
+
+  const showHomeAway = variant === "default";
+  const showTime = variant !== "played";
 
   const slug = text(team?.slug);
   const teamName = text(team?.name, "Berg-Op");
