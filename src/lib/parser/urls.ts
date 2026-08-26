@@ -16,17 +16,24 @@ export interface VolleyIds {
   volleyClubId?: string;
   volleyTeamId?: string;
   volleySeriesId?: string;
+  /** VolleyScores season id (query param `se`), configured per team in the CMS. */
+  volleySeasonId?: string;
+  /** Public overview page managed in the CMS (VolleyScores or VLM Brabant). */
+  publicUrl?: string;
 }
+
+/** Used only when no season is configured in the CMS. Never hardcode elsewhere. */
+export const DEFAULT_VOLLEY_SEASON_ID = "13";
 
 function clean(value: unknown): string {
   return typeof value === "string" ? value.trim() : "";
 }
 
-function buildUrl(params: Record<string, string | number | undefined>): string {
+function buildUrl(season: string, params: Record<string, string | number | undefined>): string {
   const url = new URL(`${VOLLEYSCORES_ORIGIN}/index.php`);
   url.searchParams.set("v", "2");
   url.searchParams.set("isActiveSeason", "1");
-  url.searchParams.set("se", "13");
+  url.searchParams.set("se", season || DEFAULT_VOLLEY_SEASON_ID);
   for (const [key, value] of Object.entries(params)) {
     if (value !== undefined && value !== null && value !== "") {
       url.searchParams.set(key, String(value));
@@ -45,7 +52,7 @@ export function buildMatchesExportUrl(ids: VolleyIds): string {
 
   if (!ci || !ssi) return "";
 
-  return buildUrl({
+  return buildUrl(clean(ids.volleySeasonId), {
     a: "me",
     ti,
     st: "%",
@@ -60,7 +67,7 @@ export function buildMatchesExportUrl(ids: VolleyIds): string {
 export function buildRankingExportUrl(ids: VolleyIds): string {
   const ssi = clean(ids.volleySeriesId);
   if (!ssi) return "";
-  return buildUrl({ a: "re", ssi });
+  return buildUrl(clean(ids.volleySeasonId), { a: "re", ssi });
 }
 
 /**
@@ -89,6 +96,8 @@ export function matchesTestUrl(teamId: string): string {
 
 /** Public (HTML) overview page for supporters — same ids, no XLS flag. */
 export function buildPublicOverviewUrl(ids: VolleyIds): string {
+  const configured = clean(ids.publicUrl);
+  if (configured) return configured;
   const ssi = clean(ids.volleySeriesId);
   if (!ssi) return "";
   const url = new URL(`${VOLLEYSCORES_ORIGIN}/index.php`);
