@@ -1,6 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { Mail, Phone } from "lucide-react";
-import { primaryVenue, useSiteContent } from "@/lib/site-content";
+import { Mail, MapPin, Phone } from "lucide-react";
+import { allVenues, primaryVenue, useSiteContent } from "@/lib/site-content";
 import { list, safeUrl, text } from "@/lib/safe";
 import { pageMeta } from "@/lib/seo";
 import { PageHero } from "@/components/layout/PageHero";
@@ -19,6 +19,7 @@ export const Route = createFileRoute("/contact")({
 
 function ContactPage() {
   const { clubInfo, venues, boardMembers } = useSiteContent();
+  const halls = allVenues(venues);
   const hall = primaryVenue(venues);
   const email = text(clubInfo?.email);
   const phone = text(clubInfo?.phone);
@@ -61,17 +62,45 @@ function ContactPage() {
                 ) : null}
               </div>
             ) : (
-              <p className="mt-3 text-sm text-muted-foreground">Contactgegevens worden binnenkort toegevoegd.</p>
+              <p className="mt-3 text-sm text-muted-foreground">
+                Contactgegevens worden binnenkort toegevoegd.
+              </p>
             )}
 
-            {hall ? (
+            {halls.length > 0 ? (
               <>
-                <h3 className="mt-8 font-display text-xl font-bold">Sporthal</h3>
-                <address className="mt-3 space-y-1 text-sm not-italic leading-relaxed text-muted-foreground">
-                  <p className="font-medium text-foreground">{text(hall.name, "Sporthal")}</p>
-                  {text(hall.address) ? <p>{text(hall.address)}</p> : null}
-                  <p>{`${text(hall.postalCode)} ${text(hall.city)}`.trim()}</p>
-                </address>
+                <h3 className="mt-8 font-display text-xl font-bold">
+                  {halls.length > 1 ? "Sporthallen" : "Sporthal"}
+                </h3>
+                <div className="mt-3 space-y-4">
+                  {halls.map((venue, index) => {
+                    const mapUrl = safeUrl(venue?.googleMapsUrl);
+                    return (
+                      <address
+                        key={`${text(venue?.venueId)}-${index}`}
+                        className="space-y-1 border-b border-border pb-4 text-sm not-italic leading-relaxed text-muted-foreground last:border-b-0 last:pb-0"
+                      >
+                        <p className="font-medium text-foreground">{text(venue?.name)}</p>
+                        {text(venue?.address) ? <p>{text(venue?.address)}</p> : null}
+                        <p>{`${text(venue?.postalCode)} ${text(venue?.city)}`.trim()}</p>
+                        {text(venue?.notes) ? (
+                          <p className="text-xs">{text(venue?.notes)}</p>
+                        ) : null}
+                        {mapUrl ? (
+                          <a
+                            href={mapUrl}
+                            target="_blank"
+                            rel="noreferrer noopener"
+                            className="inline-flex min-h-11 items-center gap-2 font-display font-semibold text-club-deep transition-colors hover:text-ink"
+                          >
+                            <MapPin aria-hidden="true" className="h-4 w-4" />
+                            Route bekijken
+                          </a>
+                        ) : null}
+                      </address>
+                    );
+                  })}
+                </div>
               </>
             ) : null}
 
@@ -102,7 +131,9 @@ function ContactPage() {
                     {text(member.role) ? (
                       <span className="text-eyebrow text-club-deep">{text(member.role)}</span>
                     ) : null}
-                    <h3 className="mt-2 font-display text-lg font-bold">{text(member.name, "Bestuurslid")}</h3>
+                    <h3 className="mt-2 font-display text-lg font-bold">
+                      {text(member.name, "Bestuurslid")}
+                    </h3>
                     <a
                       href={`mailto:${memberEmail}`}
                       className="mt-2 inline-flex min-h-11 items-center text-sm text-muted-foreground transition-colors hover:text-club-deep"
