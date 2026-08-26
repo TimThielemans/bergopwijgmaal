@@ -98,6 +98,10 @@ export interface ParserRecord {
   volleySeriesId?: string;
   competitionCode?: string;
   divisionCode?: string;
+  /** VolleyScores season id (query param `se`). */
+  volleySeasonId?: string;
+  /** Public overview page (VolleyScores or VLM Brabant) shown to supporters. */
+  publicUrl?: string;
 }
 
 /* ------------------------------------------------------------------ *

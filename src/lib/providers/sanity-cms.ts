@@ -117,6 +117,8 @@ function mapTeam(raw: RawTeam | null | undefined): Team | null {
       ...(text(raw?.parser?.volleyClubId) ? { volleyClubId: text(raw?.parser?.volleyClubId) } : {}),
       ...(text(raw?.parser?.volleyTeamId) ? { volleyTeamId: text(raw?.parser?.volleyTeamId) } : {}),
       ...(text(raw?.parser?.volleySeriesId) ? { volleySeriesId: text(raw?.parser?.volleySeriesId) } : {}),
+      ...(text(raw?.parser?.volleySeasonId) ? { volleySeasonId: text(raw?.parser?.volleySeasonId) } : {}),
+      ...(text(raw?.parser?.publicUrl) ? { publicUrl: text(raw?.parser?.publicUrl) } : {}),
       ...(text(raw?.parser?.competitionCode) ? { competitionCode: text(raw?.parser?.competitionCode) } : {}),
       ...(text(raw?.parser?.divisionCode) ? { divisionCode: text(raw?.parser?.divisionCode) } : {}),
       parserEnabled: raw?.parser?.parserEnabled === true,

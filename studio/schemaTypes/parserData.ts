@@ -34,6 +34,19 @@ export const parserData = defineType({
       title: "VolleyScores reeks-id (ssi)",
       type: "string",
     }),
+    defineField({
+      name: "volleySeasonId",
+      title: "VolleyScores seizoen-id (se)",
+      type: "string",
+      description: "Bv. 13 voor dit seizoen. Elk nieuw seizoen enkel hier aanpassen.",
+    }),
+    defineField({
+      name: "publicUrl",
+      title: "Publieke overzichtspagina (URL)",
+      type: "url",
+      description:
+        "Link achter \"Volledig overzicht\": VolleyScores voor competitie, vlmbrabant.be voor recreatief.",
+    }),
     defineField({ name: "competitionCode", title: "Competitiecode", type: "string" }),
     defineField({ name: "divisionCode", title: "Reekscode", type: "string" }),
     defineField({ name: "notes", title: "Nota", type: "text", rows: 2 }),

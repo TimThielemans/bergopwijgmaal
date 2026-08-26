@@ -26,5 +26,10 @@ export function findVenue(venues: Venue[], venueId: string | undefined): Venue |
 }
 
 export function primaryVenue(venues: Venue[]): Venue | null {
-  return venues[0] ?? null;
+  return allVenues(venues)[0] ?? null;
+}
+
+/** Every configured hall, defensively filtered on a usable name. */
+export function allVenues(venues: Venue[] | undefined): Venue[] {
+  return (venues ?? []).filter((venue) => text(venue?.name).length > 0);
 }
