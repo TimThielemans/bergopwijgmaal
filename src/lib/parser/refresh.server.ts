@@ -28,6 +28,8 @@ interface ParserTeam {
     volleyClubId?: string;
     volleyTeamId?: string;
     volleySeriesId?: string;
+    volleySeasonId?: string;
+    publicUrl?: string;
     competitionCode?: string;
     divisionCode?: string;
   };
