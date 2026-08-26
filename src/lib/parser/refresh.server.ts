@@ -28,6 +28,8 @@ interface ParserTeam {
     volleyClubId?: string;
     volleyTeamId?: string;
     volleySeriesId?: string;
+    volleySeasonId?: string;
+    publicUrl?: string;
     competitionCode?: string;
     divisionCode?: string;
   };
@@ -74,6 +76,7 @@ export async function runVolleyDataRefresh(): Promise<RefreshResult> {
         volleyClubId: str(team.parser?.volleyClubId),
         volleyTeamId: str(team.parser?.volleyTeamId),
         volleySeriesId: str(team.parser?.volleySeriesId),
+        volleySeasonId: str(team.parser?.volleySeasonId),
       };
       const teamErrors: string[] = [];
       const missing = missingParserIds(ids);

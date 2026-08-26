@@ -39,7 +39,7 @@ const SHEET_DOCS: { name: keyof typeof IMPORT_SHEETS; body: string }[] = [
   },
   {
     name: "ParserData",
-    body: "VolleyScores-configuratie met ids: clubId (ci), teamId (ti) en seriesId (ssi). Volledige URL's worden nooit opgeslagen — die worden afgeleid. Bij parserEnabled = WAAR zijn ci/ti/ssi verplicht.",
+    body: "VolleyScores-configuratie met ids: clubId (ci), teamId (ti), seriesId (ssi) en seizoen (volleySeasonId, se). Export-URL's worden altijd afgeleid; enkel publicUrl (publieke overzichtspagina, bv. vlmbrabant.be voor recreatief) mag een volledige link zijn. Bij parserEnabled = WAAR zijn ci/ti/ssi verplicht.",
   },
 ];
 

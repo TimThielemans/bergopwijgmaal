@@ -394,6 +394,8 @@ function buildDocuments(
       _type: "parserData",
       parserEnabled: enabled,
       ...ids,
+      volleySeasonId: row["volleySeasonId"] ?? "",
+      publicUrl: row["publicUrl"] ?? "",
       competitionCode: row["competitionCode"] ?? "",
       divisionCode: row["divisionCode"] ?? "",
     });

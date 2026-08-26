@@ -70,6 +70,8 @@ export const PARSER_TEAMS_QUERY = `*[_type == "team" && defined(teamId) && parse
     "volleyClubId": parser.volleyClubId,
     "volleyTeamId": parser.volleyTeamId,
     "volleySeriesId": parser.volleySeriesId,
+    "volleySeasonId": parser.volleySeasonId,
+    "publicUrl": parser.publicUrl,
     "competitionCode": parser.competitionCode,
     "divisionCode": parser.divisionCode
   }
