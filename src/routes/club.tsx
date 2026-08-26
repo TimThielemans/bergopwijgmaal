@@ -32,7 +32,6 @@ function ClubPage() {
         title="Meer dan vijftig jaar volleybal in Wijgmaal"
         {...(text(clubInfo?.mission) ? { intro: text(clubInfo.mission) } : {})}
       />
-
       {storyBlocks.length > 0 ? (
         <Section eyebrow="Ons verhaal" title="Hoe Berg-Op groeide">
           <div className="grid gap-5 md:grid-cols-3">
@@ -50,7 +49,6 @@ function ClubPage() {
           </div>
         </Section>
       ) : null}
-
       {values.length > 0 ? (
         <Section
           tone="ink"
@@ -73,7 +71,29 @@ function ClubPage() {
           </div>
         </Section>
       ) : null}
-
+      <Section tone="tint" eyebrow="Ontmoeten" title="BOW Kaffee!">
+        <div className="grid gap-5">
+          <Reveal>
+            <article className="surface-card p-6 sm:p-8">
+              <h3 className="font-display text-xl font-bold">Het hart van de club</h3>
+              <p className="mt-4 text-sm leading-relaxed text-muted-foreground">
+                Ons BOW Kaffee is veel meer dan een cafetaria. Het is de ontmoetingsplaats van de club, vlak naast de
+                sporthal en in eigen beheer.
+              </p>
+              <p className="mt-3 text-sm leading-relaxed text-muted-foreground">
+                Na een training nog iets drinken met ploeggenoten, supporters ontvangen na een thuismatch of samen
+                napraten met de tegenstander: het gebeurt allemaal in het BOW Kaffee!.
+              </p>
+              <p className="mt-3 text-sm leading-relaxed text-muted-foreground">
+                Hier ontstaan de vriendschappen, worden wedstrijden nabesproken en groeit de typische BOW-sfeer. Het is
+                de voedingsbodem van onze sterke teamgeest en een belangrijke reden waarom zoveel spelers en supporters
+                zich thuis voelen bij Berg-op Wijgmaal.
+              </p>
+            </article>
+          </Reveal>
+        </div>
+      </Section>
+      `
       {/*
       <Section
         tone="tint"
@@ -105,7 +125,6 @@ function ClubPage() {
           </Reveal>
         </div>
       </Section> */}
-
       {board.length > 0 ? (
         <Section eyebrow="Bestuur" title="Het bestuur">
           <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
@@ -144,7 +163,6 @@ function ClubPage() {
           </div>
         </Section>
       ) : null}
-
       {hall ? (
         <Section tone="tint" eyebrow="Sporthal" title="Waar we spelen">
           <div className="grid gap-6 lg:grid-cols-[1fr_1.1fr]">
