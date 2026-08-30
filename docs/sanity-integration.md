@@ -1,8 +1,9 @@
 # Sanity integration & admin roadmap
 
-The app is deliberately frontend-only: typed mock content plus generated JSON.
-Everything below describes how to connect a real CMS later without touching
-components.
+The website is configured to read content from Sanity when `VITE_SANITY_PROJECT_ID`
+is set. The hosted Sanity Studio is deployed separately and is not built by Vite.
+Everything below describes how the connection works and how to keep components
+untouched when the CMS changes.
 
 ## 1. Environment variables
 
@@ -57,9 +58,9 @@ that cannot be joined (or have an invalid date) are dropped rather than rendered
 
 - The Studio is deployed and hosted by Sanity at
   <https://bergop-wijgmaal.sanity.studio> (project `utlbxtd6`, dataset
-  `production`, workspace `default`). It is not part of this repository, is not
-  built by Vite and does not affect the Vercel deploy. Sign-in uses a Sanity
-  account with access to the project.
+  `production`, workspace `default`). It was published via the Lovable Sanity
+  connector and is not built by Vite, so it does not affect the Vercel deploy.
+  Sign-in uses a Sanity account with access to the project.
 - `/studio` inside the app stays a pointer to that hosted Studio; it may later
   host an embedded studio, mounted client-only and configured from `sanityConfig`.
 - `/login` and `/admin` are placeholders. `src/lib/admin/auth.tsx` is the single
