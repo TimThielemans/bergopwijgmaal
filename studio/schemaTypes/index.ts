@@ -1,4 +1,5 @@
 import { parserData } from "./parserData";
+import { siteInfo } from "./siteInfo";
 import { location } from "./location";
 import { player, team, training } from "./team";
 import {
@@ -27,6 +28,7 @@ export const schemaTypes = [
   sponsor,
   boardMember,
   clubInfo,
+  siteInfo,
   volleyMatchesRaw,
   volleyRankingsRaw,
   // objects
