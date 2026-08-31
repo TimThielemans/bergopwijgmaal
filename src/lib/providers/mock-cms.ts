@@ -2,6 +2,7 @@ import {
   ACTIVITIES,
   BOARD_MEMBERS,
   CLUB_INFO,
+  SITE_INFO,
   PARSER_RECORDS,
   PLAYER_RECORDS,
   SPONSORS,
@@ -137,5 +138,9 @@ export const mockCmsProvider: CmsProvider = {
   },
   async getClubInfo() {
     return CLUB_INFO;
+  },
+
+  async getSiteInfo() {
+    return SITE_INFO;
   },
 };

@@ -8,6 +8,7 @@ import { Section } from "@/components/layout/Section";
 import { BrandGraphic } from "@/components/shared/BrandGraphic";
 import { MapPlaceholder } from "@/components/shared/MapPlaceholder";
 import { Reveal } from "@/components/shared/Reveal";
+import { MembershipSection } from "@/components/club/MembershipSection";
 
 const TITLE = "De club — BOW";
 const DESCRIPTION =
@@ -19,7 +20,7 @@ export const Route = createFileRoute("/club")({
 });
 
 function ClubPage() {
-  const { clubInfo, venues, boardMembers } = useSiteContent();
+  const { clubInfo, siteInfo, venues, boardMembers } = useSiteContent();
   const hall = primaryVenue(venues);
   const storyBlocks = list(clubInfo?.storyBlocks);
   const values = list(clubInfo?.values);
@@ -125,6 +126,7 @@ function ClubPage() {
           </Reveal>
         </div>
       </Section> */}
+      <MembershipSection siteInfo={siteInfo} />
       {board.length > 0 ? (
         <Section eyebrow="Bestuur" title="Het bestuur">
           <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
