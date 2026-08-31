@@ -30,14 +30,15 @@ export const siteContentQuery = () =>
   queryOptions({
     queryKey: ["site-content", contentSource] as const,
     queryFn: async (): Promise<SiteContent> => {
-      const [clubInfo, venues, activities, sponsors, boardMembers] = await Promise.all([
+      const [clubInfo, siteInfo, venues, activities, sponsors, boardMembers] = await Promise.all([
         cmsProvider.getClubInfo(),
+        cmsProvider.getSiteInfo(),
         cmsProvider.getVenues(),
         cmsProvider.getActivities(),
         cmsProvider.getSponsors(),
         cmsProvider.getBoardMembers(),
       ]);
-      return { clubInfo, venues, activities, sponsors, boardMembers };
+      return { clubInfo, siteInfo, venues, activities, sponsors, boardMembers };
     },
   });
 

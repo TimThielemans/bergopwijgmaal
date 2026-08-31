@@ -1,4 +1,4 @@
-import type { Activity, BoardMember, ClubInfo, Sponsor } from "./types";
+import type { Activity, BoardMember, ClubInfo, SiteInfo, Sponsor } from "./types";
 
 export const CLUB_INFO: ClubInfo = {
   name: "Volleybalclub Berg-Op Wijgmaal",
@@ -117,3 +117,26 @@ export const SPONSORS: Sponsor[] = [
   { id: "it-partner", name: "Novanet IT", websiteUrl: "https://example.com", tier: "supporter" },
   { id: "verzekeringen-peeters", name: "Verzekeringen Peeters", websiteUrl: "https://example.com", tier: "supporter" },
 ];
+
+/** Fallback voor de Site-informatie singleton in Sanity. */
+export const SITE_INFO: SiteInfo = {
+  currentSeason: "2026-2027",
+  membershipFeeRecreational: 150,
+  membershipFeeProvincialCompetition: 200,
+  membershipFeeNationalCompetition: 250,
+  membershipInfo: [
+    {
+      _type: "block",
+      _key: "lidgeld-intro",
+      style: "normal",
+      children: [
+        {
+          _type: "span",
+          _key: "lidgeld-intro-0",
+          text: "Het lidgeld dekt de aansluiting bij Volley Vlaanderen, de sportverzekering, trainingen en wedstrijden. Betalen gebeurt bij de start van het seizoen; vraag gerust naar een spreiding als dat beter past. Spelende gezinsleden krijgen een gezinskorting. Bij een langdurige blessure bekijken we samen een gedeeltelijke terugbetaling.",
+        },
+      ],
+      markDefs: [],
+    },
+  ],
+};

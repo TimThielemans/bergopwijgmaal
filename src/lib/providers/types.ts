@@ -4,6 +4,7 @@ import type {
   ClubInfo,
   Match,
   RankingEntry,
+  SiteInfo,
   Sponsor,
   Team,
   Venue,
@@ -52,11 +53,13 @@ export interface CmsProvider {
   getSponsors(): Promise<Sponsor[]>;
   getBoardMembers(): Promise<BoardMember[]>;
   getClubInfo(): Promise<ClubInfo>;
+  getSiteInfo(): Promise<SiteInfo>;
 }
 
 /** Everything the shared layout and editorial sections need in one payload. */
 export interface SiteContent {
   clubInfo: ClubInfo;
+  siteInfo: SiteInfo;
   venues: Venue[];
   activities: Activity[];
   sponsors: Sponsor[];

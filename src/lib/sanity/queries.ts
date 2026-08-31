@@ -58,6 +58,14 @@ export const CLUB_INFO_QUERY = `*[_type == "clubInfo"][0] {
   "socials": coalesce(socials[]{ platform, label, url }, [])
 }`;
 
+export const SITE_INFO_QUERY = `*[_type == "siteInfo"][0] {
+  currentSeason,
+  membershipFeeRecreational,
+  membershipFeeProvincialCompetition,
+  membershipFeeNationalCompetition,
+  "membershipInfo": coalesce(membershipInfo, [])
+}`;
+
 /* --- VolleyDataParser ---------------------------------------------------- */
 
 /** Parser configuration only: ids, never URLs. Filtered on parserEnabled. */
