@@ -1,4 +1,14 @@
-import type { Activity, BoardMember, ClubInfo, Player, Sponsor, Team, TrainingSlot, Venue } from "@/content/types";
+import type {
+  Activity,
+  BoardMember,
+  ClubInfo,
+  Player,
+  SiteInfo,
+  Sponsor,
+  Team,
+  TrainingSlot,
+  Venue,
+} from "@/content/types";
 import { sanityConfig } from "@/lib/config";
 import { list, num, text } from "@/lib/safe";
 import { sanityImageUrl } from "@/lib/sanity/client";
@@ -7,6 +17,7 @@ import {
   ACTIVITIES_QUERY,
   BOARD_MEMBERS_QUERY,
   CLUB_INFO_QUERY,
+  SITE_INFO_QUERY,
   SPONSORS_QUERY,
   TEAMS_QUERY,
   TEAM_BY_SLUG_QUERY,
@@ -210,5 +221,30 @@ export const sanityCmsProvider: CmsProvider = {
       socials: list(raw.socials).length > 0 ? list(raw.socials) : fallback.socials,
       foundingYear: num(raw.foundingYear, fallback.foundingYear),
     };
+  },
+
+  async getSiteInfo() {
+    const raw = await fetchOr<Partial<SiteInfo> | null>(SITE_INFO_QUERY, {}, null);
+    const fallback = await mockCmsProvider.getSiteInfo();
+    const fees = [
+      raw?.membershipFeeRecreational,
+      raw?.membershipFeeProvincialCompetition,
+      raw?.membershipFeeNationalCompetition,
+    ].filter((fee) => typeof fee === "number");
+    const info = list(raw?.membershipInfo);
+    if (!raw || (fees.length === 0 && info.length === 0)) return fallback;
+    return {
+      currentSeason: text(raw.currentSeason, fallback.currentSeason),
+      ...(typeof raw.membershipFeeRecreational === "number"
+        ? { membershipFeeRecreational: raw.membershipFeeRecreational }
+        : {}),
+      ...(typeof raw.membershipFeeProvincialCompetition === "number"
+        ? { membershipFeeProvincialCompetition: raw.membershipFeeProvincialCompetition }
+        : {}),
+      ...(typeof raw.membershipFeeNationalCompetition === "number"
+        ? { membershipFeeNationalCompetition: raw.membershipFeeNationalCompetition }
+        : {}),
+      membershipInfo: info,
+    } satisfies SiteInfo;
   },
 };
