@@ -258,6 +258,21 @@ export interface ClubInfo {
   socials: SocialLink[];
 }
 
+/** Portable Text blocks as delivered by Sanity; rendered by @portabletext/react. */
+export type RichText = unknown[];
+
+/**
+ * Algemene clubinformatie (singleton) die niet bij een ploeg, locatie, sponsor
+ * of activiteit hoort. Eerste toepassing: lidgelden per seizoen.
+ */
+export interface SiteInfo {
+  currentSeason: string;
+  membershipFeeRecreational?: number;
+  membershipFeeProvincialCompetition?: number;
+  membershipFeeNationalCompetition?: number;
+  membershipInfo: RichText;
+}
+
 /**
  * Envelope used by generated volleyball JSON files (VolleyDataParser output).
  * Static JSON is the first-class integration shape: no live API is assumed.
