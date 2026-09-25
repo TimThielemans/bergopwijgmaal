@@ -1,7 +1,7 @@
 import { Link } from "@tanstack/react-router";
 import { Lock, Menu, X } from "lucide-react";
 import { useEffect, useState } from "react";
-import logo from "@/assets/bow-logo.png.asset.json";
+import logo from "@/assets/bow-logo.png";
 import { adminConfig } from "@/lib/config";
 import { cn } from "@/lib/utils";
 
@@ -42,7 +42,7 @@ export function SiteHeader() {
     >
       <div className="mx-auto grid w-full max-w-6xl grid-cols-[minmax(0,1fr)_auto] items-center gap-4 px-5 py-3 sm:px-8">
         <Link to="/" className="flex min-w-0 items-center gap-3" onClick={() => setOpen(false)}>
-          <img src={logo.url} alt="" width={40} height={40} className="h-10 w-10 shrink-0 object-contain" />
+          <img src={logo} alt="" width={40} height={40} className="h-10 w-10 shrink-0 object-contain" />
           <span className="min-w-0">
             <span className="block truncate font-display text-sm font-bold leading-tight sm:text-base">
               Berg-Op Wijgmaal

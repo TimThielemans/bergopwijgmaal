@@ -1,5 +1,5 @@
 import { Link } from "@tanstack/react-router";
-import logo from "@/assets/bow-logo.png.asset.json";
+import logo from "@/assets/bow-logo.png";
 import { primaryVenue, useSiteContent } from "@/lib/site-content";
 import { list, text } from "@/lib/safe";
 import { SocialLinks } from "@/components/shared/SocialLinks";
@@ -15,7 +15,7 @@ export function SiteFooter() {
       <div className="mx-auto grid w-full max-w-6xl gap-10 px-5 py-14 sm:px-8 md:grid-cols-[1.4fr_1fr_1fr]">
         <div>
           <div className="flex items-center gap-3">
-            <img src={logo.url} alt="" width={44} height={44} loading="lazy" className="h-11 w-11 object-contain" />
+            <img src={logo} alt="" width={44} height={44} loading="lazy" className="h-11 w-11 object-contain" />
             <span className="font-display text-lg font-bold">Berg-Op Wijgmaal</span>
           </div>
           <p className="mt-4 max-w-sm text-sm leading-relaxed text-ink-foreground/70">
