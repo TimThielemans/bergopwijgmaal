@@ -79,11 +79,11 @@ export function buildRankingExportUrl(ids: VolleyIds): string {
  * longer used (it only kicks in when the live export is empty).
  */
 export const RANKING_TEST_URLS: Record<string, string> = {
-  "heren-a": "https://www.volleyscores.be/index.php?v=2&isActiveSeason=&a=re&se=12&ti=96174&st=&w=%&f=1&lng=nl",
+  // "heren-a": "https://www.volleyscores.be/index.php?v=2&isActiveSeason=&a=re&se=12&ti=96174&st=&w=%&f=1&lng=nl",
 };
 
 export const MATCHES_TEST_URLS: Record<string, string> = {
-  "heren-a": "https://www.volleyscores.be/index.php?v=2&isActiveSeason=1&a=me&se=12&ti=96174&w=%25&f=&lng=nl",
+  //"heren-a": "https://www.volleyscores.be/index.php?v=2&isActiveSeason=1&a=me&se=12&ti=96174&w=%25&f=&lng=nl",
 };
 
 export function rankingTestUrl(teamId: string): string {
