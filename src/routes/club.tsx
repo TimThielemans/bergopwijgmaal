@@ -1,6 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { Building2, HeartHandshake, Target } from "lucide-react";
-import { primaryVenue, useSiteContent } from "@/lib/site-content";
+import { allVenues, useSiteContent } from "@/lib/site-content";
 import { list, text } from "@/lib/safe";
 import { pageMeta } from "@/lib/seo";
 import { PageHero } from "@/components/layout/PageHero";
@@ -21,7 +21,7 @@ export const Route = createFileRoute("/club")({
 
 function ClubPage() {
   const { clubInfo, siteInfo, venues, boardMembers } = useSiteContent();
-  const hall = primaryVenue(venues);
+  const halls = allVenues(venues);
   const storyBlocks = list(clubInfo?.storyBlocks);
   const values = list(clubInfo?.values);
   const board = list(boardMembers);
@@ -165,23 +165,27 @@ function ClubPage() {
           </div>
         </Section>
       ) : null}
-      {hall ? (
-        <Section tone="tint" eyebrow="Sporthal" title="Waar we spelen">
-          <div className="grid gap-6 lg:grid-cols-[1fr_1.1fr]">
-            <Reveal className="surface-card p-6 sm:p-8">
-              <Building2 aria-hidden="true" className="h-7 w-7 text-club-deep" />
-              <h3 className="mt-4 font-display text-xl font-bold">{text(hall.name, "Sporthal")}</h3>
-              <address className="mt-3 space-y-1 text-sm not-italic text-muted-foreground">
-                {text(hall.address) ? <p>{text(hall.address)}</p> : null}
-                <p>{`${text(hall.postalCode)} ${text(hall.city)}`.trim()}</p>
-              </address>
-              {text(hall.notes) ? (
-                <p className="mt-4 text-sm leading-relaxed text-muted-foreground">{text(hall.notes)}</p>
-              ) : null}
-            </Reveal>
-            <Reveal delay={100}>
-              <MapPlaceholder venue={hall} />
-            </Reveal>
+      {halls.length > 0 ? (
+        <Section tone="tint" eyebrow={halls.length > 1 ? "Sporthallen" : "Sporthal"} title="Waar we spelen">
+          <div className="space-y-6">
+            {halls.map((hall, index) => (
+              <div key={text(hall.venueId, String(index))} className="grid gap-6 lg:grid-cols-[1fr_1.1fr]">
+                <Reveal className="surface-card p-6 sm:p-8">
+                  <Building2 aria-hidden="true" className="h-7 w-7 text-club-deep" />
+                  <h3 className="mt-4 font-display text-xl font-bold">{text(hall.name, "Sporthal")}</h3>
+                  <address className="mt-3 space-y-1 text-sm not-italic text-muted-foreground">
+                    {text(hall.address) ? <p>{text(hall.address)}</p> : null}
+                    <p>{`${text(hall.postalCode)} ${text(hall.city)}`.trim()}</p>
+                  </address>
+                  {text(hall.notes) ? (
+                    <p className="mt-4 text-sm leading-relaxed text-muted-foreground">{text(hall.notes)}</p>
+                  ) : null}
+                </Reveal>
+                <Reveal delay={100}>
+                  <MapPlaceholder venue={hall} />
+                </Reveal>
+              </div>
+            ))}
           </div>
         </Section>
       ) : null}
