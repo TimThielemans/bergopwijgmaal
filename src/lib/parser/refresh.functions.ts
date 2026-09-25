@@ -9,6 +9,7 @@ import type { RefreshResult, VolleyDataStatus } from "./types";
 
 export const refreshVolleyData = createServerFn({ method: "POST" }).handler(
   async (): Promise<RefreshResult> => {
+    await (await import("@/lib/admin/session.server")).requireAdmin();
     const { runVolleyDataRefresh } = await import("./refresh.server");
     return runVolleyDataRefresh();
   },
@@ -16,6 +17,7 @@ export const refreshVolleyData = createServerFn({ method: "POST" }).handler(
 
 export const getVolleyDataStatus = createServerFn({ method: "GET" }).handler(
   async (): Promise<VolleyDataStatus> => {
+    await (await import("@/lib/admin/session.server")).requireAdmin();
     const { readVolleyDataStatus } = await import("./refresh.server");
     return readVolleyDataStatus();
   },
