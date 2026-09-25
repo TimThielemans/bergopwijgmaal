@@ -1,7 +1,6 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { LogIn } from "lucide-react";
-import { adminConfig } from "@/lib/config";
 import { useAdminAuth } from "@/lib/admin/auth";
 import { PageHero } from "@/components/layout/PageHero";
 import { Section } from "@/components/layout/Section";
