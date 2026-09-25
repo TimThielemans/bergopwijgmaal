@@ -23,6 +23,7 @@ function validateInput(data: unknown): WorkbookInput {
 export const analyzeExcelImport = createServerFn({ method: "POST" })
   .inputValidator(validateInput)
   .handler(async ({ data }): Promise<ImportAnalysis> => {
+    await (await import("@/lib/admin/session.server")).requireAdmin();
     const { analyzeExcelWorkbook } = await import("./excel.server");
     return analyzeExcelWorkbook(data);
   });
@@ -30,6 +31,7 @@ export const analyzeExcelImport = createServerFn({ method: "POST" })
 export const applyExcelImport = createServerFn({ method: "POST" })
   .inputValidator(validateInput)
   .handler(async ({ data }): Promise<ImportResult> => {
+    await (await import("@/lib/admin/session.server")).requireAdmin();
     const { applyExcelWorkbook } = await import("./excel.server");
     return applyExcelWorkbook(data);
   });
