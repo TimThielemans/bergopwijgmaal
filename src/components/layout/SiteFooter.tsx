@@ -1,5 +1,5 @@
 import { Link } from "@tanstack/react-router";
-import logo from "@/assets/bow-logo.png.asset.json";
+import logo from "@/assets/bow-logo.png";
 import { primaryVenue, useSiteContent } from "@/lib/site-content";
 import { list, text } from "@/lib/safe";
 import { SocialLinks } from "@/components/shared/SocialLinks";

@@ -1,7 +1,7 @@
 import { Link } from "@tanstack/react-router";
 import { Lock, Menu, X } from "lucide-react";
 import { useEffect, useState } from "react";
-import logo from "@/assets/bow-logo.png.asset.json";
+import logo from "@/assets/bow-logo.png";
 import { adminConfig } from "@/lib/config";
 import { cn } from "@/lib/utils";
 
