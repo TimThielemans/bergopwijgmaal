@@ -18,34 +18,41 @@ function timingSafeEqual(a: string, b: string): boolean {
   return diff === 0;
 }
 
+async function handleRefresh(request: Request): Promise<Response> {
+  const secret = process.env["CRON_SECRET"];
+  if (!secret) {
+    return new Response("Not configured", { status: 503 });
+  }
+  // Accept both our custom header and Vercel Cron's `Authorization: Bearer <CRON_SECRET>`.
+  const auth = request.headers.get("authorization") ?? "";
+  const bearer = auth.startsWith("Bearer ") ? auth.slice(7) : "";
+  const provided = request.headers.get("x-cron-secret") ?? bearer;
+  if (!provided || !timingSafeEqual(provided, secret)) {
+    return new Response("Unauthorized", { status: 401 });
+  }
+
+  try {
+    const { runVolleyDataRefresh } = await import("@/lib/parser/refresh.server");
+    const result = await runVolleyDataRefresh();
+    return Response.json({
+      ok: result.ok,
+      generatedAt: result.generatedAt,
+      matchRows: result.matches.rowCount,
+      rankingRows: result.rankings.rowCount,
+      errorCount: result.errors.length,
+    });
+  } catch (error) {
+    console.error("[volleydata] cron refresh mislukt:", error);
+    return new Response("Refresh failed", { status: 500 });
+  }
+}
+
 export const Route = createFileRoute("/api/public/refresh-volley-data")({
   server: {
     handlers: {
-      POST: async ({ request }) => {
-        const secret = process.env["CRON_SECRET"];
-        if (!secret) {
-          return new Response("Not configured", { status: 503 });
-        }
-        const provided = request.headers.get("x-cron-secret") ?? "";
-        if (!timingSafeEqual(provided, secret)) {
-          return new Response("Unauthorized", { status: 401 });
-        }
-
-        try {
-          const { runVolleyDataRefresh } = await import("@/lib/parser/refresh.server");
-          const result = await runVolleyDataRefresh();
-          return Response.json({
-            ok: result.ok,
-            generatedAt: result.generatedAt,
-            matchRows: result.matches.rowCount,
-            rankingRows: result.rankings.rowCount,
-            errorCount: result.errors.length,
-          });
-        } catch (error) {
-          console.error("[volleydata] cron refresh mislukt:", error);
-          return new Response("Refresh failed", { status: 500 });
-        }
-      },
+      // Vercel Cron always sends GET.
+      GET: async ({ request }) => handleRefresh(request),
+      POST: async ({ request }) => handleRefresh(request),
     },
   },
 });

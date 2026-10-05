@@ -1,0 +1,8 @@
+{
+  "crons": [
+    {
+      "path": "/api/public/refresh-volley-data",
+      "schedule": "0 23 * * *"
+    }
+  ]
+}
