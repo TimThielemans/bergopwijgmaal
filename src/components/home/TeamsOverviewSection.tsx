@@ -17,7 +17,7 @@ export function TeamsOverviewSection({ teams }: { teams?: Team[] | null }) {
       tone="tint"
       eyebrow="Ploegen"
       title="Onze ploegen"
-      intro="Competitief of recreatief — elke ploeg heeft een eigen niveau, ritme en sfeer."
+      intro="Competitief of recreatief — elke ploeg heeft zijn eigen identiteit."
       action={
         <Link
           to="/ploegen"
