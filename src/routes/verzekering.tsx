@@ -67,7 +67,7 @@ const REMEMBER: Item[] = [
   {
     icon: Phone,
     title: "Meld het aan de club",
-    body: "Breng een trainer, ploegverantwoordelijke of bestuurslid op de hoogte.",
+    body: "Breng je trainer, je ploegverantwoordelijke en de clubsecretaris op de hoogte.",
   },
 ];
 
