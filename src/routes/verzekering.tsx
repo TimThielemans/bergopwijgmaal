@@ -85,12 +85,12 @@ const STEPS: Item[] = [
   {
     icon: FileText,
     title: "Vul de aangifte in",
-    body: "Vul het formulier volledig in  (het medische gedeelte door de arts).",
+    body: "Vul het formulier volledig in  (het medische gedeelte in luik C door de arts).",
   },
   {
     icon: Send,
     title: "Bezorg alle documenten",
-    body: "Bezorg de aangifte en medische documenten zo snel mogelijk aan onze club secretaris.",
+    body: "Bezorg de aangifte en medische documenten zo snel mogelijk aan Guy via secretariaat@bergopwijgmaal.be.",
   },
   {
     icon: CheckCircle2,
@@ -270,7 +270,7 @@ function InsurancePage() {
               href={`mailto:${email}`}
               className="inline-flex min-h-11 shrink-0 items-center gap-2 rounded-full bg-ink px-5 py-2 font-display text-sm font-bold text-ink-foreground transition-colors hover:bg-club hover:text-ink"
             >
-              <Mail aria-hidden="true" className="h-4 w-4" /> Contacteer het bestuur
+              <Mail aria-hidden="true" className="h-4 w-4" /> secretariaat@bergopwijgmaal.be
             </a>
           ) : null}
         </Reveal>
