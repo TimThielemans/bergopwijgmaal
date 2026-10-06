@@ -28,7 +28,7 @@ import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/
 
 const TITLE = "Verzekering — BOW";
 const DESCRIPTION =
-  "Ongeval bij BOW? Zo ben je verzekerd via Volley Vlaanderen en dit zijn de stappen voor je aangifte.";
+  "Ongeval bij BOW? Zo ben je verzekerd via Volley Vlaanderen/Ethias en dit zijn de stappen voor je aangifte.";
 
 /** Fallbacks zolang er niets in de CMS staat. */
 const VV_URL = "https://www.volleyvlaanderen.be";
@@ -43,31 +43,95 @@ type Item = { icon: LucideIcon; title: string; body: string };
 
 const COVERED: Item[] = [
   { icon: Volleyball, title: "Trainingen", body: "Alle officiële trainingen van de club." },
-  { icon: Trophy, title: "Wedstrijden", body: "Competitie-, beker- en vriendschappelijke wedstrijden binnen de federatie." },
+  {
+    icon: Trophy,
+    title: "Wedstrijden",
+    body: "Competitie-, beker- en vriendschappelijke wedstrijden binnen de federatie.",
+  },
   { icon: PartyPopper, title: "Clubactiviteiten", body: "Officiële activiteiten georganiseerd door de club." },
   { icon: Bus, title: "Onderweg", body: "Het normale traject van en naar de training, wedstrijd of activiteit." },
 ];
 
 const REMEMBER: Item[] = [
-  { icon: CalendarClock, title: "Binnen 5 kalenderdagen", body: "Dien de aangifte zo snel mogelijk in, bij voorkeur binnen 5 kalenderdagen." },
+  {
+    icon: CalendarClock,
+    title: "Binnen 5 kalenderdagen",
+    body: "Dien de aangifte zo snel mogelijk in bij de secretaris (Guy), binnen de 5 kalenderdagen.",
+  },
   { icon: FileText, title: "Bewaar documenten", body: "Houd medische attesten, voorschriften en verslagen bij." },
-  { icon: Receipt, title: "Bewaar facturen", body: "Bewaar alle bewijsstukken en betalingsbewijzen van medische kosten." },
-  { icon: Phone, title: "Meld het aan de club", body: "Breng een trainer, ploegverantwoordelijke of bestuurslid op de hoogte." },
+  {
+    icon: Receipt,
+    title: "Bewaar facturen",
+    body: "Bewaar alle bewijsstukken en betalingsbewijzen van medische kosten.",
+  },
+  {
+    icon: Phone,
+    title: "Meld het aan de club",
+    body: "Breng een trainer, ploegverantwoordelijke of bestuurslid op de hoogte.",
+  },
 ];
 
 const STEPS: Item[] = [
-  { icon: HeartPulse, title: "Zorg voor medische hulp", body: "Laat de blessure zo nodig meteen behandelen door een arts of spoeddienst." },
-  { icon: Megaphone, title: "Meld het ongeval", body: "Verwittig een trainer, ploegverantwoordelijke of bestuurslid." },
-  { icon: FileText, title: "Vul de aangifte in", body: "Vul het formulier volledig in en laat het medische gedeelte invullen door de arts." },
-  { icon: Send, title: "Bezorg alle documenten", body: "Bezorg de aangifte en medische documenten zo snel mogelijk aan de juiste contactpersoon." },
-  { icon: CheckCircle2, title: "Opvolging", body: "Na verwerking ontvang je verdere informatie over de afhandeling van je dossier." },
+  {
+    icon: HeartPulse,
+    title: "Zorg voor medische hulp",
+    body: "Laat de blessure zo nodig meteen behandelen door een arts of spoeddienst, laat het aangifteformulier (Ethias) ook meteen invullen door de behandelende arts.",
+  },
+  {
+    icon: Megaphone,
+    title: "Meld het ongeval",
+    body: "Breng de club secretaris (Guy) op de hoogte van het ongeval en uiteraard ook je trainer.",
+  },
+  {
+    icon: FileText,
+    title: "Vul de aangifte in",
+    body: "Vul het formulier volledig in  (het medische gedeelte door de arts).",
+  },
+  {
+    icon: Send,
+    title: "Bezorg alle documenten",
+    body: "Bezorg de aangifte en medische documenten zo snel mogelijk aan onze club secretaris.",
+  },
+  {
+    icon: CheckCircle2,
+    title: "Opvolging",
+    body: "Na verwerking ontvang je verdere informatie over de afhandeling van je dossier.",
+  },
 ];
 
 const FAQ = [
-  { q: "Moet ik de aangifte onmiddellijk indienen?", a: "Ja. Doe het zo snel mogelijk, idealiter binnen 5 kalenderdagen na het ongeval." },
-  { q: "Moet ik facturen bewaren?", a: "Ja. Bewaar alle medische attesten, facturen, betalingsbewijzen en andere relevante documenten." },
-  { q: "Ben ik verzekerd tijdens trainingen?", a: "Ja, tijdens officiële trainingen, wedstrijden en clubactiviteiten, en op het normale traject ernaartoe." },
-  { q: "Waar vind ik de volledige polisvoorwaarden?", a: "Via Volley Vlaanderen. Gebruik de link bij 'Nuttige links' hieronder." },
+  {
+    q: "Welke 'luiken' van het aangifteformulier moet ik zelf invullen?.",
+    a: "Luik A moet je zelf invullen, Luik B is niet echt relevant, Luik C laat je door de behandelende arts invullen. Indien de arts een ander attest bezorgd, dien je dit mee te sturen naar de clubsecretaris.",
+  },
+  {
+    q: "Moet ik de gegevens van betrokken speler delen als het gaat over een typische volleybalblessure?.",
+    a: "Neen. Stel dat je bijvoorbeeld op iemand zijn/haar voet landt, is het niet nodig om zijn/haar contactgegevens te vermelden. Dit is een typische volleybalblessure en komt niet door het toedoen van iemand anders. We zijn geen voetballers he ;)",
+  },
+  {
+    q: "Moet ik de aangifte onmiddellijk indienen?",
+    a: "Ja. Doe het zo snel mogelijk, stuur de aangifte ten laatste 5 kalenderdagen na het ongeval naar onze clubsecretaris zodat hij het tijdig bij Ethias online kan indienen.",
+  },
+  {
+    q: "Wat als het niet op 'het wedstrijdblad' staat vermeld?.",
+    a: "Geen probleem, sinds we markeren met een tablet is dit niet meer nodig en hoef je het niet op het wedstrijdblad vermelden wanneer het tijdens een match gebeurd.",
+  },
+  {
+    q: "Moet ik facturen bewaren?",
+    a: "Ja. Bewaar alle medische attesten, facturen, betalingsbewijzen en andere relevante documenten.",
+  },
+  {
+    q: "Wie zorgt er voor de registratie van het ongevul bij Ethias?",
+    a: "Dit kan enkel de clubsecretaris doen. Daarom bezorg je hem zo snel mogelijk het ingevulde aangifteformulier via mail of op papier. Eens de registratie is voltooid, verloopt de verdere communicatie rechtstreeks tussen de speler/speelsters en Ethias.",
+  },
+  {
+    q: "Ben ik verzekerd tijdens trainingen?",
+    a: "Ja, tijdens officiële trainingen, wedstrijden en clubactiviteiten, en op het normale traject ernaartoe.",
+  },
+  {
+    q: "Waar vind ik de volledige polisvoorwaarden?",
+    a: "Via Volley Vlaanderen. Gebruik de link bij 'Nuttige links' hieronder.",
+  },
 ];
 
 function InsurancePage() {
@@ -79,11 +143,30 @@ function InsurancePage() {
 
   const links = [
     ...(formUrl
-      ? [{ icon: Download, title: "Aangifteformulier (PDF)", body: "Blanco formulier met medisch attest om mee te nemen naar de arts.", label: "Download formulier", href: formUrl }]
+      ? [
+          {
+            icon: Download,
+            title: "Aangifteformulier (PDF)",
+            body: "Blanco formulier met medisch attest om mee te nemen naar de arts.",
+            label: "Download formulier",
+            href: formUrl,
+          },
+        ]
       : []),
-    { icon: FileText, title: "Ongevalsaangifte", body: "Start of raadpleeg een ongevalsdossier.", label: "Ongevalsaangifte openen", href: declarationUrl },
-    { icon: Volleyball, title: "Volley Vlaanderen", body: "Meer over de federatie en de verzekering.", label: "Bezoek website", href: VV_URL },
-    { icon: ShieldCheck, title: "Polisvoorwaarden", body: "Raadpleeg de actuele verzekeringsvoorwaarden.", label: "Bekijk voorwaarden", href: policyUrl },
+    {
+      icon: Volleyball,
+      title: "Volley Vlaanderen",
+      body: "Meer over de federatie en de verzekering.",
+      label: "Bezoek website",
+      href: VV_URL,
+    },
+    {
+      icon: ShieldCheck,
+      title: "Polisvoorwaarden",
+      body: "Raadpleeg de actuele verzekeringsvoorwaarden.",
+      label: "Bekijk voorwaarden",
+      href: policyUrl,
+    },
   ];
 
   return (
@@ -113,7 +196,8 @@ function InsurancePage() {
       <Section eyebrow="Dekking" title="Wanneer ben je verzekerd?">
         <CardGrid items={COVERED} />
         <p className="mt-5 text-xs text-muted-foreground">
-          De exacte waarborgen, tussenkomsten en voorwaarden worden bepaald door de polis van Volley Vlaanderen.
+          De exacte waarborgen, tussenkomsten en voorwaarden worden bepaald door de polis van Volley Vlaanderen bij
+          Ethias. Zie verder voor de link.
         </p>
       </Section>
 
@@ -178,7 +262,8 @@ function InsurancePage() {
       <Section eyebrow="Contact" title="Nog vragen?" tone="tint">
         <Reveal className="surface-card flex flex-col gap-5 p-6 sm:flex-row sm:items-center sm:justify-between sm:p-8">
           <p className="max-w-xl text-sm leading-relaxed text-muted-foreground">
-            Vragen over een schadegeval of niet zeker welke stappen je moet volgen? Neem gerust contact op met het bestuur.
+            Vragen over een schadegeval of niet zeker welke stappen je moet volgen? Neem contact op met Guy
+            (clubsecretaris). Het is ook aan Guy dat je het aangifteformulier snel moet bezorgen na het ongeval.
           </p>
           {email ? (
             <a
