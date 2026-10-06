@@ -117,7 +117,7 @@ function InsurancePage() {
         </p>
       </Section>
 
-      <Section eyebrow="Snel overzicht" title="Belangrijk om te onthouden" tone="muted">
+      <Section eyebrow="Snel overzicht" title="Belangrijk om te onthouden" tone="tint">
         <CardGrid items={REMEMBER} compact />
       </Section>
 
@@ -142,7 +142,7 @@ function InsurancePage() {
         </ol>
       </Section>
 
-      <Section eyebrow="FAQ" title="Veelgestelde vragen" tone="muted">
+      <Section eyebrow="FAQ" title="Veelgestelde vragen" tone="tint">
         <Accordion type="single" collapsible className="surface-card px-5 sm:px-6">
           {FAQ.map((item, i) => (
             <AccordionItem key={item.q} value={`faq-${i}`} className={i === FAQ.length - 1 ? "border-b-0" : ""}>
@@ -175,7 +175,7 @@ function InsurancePage() {
         </div>
       </Section>
 
-      <Section eyebrow="Contact" title="Nog vragen?" tone="muted">
+      <Section eyebrow="Contact" title="Nog vragen?" tone="tint">
         <Reveal className="surface-card flex flex-col gap-5 p-6 sm:flex-row sm:items-center sm:justify-between sm:p-8">
           <p className="max-w-xl text-sm leading-relaxed text-muted-foreground">
             Vragen over een schadegeval of niet zeker welke stappen je moet volgen? Neem gerust contact op met het bestuur.
