@@ -40,6 +40,35 @@ export const siteInfo = defineType({
       description: "Betaling, verzekering, kortingen, blessures, ...",
       of: [defineArrayMember({ type: "block" })],
     }),
+    defineField({
+      name: "insuranceFormFile",
+      title: "Verzekering: aangifteformulier (PDF)",
+      type: "file",
+      options: { accept: "application/pdf" },
+      description: "Blanco ongevalsaangifte / medisch attest. Heeft voorrang op de link hieronder.",
+    }),
+    defineField({
+      name: "insuranceFormUrl",
+      title: "Verzekering: link naar aangifteformulier",
+      type: "url",
+      description: "Gebruikt als er geen PDF is opgeladen.",
+    }),
+    defineField({
+      name: "insuranceDeclarationUrl",
+      title: "Verzekering: online ongevalsaangifte",
+      type: "url",
+    }),
+    defineField({
+      name: "insurancePolicyUrl",
+      title: "Verzekering: polisvoorwaarden",
+      type: "url",
+    }),
+    defineField({
+      name: "insuranceEmail",
+      title: "Verzekering: contact e-mail",
+      type: "string",
+      description: "Leeg = algemeen club-e-mailadres.",
+    }),
   ],
   preview: { prepare: () => ({ title: "Site-informatie" }) },
 });

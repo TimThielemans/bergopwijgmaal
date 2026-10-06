@@ -232,8 +232,15 @@ export const sanityCmsProvider: CmsProvider = {
       raw?.membershipFeeNationalCompetition,
     ].filter((fee) => typeof fee === "number");
     const info = list(raw?.membershipInfo);
-    if (!raw || (fees.length === 0 && info.length === 0)) return fallback;
+    const insurance = {
+      ...(text(raw?.insuranceFormUrl) ? { insuranceFormUrl: text(raw?.insuranceFormUrl) } : {}),
+      ...(text(raw?.insuranceDeclarationUrl) ? { insuranceDeclarationUrl: text(raw?.insuranceDeclarationUrl) } : {}),
+      ...(text(raw?.insurancePolicyUrl) ? { insurancePolicyUrl: text(raw?.insurancePolicyUrl) } : {}),
+      ...(text(raw?.insuranceEmail) ? { insuranceEmail: text(raw?.insuranceEmail) } : {}),
+    };
+    if (!raw || (fees.length === 0 && info.length === 0)) return { ...fallback, ...insurance };
     return {
+      ...insurance,
       currentSeason: text(raw.currentSeason, fallback.currentSeason),
       ...(typeof raw.membershipFeeRecreational === "number"
         ? { membershipFeeRecreational: raw.membershipFeeRecreational }

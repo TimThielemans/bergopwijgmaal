@@ -63,7 +63,11 @@ export const SITE_INFO_QUERY = `*[_type == "siteInfo"][0] {
   membershipFeeRecreational,
   membershipFeeProvincialCompetition,
   membershipFeeNationalCompetition,
-  "membershipInfo": coalesce(membershipInfo, [])
+  "membershipInfo": coalesce(membershipInfo, []),
+  "insuranceFormUrl": coalesce(insuranceFormFile.asset->url, insuranceFormUrl),
+  insuranceDeclarationUrl,
+  insurancePolicyUrl,
+  insuranceEmail
 }`;
 
 /* --- VolleyDataParser ---------------------------------------------------- */

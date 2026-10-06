@@ -271,6 +271,11 @@ export interface SiteInfo {
   membershipFeeProvincialCompetition?: number;
   membershipFeeNationalCompetition?: number;
   membershipInfo: RichText;
+  /** Verzekering: alle links optioneel, de pagina voorziet fallbacks. */
+  insuranceFormUrl?: string;
+  insuranceDeclarationUrl?: string;
+  insurancePolicyUrl?: string;
+  insuranceEmail?: string;
 }
 
 /**

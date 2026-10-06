@@ -1,5 +1,6 @@
 import { PortableText, type PortableTextBlock } from "@portabletext/react";
-import { Euro } from "lucide-react";
+import { Link } from "@tanstack/react-router";
+import { ArrowRight, Euro, ShieldCheck } from "lucide-react";
 import type { SiteInfo } from "@/content/types";
 import { list, num, text } from "@/lib/safe";
 import { Section } from "@/components/layout/Section";
@@ -58,6 +59,23 @@ export function MembershipSection({ siteInfo }: { siteInfo: SiteInfo | undefined
           </div>
         </Reveal>
       ) : null}
+      <Reveal delay={160}>
+        <div className="surface-card mt-5 flex flex-col gap-4 p-5 sm:flex-row sm:items-center sm:justify-between sm:p-6">
+          <div className="flex items-start gap-3">
+            <ShieldCheck aria-hidden="true" className="mt-0.5 h-6 w-6 shrink-0 text-club-deep" />
+            <p className="text-sm leading-relaxed text-muted-foreground">
+              <strong className="text-foreground">Verzekerd via Volley Vlaanderen.</strong> Ongeval
+              tijdens training of wedstrijd? Lees wat je moet doen.
+            </p>
+          </div>
+          <Link
+            to="/verzekering"
+            className="inline-flex min-h-11 shrink-0 items-center gap-2 font-display text-sm font-bold text-club-deep hover:underline"
+          >
+            Meer over de verzekering <ArrowRight aria-hidden="true" className="h-4 w-4" />
+          </Link>
+        </div>
+      </Reveal>
     </Section>
   );
 }
