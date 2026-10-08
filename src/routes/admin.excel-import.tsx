@@ -347,6 +347,10 @@ function AdminExcelImport() {
             Wedstrijden en klassementen komen niet uit Excel: die worden opgehaald door de VolleyDataParser op basis van
             de ids uit het blad ParserData.
           </p>
+          <p className="mt-2 text-sm leading-relaxed text-muted-foreground">
+            Tip: download altijd eerst de huidige data uit de CMS. Dat werkboek wordt live opgebouwd uit Sanity, dus
+            aanpassingen die in de Studio gebeurden zitten erin. Pas het aan en laad het opnieuw op.
+          </p>
         </div>
 
         <div className="surface-card mt-6 p-6">
