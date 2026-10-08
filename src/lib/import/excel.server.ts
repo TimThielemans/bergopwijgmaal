@@ -398,6 +398,7 @@ function buildDocuments(
       publicUrl: row["publicUrl"] ?? "",
       competitionCode: row["competitionCode"] ?? "",
       divisionCode: row["divisionCode"] ?? "",
+      ...(row["notes"] ? { notes: row["notes"] } : {}),
     });
   });
 
@@ -442,7 +443,8 @@ function buildDocuments(
       order,
       players: playersByTeam.get(teamId) ?? [],
       trainings: trainingsByTeam.get(teamId) ?? [],
-      parser: currentParser["notes"] ? { ...parser, notes: currentParser["notes"] } : parser,
+      parser:
+        !parser["notes"] && currentParser["notes"] ? { ...parser, notes: currentParser["notes"] } : parser,
       // Photos stay managed in the Studio: the existing asset is preserved and
       // only the alt text can be updated from Excel.
       ...(photo
