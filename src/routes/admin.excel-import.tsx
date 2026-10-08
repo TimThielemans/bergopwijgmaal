@@ -5,7 +5,7 @@ import { useServerFn } from "@tanstack/react-start";
 import { AlertTriangle, ArrowLeft, CheckCircle2, Download, FileSpreadsheet, Table2, Upload } from "lucide-react";
 import { PageHero } from "@/components/layout/PageHero";
 import { Section } from "@/components/layout/Section";
-import { analyzeExcelImport, applyExcelImport } from "@/lib/import/excel.functions";
+import { analyzeExcelImport, applyExcelImport, exportExcelWorkbook } from "@/lib/import/excel.functions";
 import { IMPORT_SHEETS, type ImportAnalysis, type ImportResult } from "@/lib/import/types";
 
 /**
@@ -26,20 +26,20 @@ export const Route = createFileRoute("/admin/excel-import")({
 const SHEET_DOCS: { name: keyof typeof IMPORT_SHEETS; body: string }[] = [
   {
     name: "Teams",
-    body: "Eén rij per ploeg. teamId is de stabiele sleutel waar alle andere bladen naar verwijzen. Foto's blijven in de Studio; enkel photoAlt komt uit Excel.",
+    body: "Eén rij per ploeg. teamId is de stabiele sleutel waar alle andere bladen naar verwijzen. category is \"competitief\" of \"recreatief\" (recreatief toont de VLM-variant van de ploegpagina). order bepaalt de volgorde op de site. Foto's blijven in de Studio; enkel photoAlt komt uit Excel.",
   },
-  { name: "Players", body: "Eén rij per speler. De kern wordt samengesteld via teamId." },
+  { name: "Players", body: "Eén rij per speler (naam, rugnummer, positie). De kern wordt samengesteld via teamId; de volgorde van de rijen is de volgorde op de site." },
   {
     name: "Trainings",
-    body: "Eén rij per trainingsmoment, met verwijzing naar ploeg én locatie (venueId).",
+    body: "Eén rij per trainingsmoment: day (maandag…zondag), startTime/endTime (bv. 20:00) en venueId uit het blad Locations. Voor recreatieve ploegen worden deze rijen getoond als \"Thuismatchen\".",
   },
   {
     name: "Locations",
-    body: "Alle zalen op één plek. Adressen worden nooit gedupliceerd in andere bladen.",
+    body: "Alle zalen op één plek, met stabiele venueId. Ze verschijnen op de Club- en Contactpagina; adressen worden nooit gedupliceerd in andere bladen.",
   },
   {
     name: "ParserData",
-    body: "VolleyScores-configuratie met ids: clubId (ci), teamId (ti), seriesId (ssi) en seizoen (volleySeasonId, se). Export-URL's worden altijd afgeleid; enkel publicUrl (publieke overzichtspagina, bv. vlmbrabant.be voor recreatief) mag een volledige link zijn. Bij parserEnabled = WAAR zijn ci/ti/ssi verplicht.",
+    body: "Eén rij per ploeg. parserEnabled (WAAR/ONWAAR) bepaalt of de VolleyDataParser de ploeg ophaalt; dan zijn volleyClubId (ci), volleyTeamId (ti) en volleySeriesId (ssi) verplicht. volleySeasonId (se, bv. 13) is het VolleyScores-seizoen — elk nieuw seizoen enkel hier aanpassen. publicUrl is de link achter \"Volledig overzicht\" (VolleyScores voor competitie, vlmbrabant.be voor recreatief). Export-URL's worden altijd uit de ids afgeleid. notes is een interne nota.",
   },
 ];
 
@@ -59,6 +59,25 @@ function AdminExcelImport() {
   const queryClient = useQueryClient();
   const analyzeFn = useServerFn(analyzeExcelImport);
   const applyFn = useServerFn(applyExcelImport);
+  const exportFn = useServerFn(exportExcelWorkbook);
+
+  const exportWb = useMutation({
+    mutationFn: () => exportFn(),
+    onSuccess: ({ fileName, base64 }) => {
+      const binary = atob(base64);
+      const bytes = new Uint8Array(binary.length);
+      for (let i = 0; i < binary.length; i += 1) bytes[i] = binary.charCodeAt(i);
+      const blob = new Blob([bytes], {
+        type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+      });
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement("a");
+      link.href = url;
+      link.download = fileName;
+      link.click();
+      setTimeout(() => URL.revokeObjectURL(url), 1000);
+    },
+  });
 
   const [file, setFile] = useState<{ name: string; base64: string } | null>(null);
   const [analysis, setAnalysis] = useState<ImportAnalysis | null>(null);
@@ -142,14 +161,15 @@ function AdminExcelImport() {
                 disabled={busy}
               />
             </label>
-            <a
-              href="/BOWsite-import-voorbeeld.xlsx"
-              download
-              className="inline-flex min-h-11 items-center gap-2 font-display text-sm font-semibold text-club-deep transition-colors hover:text-ink"
+            <button
+              type="button"
+              onClick={() => exportWb.mutate()}
+              disabled={exportWb.isPending}
+              className="inline-flex min-h-11 items-center gap-2 font-display text-sm font-semibold text-club-deep transition-colors hover:text-ink disabled:opacity-50"
             >
               <Download aria-hidden="true" className="h-4 w-4" />
-              Voorbeeldwerkboek (huidige data)
-            </a>
+              {exportWb.isPending ? "Werkboek wordt aangemaakt…" : "Download huidige data uit de CMS"}
+            </button>
           </div>
 
           {file ? (
@@ -158,6 +178,11 @@ function AdminExcelImport() {
             </p>
           ) : null}
           {readError ? <p className="mt-3 text-sm text-loss">{readError}</p> : null}
+          {exportWb.isError ? (
+            <p className="mt-3 text-sm text-loss">
+              Download mislukt: {exportWb.error instanceof Error ? exportWb.error.message : "onbekende fout"}
+            </p>
+          ) : null}
           {analyze.isPending ? (
             <p className="mt-3 text-sm text-muted-foreground">Werkboek wordt gecontroleerd…</p>
           ) : null}
