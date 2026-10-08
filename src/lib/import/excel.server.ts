@@ -398,6 +398,7 @@ function buildDocuments(
       publicUrl: row["publicUrl"] ?? "",
       competitionCode: row["competitionCode"] ?? "",
       divisionCode: row["divisionCode"] ?? "",
+      ...(row["notes"] ? { notes: row["notes"] } : {}),
     });
   });
 
@@ -442,7 +443,8 @@ function buildDocuments(
       order,
       players: playersByTeam.get(teamId) ?? [],
       trainings: trainingsByTeam.get(teamId) ?? [],
-      parser: currentParser["notes"] ? { ...parser, notes: currentParser["notes"] } : parser,
+      parser:
+        !parser["notes"] && currentParser["notes"] ? { ...parser, notes: currentParser["notes"] } : parser,
       // Photos stay managed in the Studio: the existing asset is preserved and
       // only the alt text can be updated from Excel.
       ...(photo
@@ -542,4 +544,73 @@ export async function applyExcelWorkbook(input: {
   }
   await sanityCreateOrReplace(documents);
   return { ok: true, written: documents.length, errors: [], analysis };
+}
+
+/* --- export: current Sanity data → workbook ------------------------------ */
+
+const EXPORT_QUERY = `{
+  "teams": *[_type == "team" && !(_id in path("drafts.**"))] | order(order asc, name asc){
+    teamId, "slug": slug.current, name, shortName, category, level, shortDescription, description,
+    "photoAlt": photo.alt, coach, assistantCoach, order,
+    players[]{ name, number, position },
+    trainings[]{ day, startTime, endTime, "venueId": venue->venueId },
+    parser
+  },
+  "locations": *[_type == "location" && !(_id in path("drafts.**"))] | order(name asc){
+    venueId, name, address, postalCode, city, googleMapsUrl, notes
+  }
+}`;
+
+interface ExportTeam {
+  teamId?: string;
+  slug?: string;
+  players?: Array<Record<string, unknown>> | null;
+  trainings?: Array<Record<string, unknown>> | null;
+  parser?: Record<string, unknown> | null;
+  [key: string]: unknown;
+}
+
+function cell(value: unknown): string | number | boolean {
+  if (value === null || value === undefined) return "";
+  if (typeof value === "number" || typeof value === "boolean") return value;
+  return String(value);
+}
+
+/** Builds a workbook with exactly the import columns, filled from live Sanity data. */
+export async function exportCurrentWorkbook(): Promise<{ fileName: string; base64: string }> {
+  if (!sanityConfig.enabled) throw new Error("Sanity is niet geconfigureerd");
+  const data = await sanityFetchServer<{ teams?: ExportTeam[]; locations?: Array<Record<string, unknown>> }>(
+    EXPORT_QUERY,
+    {},
+  );
+  const teams = (data?.teams ?? []).filter((team) => team.teamId);
+  const locations = (data?.locations ?? []).filter((location) => location["venueId"]);
+
+  const sheets: Record<ImportSheetName, Array<Record<string, unknown>>> = {
+    Teams: teams.map((team) => team),
+    Players: teams.flatMap((team) => (team.players ?? []).map((p) => ({ teamId: team.teamId, ...p }))),
+    Trainings: teams.flatMap((team) => (team.trainings ?? []).map((t) => ({ teamId: team.teamId, ...t }))),
+    Locations: locations,
+    ParserData: teams.map((team) => {
+      const parser = team.parser ?? {};
+      return {
+        teamId: team.teamId,
+        slug: team.slug,
+        ...parser,
+        parserEnabled: parser["parserEnabled"] ? "WAAR" : "ONWAAR",
+      };
+    }),
+  };
+
+  const workbook = XLSX.utils.book_new();
+  for (const name of SHEET_NAMES) {
+    const columns = IMPORT_SHEETS[name].columns;
+    const matrix = [columns, ...sheets[name].map((row) => columns.map((column) => cell(row[column])))];
+    const worksheet = XLSX.utils.aoa_to_sheet(matrix);
+    worksheet["!cols"] = columns.map((column) => ({ wch: Math.max(12, column.length + 2) }));
+    XLSX.utils.book_append_sheet(workbook, worksheet, name);
+  }
+  const base64 = XLSX.write(workbook, { type: "base64", bookType: "xlsx" }) as string;
+  const date = new Date().toISOString().slice(0, 10);
+  return { fileName: `BOWsite-data-${date}.xlsx`, base64 };
 }

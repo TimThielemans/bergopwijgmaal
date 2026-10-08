@@ -35,3 +35,11 @@ export const applyExcelImport = createServerFn({ method: "POST" })
     const { applyExcelWorkbook } = await import("./excel.server");
     return applyExcelWorkbook(data);
   });
+
+export const exportExcelWorkbook = createServerFn({ method: "POST" }).handler(
+  async (): Promise<{ fileName: string; base64: string }> => {
+    await (await import("@/lib/admin/session.server")).requireAdmin();
+    const { exportCurrentWorkbook } = await import("./excel.server");
+    return exportCurrentWorkbook();
+  },
+);
