@@ -10,7 +10,7 @@ import {
   Users,
   Wrench,
 } from "lucide-react";
-import type { HallSpot, MatchStep, ScorerPhase } from "@/content/types";
+import type { HallSpot, MatchStep, NetSetupStep, ScorerPhase } from "@/content/types";
 import { useSiteContent } from "@/lib/site-content";
 import { list, safeUrl, text } from "@/lib/safe";
 import { pageMeta } from "@/lib/seo";
@@ -94,6 +94,16 @@ const MATCHBOX = [
   "Old school fluitje",
   "Rotatieformulieren",
   "Lijst met alle licentienummers",
+];
+
+/** Standaardstappen — te verfijnen via de CMS (met optionele foto per stap). */
+const NET_SETUP: NetSetupStep[] = [
+  { text: "Haal het net met de groene koorden, de antennes, 2 palen en 2 rode paalbeschermers uit het ballenkot", location: "ballenkot" },
+  { text: "Plaats de palen in de vloerankers en zet ze stevig vast" },
+  { text: "Hang het net op tussen de palen en span de groene koorden" },
+  { text: "Bevestig de antennes boven het net, ter hoogte van de zijlijnen" },
+  { text: "Plaats de rode paalbeschermers rond beide palen" },
+  { text: "Controleer de nethoogte en de spanning van de koorden" },
 ];
 
 function useChecklist(key: string) {
