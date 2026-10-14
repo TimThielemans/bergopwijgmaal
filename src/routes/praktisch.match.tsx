@@ -201,6 +201,7 @@ function MatchProcedurePage() {
   const notice = text(siteInfo?.matchdayNotice);
   const manual = safeUrl(siteInfo?.volleyspikeManualUrl);
   const matchbox = list(siteInfo?.matchboxContents).filter((item) => text(item));
+  const netSetup = list(siteInfo?.netSetupSteps).filter((s) => text(s?.text));
 
   return (
     <>
@@ -274,6 +275,35 @@ function MatchProcedurePage() {
                   Op naar het BOW kaffee! 🍻
                 </p>
               </div>
+            </div>
+
+            <div>
+              <h2 className="text-eyebrow text-club">Hoe zetten we het net op?</h2>
+              <ol className="mt-4 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+                {(netSetup.length ? netSetup : NET_SETUP).map((step, i) => (
+                  <li key={i} className="flex flex-col rounded-2xl border border-border bg-card p-5">
+                    {step.photo ? (
+                      <img
+                        src={step.photo.url}
+                        alt={step.photo.alt}
+                        loading="lazy"
+                        className="mb-3 aspect-[4/3] w-full rounded-xl object-cover"
+                      />
+                    ) : null}
+                    <div className="flex items-start gap-3">
+                      <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-club font-display text-sm font-bold text-primary-foreground">
+                        {i + 1}
+                      </span>
+                      <p className="text-sm">{step.text}</p>
+                    </div>
+                    {step.location ? (
+                      <div className="mt-3">
+                        <SpotBadge spot={step.location} />
+                      </div>
+                    ) : null}
+                  </li>
+                ))}
+              </ol>
             </div>
           </div>
         ) : (
