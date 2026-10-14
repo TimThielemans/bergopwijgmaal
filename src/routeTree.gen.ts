@@ -16,6 +16,7 @@ import { Route as ContactRouteImport } from './routes/contact'
 import { Route as LoginRouteImport } from './routes/login'
 import { Route as PloegenRouteImport } from './routes/ploegen'
 import { Route as StudioRouteImport } from './routes/studio'
+import { Route as VerzekeringRouteImport } from './routes/verzekering'
 import { Route as AdminIndexRouteImport } from './routes/admin.index'
 import { Route as AdminExcelImportRouteImport } from './routes/admin.excel-import'
 import { Route as AdminVolleydataRouteImport } from './routes/admin.volleydata'
@@ -57,6 +58,11 @@ const PloegenRoute = PloegenRouteImport.update({
 const StudioRoute = StudioRouteImport.update({
   id: '/studio',
   path: '/studio',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const VerzekeringRoute = VerzekeringRouteImport.update({
+  id: '/verzekering',
+  path: '/verzekering',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AdminIndexRoute = AdminIndexRouteImport.update({
@@ -104,6 +110,7 @@ export interface FileRoutesByFullPath {
   '/login': typeof LoginRoute
   '/ploegen': typeof PloegenRouteWithChildren
   '/studio': typeof StudioRoute
+  '/verzekering': typeof VerzekeringRoute
   '/admin/excel-import': typeof AdminExcelImportRoute
   '/admin/volleydata': typeof AdminVolleydataRoute
   '/ploegen/$slug': typeof PloegenSlugRoute
@@ -118,6 +125,7 @@ export interface FileRoutesByTo {
   '/contact': typeof ContactRoute
   '/login': typeof LoginRoute
   '/studio': typeof StudioRoute
+  '/verzekering': typeof VerzekeringRoute
   '/admin/excel-import': typeof AdminExcelImportRoute
   '/admin/volleydata': typeof AdminVolleydataRoute
   '/ploegen/$slug': typeof PloegenSlugRoute
@@ -135,6 +143,7 @@ export interface FileRoutesById {
   '/login': typeof LoginRoute
   '/ploegen': typeof PloegenRouteWithChildren
   '/studio': typeof StudioRoute
+  '/verzekering': typeof VerzekeringRoute
   '/admin/excel-import': typeof AdminExcelImportRoute
   '/admin/volleydata': typeof AdminVolleydataRoute
   '/ploegen/$slug': typeof PloegenSlugRoute
@@ -153,6 +162,7 @@ export interface FileRouteTypes {
     | '/login'
     | '/ploegen'
     | '/studio'
+    | '/verzekering'
     | '/admin/excel-import'
     | '/admin/volleydata'
     | '/ploegen/$slug'
@@ -167,6 +177,7 @@ export interface FileRouteTypes {
     | '/contact'
     | '/login'
     | '/studio'
+    | '/verzekering'
     | '/admin/excel-import'
     | '/admin/volleydata'
     | '/ploegen/$slug'
@@ -183,6 +194,7 @@ export interface FileRouteTypes {
     | '/login'
     | '/ploegen'
     | '/studio'
+    | '/verzekering'
     | '/admin/excel-import'
     | '/admin/volleydata'
     | '/ploegen/$slug'
@@ -200,6 +212,7 @@ export interface RootRouteChildren {
   LoginRoute: typeof LoginRoute
   PloegenRoute: typeof PloegenRouteWithChildren
   StudioRoute: typeof StudioRoute
+  VerzekeringRoute: typeof VerzekeringRoute
   PraktischVerzekeringRoute: typeof PraktischVerzekeringRoute
   ApiPublicRefreshVolleyDataRoute: typeof ApiPublicRefreshVolleyDataRoute
 }
@@ -253,6 +266,13 @@ declare module '@tanstack/react-router' {
       path: '/studio'
       fullPath: '/studio'
       preLoaderRoute: typeof StudioRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/verzekering': {
+      id: '/verzekering'
+      path: '/verzekering'
+      fullPath: '/verzekering'
+      preLoaderRoute: typeof VerzekeringRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/admin/': {
@@ -342,6 +362,7 @@ const rootRouteChildren: RootRouteChildren = {
   LoginRoute: LoginRoute,
   PloegenRoute: PloegenRouteWithChildren,
   StudioRoute: StudioRoute,
+  VerzekeringRoute: VerzekeringRoute,
   PraktischVerzekeringRoute: PraktischVerzekeringRoute,
   ApiPublicRefreshVolleyDataRoute: ApiPublicRefreshVolleyDataRoute,
 }
