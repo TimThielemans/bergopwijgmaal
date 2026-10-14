@@ -67,7 +67,12 @@ export const SITE_INFO_QUERY = `*[_type == "siteInfo"][0] {
   "insuranceFormUrl": coalesce(insuranceFormFile.asset->url, insuranceFormUrl),
   insuranceDeclarationUrl,
   insurancePolicyUrl,
-  insuranceEmail
+  insuranceEmail,
+  matchdayNotice,
+  "matchSetupSteps": matchSetupSteps[]{text, location},
+  "matchCleanupSteps": matchCleanupSteps[]{text, location},
+  "scorerPhases": scorerPhases[]{title, when, steps},
+  "volleyspikeManualUrl": coalesce(volleyspikeManualFile.asset->url, volleyspikeManualUrl)
 }`;
 
 /* --- VolleyDataParser ---------------------------------------------------- */

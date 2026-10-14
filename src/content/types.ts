@@ -276,7 +276,17 @@ export interface SiteInfo {
   insuranceDeclarationUrl?: string;
   insurancePolicyUrl?: string;
   insuranceEmail?: string;
+  /** Matchprocedure: alles optioneel, de pagina voorziet standaardinhoud. */
+  matchdayNotice?: string;
+  matchSetupSteps?: MatchStep[];
+  matchCleanupSteps?: MatchStep[];
+  scorerPhases?: ScorerPhase[];
+  volleyspikeManualUrl?: string;
 }
+
+export type HallSpot = "ballenkot" | "verzorging" | "berging" | "tafel";
+export interface MatchStep { text: string; location?: HallSpot | undefined }
+export interface ScorerPhase { title: string; when?: string | undefined; steps: string[] }
 
 /**
  * Envelope used by generated volleyball JSON files (VolleyDataParser output).

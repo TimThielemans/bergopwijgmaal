@@ -16,12 +16,12 @@ import { Route as ContactRouteImport } from './routes/contact'
 import { Route as LoginRouteImport } from './routes/login'
 import { Route as PloegenRouteImport } from './routes/ploegen'
 import { Route as StudioRouteImport } from './routes/studio'
-import { Route as VerzekeringRouteImport } from './routes/verzekering'
 import { Route as AdminIndexRouteImport } from './routes/admin.index'
 import { Route as AdminExcelImportRouteImport } from './routes/admin.excel-import'
 import { Route as AdminVolleydataRouteImport } from './routes/admin.volleydata'
 import { Route as PloegenIndexRouteImport } from './routes/ploegen.index'
 import { Route as PloegenSlugRouteImport } from './routes/ploegen.$slug'
+import { Route as PraktischVerzekeringRouteImport } from './routes/praktisch.verzekering'
 import { Route as ApiPublicRefreshVolleyDataRouteImport } from './routes/api/public/refresh-volley-data'
 
 const IndexRoute = IndexRouteImport.update({
@@ -59,11 +59,6 @@ const StudioRoute = StudioRouteImport.update({
   path: '/studio',
   getParentRoute: () => rootRouteImport,
 } as any)
-const VerzekeringRoute = VerzekeringRouteImport.update({
-  id: '/verzekering',
-  path: '/verzekering',
-  getParentRoute: () => rootRouteImport,
-} as any)
 const AdminIndexRoute = AdminIndexRouteImport.update({
   id: '/',
   path: '/',
@@ -89,6 +84,11 @@ const PloegenSlugRoute = PloegenSlugRouteImport.update({
   path: '/$slug',
   getParentRoute: () => PloegenRoute,
 } as any)
+const PraktischVerzekeringRoute = PraktischVerzekeringRouteImport.update({
+  id: '/praktisch/verzekering',
+  path: '/praktisch/verzekering',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ApiPublicRefreshVolleyDataRoute =
   ApiPublicRefreshVolleyDataRouteImport.update({
     id: '/api/public/refresh-volley-data',
@@ -104,10 +104,10 @@ export interface FileRoutesByFullPath {
   '/login': typeof LoginRoute
   '/ploegen': typeof PloegenRouteWithChildren
   '/studio': typeof StudioRoute
-  '/verzekering': typeof VerzekeringRoute
   '/admin/excel-import': typeof AdminExcelImportRoute
   '/admin/volleydata': typeof AdminVolleydataRoute
   '/ploegen/$slug': typeof PloegenSlugRoute
+  '/praktisch/verzekering': typeof PraktischVerzekeringRoute
   '/admin/': typeof AdminIndexRoute
   '/ploegen/': typeof PloegenIndexRoute
   '/api/public/refresh-volley-data': typeof ApiPublicRefreshVolleyDataRoute
@@ -118,10 +118,10 @@ export interface FileRoutesByTo {
   '/contact': typeof ContactRoute
   '/login': typeof LoginRoute
   '/studio': typeof StudioRoute
-  '/verzekering': typeof VerzekeringRoute
   '/admin/excel-import': typeof AdminExcelImportRoute
   '/admin/volleydata': typeof AdminVolleydataRoute
   '/ploegen/$slug': typeof PloegenSlugRoute
+  '/praktisch/verzekering': typeof PraktischVerzekeringRoute
   '/admin': typeof AdminIndexRoute
   '/ploegen': typeof PloegenIndexRoute
   '/api/public/refresh-volley-data': typeof ApiPublicRefreshVolleyDataRoute
@@ -135,10 +135,10 @@ export interface FileRoutesById {
   '/login': typeof LoginRoute
   '/ploegen': typeof PloegenRouteWithChildren
   '/studio': typeof StudioRoute
-  '/verzekering': typeof VerzekeringRoute
   '/admin/excel-import': typeof AdminExcelImportRoute
   '/admin/volleydata': typeof AdminVolleydataRoute
   '/ploegen/$slug': typeof PloegenSlugRoute
+  '/praktisch/verzekering': typeof PraktischVerzekeringRoute
   '/admin/': typeof AdminIndexRoute
   '/ploegen/': typeof PloegenIndexRoute
   '/api/public/refresh-volley-data': typeof ApiPublicRefreshVolleyDataRoute
@@ -153,10 +153,10 @@ export interface FileRouteTypes {
     | '/login'
     | '/ploegen'
     | '/studio'
-    | '/verzekering'
     | '/admin/excel-import'
     | '/admin/volleydata'
     | '/ploegen/$slug'
+    | '/praktisch/verzekering'
     | '/admin/'
     | '/ploegen/'
     | '/api/public/refresh-volley-data'
@@ -167,10 +167,10 @@ export interface FileRouteTypes {
     | '/contact'
     | '/login'
     | '/studio'
-    | '/verzekering'
     | '/admin/excel-import'
     | '/admin/volleydata'
     | '/ploegen/$slug'
+    | '/praktisch/verzekering'
     | '/admin'
     | '/ploegen'
     | '/api/public/refresh-volley-data'
@@ -183,10 +183,10 @@ export interface FileRouteTypes {
     | '/login'
     | '/ploegen'
     | '/studio'
-    | '/verzekering'
     | '/admin/excel-import'
     | '/admin/volleydata'
     | '/ploegen/$slug'
+    | '/praktisch/verzekering'
     | '/admin/'
     | '/ploegen/'
     | '/api/public/refresh-volley-data'
@@ -200,7 +200,7 @@ export interface RootRouteChildren {
   LoginRoute: typeof LoginRoute
   PloegenRoute: typeof PloegenRouteWithChildren
   StudioRoute: typeof StudioRoute
-  VerzekeringRoute: typeof VerzekeringRoute
+  PraktischVerzekeringRoute: typeof PraktischVerzekeringRoute
   ApiPublicRefreshVolleyDataRoute: typeof ApiPublicRefreshVolleyDataRoute
 }
 
@@ -255,13 +255,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof StudioRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/verzekering': {
-      id: '/verzekering'
-      path: '/verzekering'
-      fullPath: '/verzekering'
-      preLoaderRoute: typeof VerzekeringRouteImport
-      parentRoute: typeof rootRouteImport
-    }
     '/admin/': {
       id: '/admin/'
       path: '/'
@@ -296,6 +289,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/ploegen/$slug'
       preLoaderRoute: typeof PloegenSlugRouteImport
       parentRoute: typeof PloegenRoute
+    }
+    '/praktisch/verzekering': {
+      id: '/praktisch/verzekering'
+      path: '/praktisch/verzekering'
+      fullPath: '/praktisch/verzekering'
+      preLoaderRoute: typeof PraktischVerzekeringRouteImport
+      parentRoute: typeof rootRouteImport
     }
     '/api/public/refresh-volley-data': {
       id: '/api/public/refresh-volley-data'
@@ -342,7 +342,7 @@ const rootRouteChildren: RootRouteChildren = {
   LoginRoute: LoginRoute,
   PloegenRoute: PloegenRouteWithChildren,
   StudioRoute: StudioRoute,
-  VerzekeringRoute: VerzekeringRoute,
+  PraktischVerzekeringRoute: PraktischVerzekeringRoute,
   ApiPublicRefreshVolleyDataRoute: ApiPublicRefreshVolleyDataRoute,
 }
 export const routeTree = rootRouteImport
