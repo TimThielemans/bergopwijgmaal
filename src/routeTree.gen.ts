@@ -22,6 +22,8 @@ import { Route as AdminExcelImportRouteImport } from './routes/admin.excel-impor
 import { Route as AdminVolleydataRouteImport } from './routes/admin.volleydata'
 import { Route as PloegenIndexRouteImport } from './routes/ploegen.index'
 import { Route as PloegenSlugRouteImport } from './routes/ploegen.$slug'
+import { Route as PraktischIndexRouteImport } from './routes/praktisch.index'
+import { Route as PraktischMatchRouteImport } from './routes/praktisch.match'
 import { Route as PraktischVerzekeringRouteImport } from './routes/praktisch.verzekering'
 import { Route as ApiPublicRefreshVolleyDataRouteImport } from './routes/api/public/refresh-volley-data'
 
@@ -90,6 +92,16 @@ const PloegenSlugRoute = PloegenSlugRouteImport.update({
   path: '/$slug',
   getParentRoute: () => PloegenRoute,
 } as any)
+const PraktischIndexRoute = PraktischIndexRouteImport.update({
+  id: '/praktisch/',
+  path: '/praktisch/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PraktischMatchRoute = PraktischMatchRouteImport.update({
+  id: '/praktisch/match',
+  path: '/praktisch/match',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const PraktischVerzekeringRoute = PraktischVerzekeringRouteImport.update({
   id: '/praktisch/verzekering',
   path: '/praktisch/verzekering',
@@ -114,9 +126,11 @@ export interface FileRoutesByFullPath {
   '/admin/excel-import': typeof AdminExcelImportRoute
   '/admin/volleydata': typeof AdminVolleydataRoute
   '/ploegen/$slug': typeof PloegenSlugRoute
+  '/praktisch/match': typeof PraktischMatchRoute
   '/praktisch/verzekering': typeof PraktischVerzekeringRoute
   '/admin/': typeof AdminIndexRoute
   '/ploegen/': typeof PloegenIndexRoute
+  '/praktisch/': typeof PraktischIndexRoute
   '/api/public/refresh-volley-data': typeof ApiPublicRefreshVolleyDataRoute
 }
 export interface FileRoutesByTo {
@@ -129,9 +143,11 @@ export interface FileRoutesByTo {
   '/admin/excel-import': typeof AdminExcelImportRoute
   '/admin/volleydata': typeof AdminVolleydataRoute
   '/ploegen/$slug': typeof PloegenSlugRoute
+  '/praktisch/match': typeof PraktischMatchRoute
   '/praktisch/verzekering': typeof PraktischVerzekeringRoute
   '/admin': typeof AdminIndexRoute
   '/ploegen': typeof PloegenIndexRoute
+  '/praktisch': typeof PraktischIndexRoute
   '/api/public/refresh-volley-data': typeof ApiPublicRefreshVolleyDataRoute
 }
 export interface FileRoutesById {
@@ -147,9 +163,11 @@ export interface FileRoutesById {
   '/admin/excel-import': typeof AdminExcelImportRoute
   '/admin/volleydata': typeof AdminVolleydataRoute
   '/ploegen/$slug': typeof PloegenSlugRoute
+  '/praktisch/match': typeof PraktischMatchRoute
   '/praktisch/verzekering': typeof PraktischVerzekeringRoute
   '/admin/': typeof AdminIndexRoute
   '/ploegen/': typeof PloegenIndexRoute
+  '/praktisch/': typeof PraktischIndexRoute
   '/api/public/refresh-volley-data': typeof ApiPublicRefreshVolleyDataRoute
 }
 export interface FileRouteTypes {
@@ -166,9 +184,11 @@ export interface FileRouteTypes {
     | '/admin/excel-import'
     | '/admin/volleydata'
     | '/ploegen/$slug'
+    | '/praktisch/match'
     | '/praktisch/verzekering'
     | '/admin/'
     | '/ploegen/'
+    | '/praktisch/'
     | '/api/public/refresh-volley-data'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -181,9 +201,11 @@ export interface FileRouteTypes {
     | '/admin/excel-import'
     | '/admin/volleydata'
     | '/ploegen/$slug'
+    | '/praktisch/match'
     | '/praktisch/verzekering'
     | '/admin'
     | '/ploegen'
+    | '/praktisch'
     | '/api/public/refresh-volley-data'
   id:
     | '__root__'
@@ -198,9 +220,11 @@ export interface FileRouteTypes {
     | '/admin/excel-import'
     | '/admin/volleydata'
     | '/ploegen/$slug'
+    | '/praktisch/match'
     | '/praktisch/verzekering'
     | '/admin/'
     | '/ploegen/'
+    | '/praktisch/'
     | '/api/public/refresh-volley-data'
   fileRoutesById: FileRoutesById
 }
@@ -213,7 +237,9 @@ export interface RootRouteChildren {
   PloegenRoute: typeof PloegenRouteWithChildren
   StudioRoute: typeof StudioRoute
   VerzekeringRoute: typeof VerzekeringRoute
+  PraktischMatchRoute: typeof PraktischMatchRoute
   PraktischVerzekeringRoute: typeof PraktischVerzekeringRoute
+  PraktischIndexRoute: typeof PraktischIndexRoute
   ApiPublicRefreshVolleyDataRoute: typeof ApiPublicRefreshVolleyDataRoute
 }
 
@@ -310,6 +336,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof PloegenSlugRouteImport
       parentRoute: typeof PloegenRoute
     }
+    '/praktisch/': {
+      id: '/praktisch/'
+      path: '/praktisch'
+      fullPath: '/praktisch/'
+      preLoaderRoute: typeof PraktischIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/praktisch/match': {
+      id: '/praktisch/match'
+      path: '/praktisch/match'
+      fullPath: '/praktisch/match'
+      preLoaderRoute: typeof PraktischMatchRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/praktisch/verzekering': {
       id: '/praktisch/verzekering'
       path: '/praktisch/verzekering'
@@ -363,7 +403,9 @@ const rootRouteChildren: RootRouteChildren = {
   PloegenRoute: PloegenRouteWithChildren,
   StudioRoute: StudioRoute,
   VerzekeringRoute: VerzekeringRoute,
+  PraktischMatchRoute: PraktischMatchRoute,
   PraktischVerzekeringRoute: PraktischVerzekeringRoute,
+  PraktischIndexRoute: PraktischIndexRoute,
   ApiPublicRefreshVolleyDataRoute: ApiPublicRefreshVolleyDataRoute,
 }
 export const routeTree = rootRouteImport
