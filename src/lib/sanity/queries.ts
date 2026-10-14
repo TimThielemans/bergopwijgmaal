@@ -73,6 +73,7 @@ export const SITE_INFO_QUERY = `*[_type == "siteInfo"][0] {
   "matchCleanupSteps": matchCleanupSteps[]{text, location},
   "scorerPhases": scorerPhases[]{title, when, steps},
   "matchboxContents": coalesce(matchboxContents, []),
+  "netSetupSteps": netSetupSteps[]{text, location, photo},
   "volleyspikeManualUrl": coalesce(volleyspikeManualFile.asset->url, volleyspikeManualUrl)
 }`;
 

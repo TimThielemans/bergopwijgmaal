@@ -243,6 +243,18 @@ export const sanityCmsProvider: CmsProvider = {
       ...(list(raw?.matchCleanupSteps).length ? { matchCleanupSteps: list(raw?.matchCleanupSteps) } : {}),
       ...(list(raw?.scorerPhases).length ? { scorerPhases: list(raw?.scorerPhases) } : {}),
       ...(list(raw?.matchboxContents).length ? { matchboxContents: list(raw?.matchboxContents) } : {}),
+      ...(list(raw?.netSetupSteps).length
+        ? {
+            netSetupSteps: list(raw?.netSetupSteps).map((step) => {
+              const stepPhotoUrl = sanityImageUrl(step?.photo, 800);
+              return {
+                text: text(step?.text),
+                ...(text(step?.location) ? { location: step?.location } : {}),
+                ...(stepPhotoUrl ? { photo: { url: stepPhotoUrl, alt: text(step?.text) } } : {}),
+              };
+            }),
+          }
+        : {}),
     };
     if (!raw || (fees.length === 0 && info.length === 0)) return { ...fallback, ...insurance };
     return {

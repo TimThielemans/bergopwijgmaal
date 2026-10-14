@@ -10,7 +10,7 @@ import {
   Users,
   Wrench,
 } from "lucide-react";
-import type { HallSpot, MatchStep, ScorerPhase } from "@/content/types";
+import type { HallSpot, MatchStep, NetSetupStep, ScorerPhase } from "@/content/types";
 import { useSiteContent } from "@/lib/site-content";
 import { list, safeUrl, text } from "@/lib/safe";
 import { pageMeta } from "@/lib/seo";
@@ -94,6 +94,16 @@ const MATCHBOX = [
   "Old school fluitje",
   "Rotatieformulieren",
   "Lijst met alle licentienummers",
+];
+
+/** Standaardstappen — te verfijnen via de CMS (met optionele foto per stap). */
+const NET_SETUP: NetSetupStep[] = [
+  { text: "Haal het net met de groene koorden, de antennes, 2 palen en 2 rode paalbeschermers uit het ballenkot", location: "ballenkot" },
+  { text: "Plaats de palen in de vloerankers en zet ze stevig vast" },
+  { text: "Hang het net op tussen de palen en span de groene koorden" },
+  { text: "Bevestig de antennes boven het net, ter hoogte van de zijlijnen" },
+  { text: "Plaats de rode paalbeschermers rond beide palen" },
+  { text: "Controleer de nethoogte en de spanning van de koorden" },
 ];
 
 function useChecklist(key: string) {
@@ -191,6 +201,7 @@ function MatchProcedurePage() {
   const notice = text(siteInfo?.matchdayNotice);
   const manual = safeUrl(siteInfo?.volleyspikeManualUrl);
   const matchbox = list(siteInfo?.matchboxContents).filter((item) => text(item));
+  const netSetup = list(siteInfo?.netSetupSteps).filter((s) => text(s?.text));
 
   return (
     <>
@@ -264,6 +275,35 @@ function MatchProcedurePage() {
                   Op naar het BOW kaffee! 🍻
                 </p>
               </div>
+            </div>
+
+            <div>
+              <h2 className="text-eyebrow text-club">Hoe zetten we het net op?</h2>
+              <ol className="mt-4 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+                {(netSetup.length ? netSetup : NET_SETUP).map((step, i) => (
+                  <li key={i} className="flex flex-col rounded-2xl border border-border bg-card p-5">
+                    {step.photo ? (
+                      <img
+                        src={step.photo.url}
+                        alt={step.photo.alt}
+                        loading="lazy"
+                        className="mb-3 aspect-[4/3] w-full rounded-xl object-cover"
+                      />
+                    ) : null}
+                    <div className="flex items-start gap-3">
+                      <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-club font-display text-sm font-bold text-primary-foreground">
+                        {i + 1}
+                      </span>
+                      <p className="text-sm">{step.text}</p>
+                    </div>
+                    {step.location ? (
+                      <div className="mt-3">
+                        <SpotBadge spot={step.location} />
+                      </div>
+                    ) : null}
+                  </li>
+                ))}
+              </ol>
             </div>
           </div>
         ) : (
