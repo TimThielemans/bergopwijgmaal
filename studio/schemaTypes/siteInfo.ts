@@ -125,6 +125,22 @@ export const siteInfo = defineType({
       of: [defineArrayMember({ type: "string" })],
     }),
     defineField({
+      name: "netSetupSteps",
+      title: "Matchprocedure: hoe zetten we het net op?",
+      type: "array",
+      description: "Per stap een optionele foto. Leeg = standaardstappen van de website.",
+      of: [defineArrayMember({ type: "object", name: "netSetupStep", fields: [
+        defineField({ name: "text", title: "Stap", type: "string" }),
+        defineField({ name: "location", title: "Waar", type: "string", options: { list: [
+          { title: "Ballenkot", value: "ballenkot" },
+          { title: "Verzorgingsruimte", value: "verzorging" },
+          { title: "Hoge berging", value: "berging" },
+          { title: "Wedstrijdtafel / dubbele deur", value: "tafel" },
+        ] } }),
+        defineField({ name: "photo", title: "Foto (optioneel)", type: "image" }),
+      ] })],
+    }),
+    defineField({
       name: "volleyspikeManualFile",
       title: "Matchprocedure: VolleySpike-handleiding (PDF)",
       type: "file",

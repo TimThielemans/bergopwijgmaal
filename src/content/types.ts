@@ -283,11 +283,15 @@ export interface SiteInfo {
   scorerPhases?: ScorerPhase[];
   /** Inhoud van de matchbak; leeg = standaardlijst van de website. */
   matchboxContents?: string[];
+  /** Stappen "Hoe zetten we het net op?"; leeg = standaardstappen van de website. */
+  netSetupSteps?: NetSetupStep[];
   volleyspikeManualUrl?: string;
 }
 
 export type HallSpot = "ballenkot" | "verzorging" | "berging" | "tafel";
 export interface MatchStep { text: string; location?: HallSpot | undefined }
+/** Stap in "Hoe zetten we het net op?"; foto optioneel via de CMS. */
+export interface NetSetupStep { text: string; location?: HallSpot | undefined; photo?: ImageRef | undefined }
 export interface ScorerPhase { title: string; when?: string | undefined; steps: string[] }
 
 /**
