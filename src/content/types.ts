@@ -281,6 +281,8 @@ export interface SiteInfo {
   matchSetupSteps?: MatchStep[];
   matchCleanupSteps?: MatchStep[];
   scorerPhases?: ScorerPhase[];
+  /** Inhoud van de matchbak; leeg = standaardlijst van de website. */
+  matchboxContents?: string[];
   volleyspikeManualUrl?: string;
 }
 

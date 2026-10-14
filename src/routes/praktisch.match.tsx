@@ -86,7 +86,15 @@ const SCORER: ScorerPhase[] = [
   },
 ];
 
-const MATCHBOX = ["2 tablets + opladers", "Elektronisch fluitje", "Meetlat", "Reserve-antennes"];
+const MATCHBOX = [
+  "2 tablets + opladers",
+  "Pompje en drukmeter",
+  "Elektronisch fluitje",
+  "Reservebatterij voor het fluitje",
+  "Old school fluitje",
+  "Rotatieformulieren",
+  "Lijst met alle licentienummers",
+];
 
 function useChecklist(key: string) {
   const [done, setDone] = useState<number[]>([]);
