@@ -31,9 +31,9 @@ export const Route = createFileRoute("/praktisch/match")({
 
 const SPOTS: Record<HallSpot, { label: string; className: string }> = {
   ballenkot: { label: "Ballenkot", className: "bg-club/15 text-club border-club/40" },
-  verzorging: { label: "Verzorgingsruimte", className: "bg-chart-2/15 text-chart-2 border-chart-2/40" },
-  berging: { label: "Hoge berging", className: "bg-chart-4/15 text-chart-4 border-chart-4/40" },
-  tafel: { label: "Wedstrijdtafel", className: "bg-chart-5/15 text-chart-5 border-chart-5/40" },
+  verzorging: { label: "Verzorgingsruimte", className: "bg-win/15 text-win-deep border-win/40" },
+  berging: { label: "Hoge berging", className: "bg-loss-soft/15 text-loss-soft-deep border-loss-soft/40" },
+  tafel: { label: "Wedstrijdtafel", className: "bg-loss/10 text-loss border-loss/40" },
 };
 
 const SETUP: MatchStep[] = [
