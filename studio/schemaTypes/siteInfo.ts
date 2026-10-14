@@ -86,8 +86,7 @@ export const siteInfo = defineType({
         defineField({ name: "location", title: "Waar", type: "string", options: { list: [
           { title: "Ballenkot", value: "ballenkot" },
           { title: "Verzorgingsruimte", value: "verzorging" },
-          { title: "Hoge berging", value: "berging" },
-          { title: "Wedstrijdtafel / dubbele deur", value: "tafel" },
+          { title: "Berging/zaal", value: "berging" },
         ] } }),
       ] })],
     }),
@@ -101,8 +100,7 @@ export const siteInfo = defineType({
         defineField({ name: "location", title: "Waar", type: "string", options: { list: [
           { title: "Ballenkot", value: "ballenkot" },
           { title: "Verzorgingsruimte", value: "verzorging" },
-          { title: "Hoge berging", value: "berging" },
-          { title: "Wedstrijdtafel / dubbele deur", value: "tafel" },
+          { title: "Berging/zaal", value: "berging" },
         ] } }),
       ] })],
     }),
@@ -134,10 +132,29 @@ export const siteInfo = defineType({
         defineField({ name: "location", title: "Waar", type: "string", options: { list: [
           { title: "Ballenkot", value: "ballenkot" },
           { title: "Verzorgingsruimte", value: "verzorging" },
-          { title: "Hoge berging", value: "berging" },
-          { title: "Wedstrijdtafel / dubbele deur", value: "tafel" },
+          { title: "Berging/zaal", value: "berging" },
         ] } }),
         defineField({ name: "photo", title: "Foto (optioneel)", type: "image" }),
+      ] })],
+    }),
+    defineField({
+      name: "homeTeamFaqs",
+      title: "Matchprocedure: veelgestelde vragen thuisploeg",
+      type: "array",
+      description: "Vragen en antwoorden onder Wat als … ? Lege lijst = geen vragen tonen.",
+      of: [defineArrayMember({ type: "object", name: "matchFaq", fields: [
+        defineField({ name: "question", title: "Vraag", type: "string", validation: (Rule) => Rule.required() }),
+        defineField({ name: "answer", title: "Antwoord", type: "text", rows: 4, validation: (Rule) => Rule.required() }),
+      ] })],
+    }),
+    defineField({
+      name: "scorerFaqs",
+      title: "Matchprocedure: veelgestelde vragen markeerders",
+      type: "array",
+      description: "Vragen en antwoorden onder Wat als … ? Lege lijst = geen vragen tonen.",
+      of: [defineArrayMember({ type: "object", name: "matchFaq", fields: [
+        defineField({ name: "question", title: "Vraag", type: "string", validation: (Rule) => Rule.required() }),
+        defineField({ name: "answer", title: "Antwoord", type: "text", rows: 4, validation: (Rule) => Rule.required() }),
       ] })],
     }),
     defineField({
