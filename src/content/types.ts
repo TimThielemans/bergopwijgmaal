@@ -285,10 +285,13 @@ export interface SiteInfo {
   matchboxContents?: string[];
   /** Stappen "Hoe zetten we het net op?"; leeg = standaardstappen van de website. */
   netSetupSteps?: NetSetupStep[];
+  homeTeamFaqs?: MatchFaq[];
+  scorerFaqs?: MatchFaq[];
   volleyspikeManualUrl?: string;
 }
 
-export type HallSpot = "ballenkot" | "verzorging" | "berging" | "tafel";
+export type HallSpot = "ballenkot" | "verzorging" | "berging";
+export interface MatchFaq { question: string; answer: string }
 export interface MatchStep { text: string; location?: HallSpot | undefined }
 /** Stap in "Hoe zetten we het net op?"; foto optioneel via de CMS. */
 export interface NetSetupStep { text: string; location?: HallSpot | undefined; photo?: ImageRef | undefined }

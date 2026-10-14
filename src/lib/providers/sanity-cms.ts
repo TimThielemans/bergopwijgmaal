@@ -243,6 +243,8 @@ export const sanityCmsProvider: CmsProvider = {
       ...(list(raw?.matchCleanupSteps).length ? { matchCleanupSteps: list(raw?.matchCleanupSteps) } : {}),
       ...(list(raw?.scorerPhases).length ? { scorerPhases: list(raw?.scorerPhases) } : {}),
       ...(list(raw?.matchboxContents).length ? { matchboxContents: list(raw?.matchboxContents) } : {}),
+      ...(Array.isArray(raw?.homeTeamFaqs) ? { homeTeamFaqs: raw.homeTeamFaqs } : {}),
+      ...(Array.isArray(raw?.scorerFaqs) ? { scorerFaqs: raw.scorerFaqs } : {}),
       ...(list(raw?.netSetupSteps).length
         ? {
             netSetupSteps: list(raw?.netSetupSteps).map((step) => {

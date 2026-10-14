@@ -8,3 +8,5 @@
 > Commits you push to the connected branch sync back to Lovable and show up in
 > the editor, so keep the branch in a working state.
 <!-- LOVABLE:END -->
+
+- Keep matchprocedure FAQs as separate home-team and scorer arrays in Site Information, rendered by a shared accordion; this keeps editorial updates role-specific without duplicate presentation logic.

@@ -74,6 +74,8 @@ export const SITE_INFO_QUERY = `*[_type == "siteInfo"][0] {
   "scorerPhases": scorerPhases[]{title, when, steps},
   "matchboxContents": coalesce(matchboxContents, []),
   "netSetupSteps": netSetupSteps[]{text, location, photo},
+  "homeTeamFaqs": homeTeamFaqs[]{question, answer},
+  "scorerFaqs": scorerFaqs[]{question, answer},
   "volleyspikeManualUrl": coalesce(volleyspikeManualFile.asset->url, volleyspikeManualUrl)
 }`;
 
