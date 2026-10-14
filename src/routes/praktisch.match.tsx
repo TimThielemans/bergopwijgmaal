@@ -190,6 +190,7 @@ function MatchProcedurePage() {
   const phases = list(siteInfo?.scorerPhases).filter((p) => text(p?.title));
   const notice = text(siteInfo?.matchdayNotice);
   const manual = safeUrl(siteInfo?.volleyspikeManualUrl);
+  const matchbox = list(siteInfo?.matchboxContents).filter((item) => text(item));
 
   return (
     <>
@@ -244,7 +245,7 @@ function MatchProcedurePage() {
                 <SpotBadge spot="ballenkot" />
               </div>
               <ul className="mt-4 grid gap-2 sm:grid-cols-2">
-                {MATCHBOX.map((item) => (
+                {(matchbox.length ? matchbox : MATCHBOX).map((item) => (
                   <li key={item} className="flex items-center gap-2">
                     <Check aria-hidden="true" className="h-4 w-4 text-club" /> {item}
                   </li>
