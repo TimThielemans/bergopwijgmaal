@@ -69,6 +69,66 @@ export const siteInfo = defineType({
       type: "string",
       description: "Leeg = algemeen club-e-mailadres.",
     }),
+    defineField({
+      name: "matchdayNotice",
+      title: "Matchprocedure: actuele mededeling",
+      type: "text",
+      rows: 2,
+      description: "Optioneel, bv. 'Stopcontact aan de nooduitgang tijdelijk defect'. Leeg = niets tonen.",
+    }),
+    defineField({
+      name: "matchSetupSteps",
+      title: "Matchprocedure: klaarzetten (thuisploeg)",
+      type: "array",
+      description: "Leeg = standaardprocedure van de website.",
+      of: [defineArrayMember({ type: "object", name: "matchStep", fields: [
+        defineField({ name: "text", title: "Stap", type: "string" }),
+        defineField({ name: "location", title: "Waar", type: "string", options: { list: [
+          { title: "Ballenkot", value: "ballenkot" },
+          { title: "Verzorgingsruimte", value: "verzorging" },
+          { title: "Hoge berging", value: "berging" },
+          { title: "Wedstrijdtafel / dubbele deur", value: "tafel" },
+        ] } }),
+      ] })],
+    }),
+    defineField({
+      name: "matchCleanupSteps",
+      title: "Matchprocedure: na de match (thuisploeg)",
+      type: "array",
+      description: "Leeg = standaardprocedure van de website.",
+      of: [defineArrayMember({ type: "object", name: "matchCleanupStep", fields: [
+        defineField({ name: "text", title: "Stap", type: "string" }),
+        defineField({ name: "location", title: "Waar", type: "string", options: { list: [
+          { title: "Ballenkot", value: "ballenkot" },
+          { title: "Verzorgingsruimte", value: "verzorging" },
+          { title: "Hoge berging", value: "berging" },
+          { title: "Wedstrijdtafel / dubbele deur", value: "tafel" },
+        ] } }),
+      ] })],
+    }),
+    defineField({
+      name: "scorerPhases",
+      title: "Matchprocedure: markeerders (VolleySpike)",
+      type: "array",
+      description: "Tijdlijn per fase. Leeg = standaardtijdlijn van de website.",
+      of: [defineArrayMember({ type: "object", name: "scorerPhase", fields: [
+        defineField({ name: "title", title: "Fase", type: "string" }),
+        defineField({ name: "when", title: "Wanneer", type: "string" }),
+        defineField({ name: "steps", title: "Stappen", type: "array", of: [defineArrayMember({ type: "string" })] }),
+      ] })],
+    }),
+    defineField({
+      name: "volleyspikeManualFile",
+      title: "Matchprocedure: VolleySpike-handleiding (PDF)",
+      type: "file",
+      options: { accept: "application/pdf" },
+    }),
+    defineField({
+      name: "volleyspikeManualUrl",
+      title: "Matchprocedure: link VolleySpike-handleiding",
+      type: "url",
+      description: "Gebruikt als er geen PDF is opgeladen.",
+    }),
   ],
   preview: { prepare: () => ({ title: "Site-informatie" }) },
 });

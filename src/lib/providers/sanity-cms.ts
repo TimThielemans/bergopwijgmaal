@@ -237,6 +237,11 @@ export const sanityCmsProvider: CmsProvider = {
       ...(text(raw?.insuranceDeclarationUrl) ? { insuranceDeclarationUrl: text(raw?.insuranceDeclarationUrl) } : {}),
       ...(text(raw?.insurancePolicyUrl) ? { insurancePolicyUrl: text(raw?.insurancePolicyUrl) } : {}),
       ...(text(raw?.insuranceEmail) ? { insuranceEmail: text(raw?.insuranceEmail) } : {}),
+      ...(text(raw?.matchdayNotice) ? { matchdayNotice: text(raw?.matchdayNotice) } : {}),
+      ...(text(raw?.volleyspikeManualUrl) ? { volleyspikeManualUrl: text(raw?.volleyspikeManualUrl) } : {}),
+      ...(list(raw?.matchSetupSteps).length ? { matchSetupSteps: list(raw?.matchSetupSteps) } : {}),
+      ...(list(raw?.matchCleanupSteps).length ? { matchCleanupSteps: list(raw?.matchCleanupSteps) } : {}),
+      ...(list(raw?.scorerPhases).length ? { scorerPhases: list(raw?.scorerPhases) } : {}),
     };
     if (!raw || (fees.length === 0 && info.length === 0)) return { ...fallback, ...insurance };
     return {

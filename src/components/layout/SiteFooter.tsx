@@ -49,7 +49,7 @@ export function SiteFooter() {
               </Link>
             </li>
             <li>
-              <Link to="/verzekering" className="transition-colors hover:text-club">
+              <Link to="/praktisch/verzekering" className="transition-colors hover:text-club">
                 Verzekering
               </Link>
             </li>
