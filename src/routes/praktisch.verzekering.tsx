@@ -34,7 +34,7 @@ const DESCRIPTION =
 const VV_URL = "https://www.volleyvlaanderen.be";
 const VV_INSURANCE_URL = "https://www.volleyvlaanderen.be/verzekering";
 
-export const Route = createFileRoute("/verzekering")({
+export const Route = createFileRoute("/praktisch/verzekering")({
   head: () => ({ meta: pageMeta({ title: TITLE, description: DESCRIPTION }) }),
   component: InsurancePage,
 });

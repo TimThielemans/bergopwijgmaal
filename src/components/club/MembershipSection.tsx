@@ -69,7 +69,7 @@ export function MembershipSection({ siteInfo }: { siteInfo: SiteInfo | undefined
             </p>
           </div>
           <Link
-            to="/verzekering"
+            to="/praktisch/verzekering"
             className="inline-flex min-h-11 shrink-0 items-center gap-2 font-display text-sm font-bold text-club-deep hover:underline"
           >
             Meer over de verzekering <ArrowRight aria-hidden="true" className="h-4 w-4" />
