@@ -10,13 +10,14 @@ import {
   Users,
   Wrench,
 } from "lucide-react";
-import type { HallSpot, MatchStep, NetSetupStep, ScorerPhase } from "@/content/types";
+import type { HallSpot, MatchFaq, MatchStep, NetSetupStep, ScorerPhase } from "@/content/types";
 import { useSiteContent } from "@/lib/site-content";
 import { list, safeUrl, text } from "@/lib/safe";
 import { pageMeta } from "@/lib/seo";
 import { cn } from "@/lib/utils";
 import { PageHero } from "@/components/layout/PageHero";
 import { Section } from "@/components/layout/Section";
+import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 
 export const Route = createFileRoute("/praktisch/match")({
   head: () => ({
@@ -32,22 +33,21 @@ export const Route = createFileRoute("/praktisch/match")({
 const SPOTS: Record<HallSpot, { label: string; className: string }> = {
   ballenkot: { label: "Ballenkot", className: "bg-club/15 text-club border-club/40" },
   verzorging: { label: "Verzorgingsruimte", className: "bg-win/15 text-win-deep border-win/40" },
-  berging: { label: "Hoge berging", className: "bg-loss-soft/15 text-loss-soft-deep border-loss-soft/40" },
-  tafel: { label: "Wedstrijdtafel", className: "bg-loss/10 text-loss border-loss/40" },
+  berging: { label: "Berging/zaal", className: "bg-loss-soft/15 text-loss-soft-deep border-loss-soft/40" },
 };
 
 const SETUP: MatchStep[] = [
-  { text: "Wedstrijdtafel klaarzetten: 1 tafel + 2 stoelen aan de dubbele deur", location: "tafel" },
-  { text: "Stekkerdoos op de tafel leggen", location: "tafel" },
+  { text: "Wedstrijdtafel klaarzetten: 1 tafel + 2 stoelen aan de dubbele deur" },
+  { text: "Stekkerdoos op de tafel leggen" },
   { text: "Matchbak halen", location: "ballenkot" },
   { text: "Elektronisch scorebord halen", location: "verzorging" },
   { text: "Wisselzone: 2 hoge banken per ploeg + 1 stoel voor de coach" },
   { text: "Net opzetten: net met groene koorden, antennes, 2 palen en 2 rode paalbeschermers", location: "ballenkot" },
   { text: "Scheidsrechterstoel halen", location: "berging" },
-  { text: "2 tablets aanzetten en laten opladen op de wedstrijdtafel", location: "tafel" },
-  { text: "Scorebord in het stopcontact, 'nieuwe match – volleybal' kiezen", location: "tafel" },
-  { text: "Elektronisch fluitje op tafel leggen", location: "tafel" },
-  { text: "Matchbak veilig achter de tafel zetten", location: "tafel" },
+  { text: "2 tablets aanzetten en laten opladen op de wedstrijdtafel" },
+  { text: "Scorebord in het stopcontact, 'nieuwe match – volleybal' kiezen" },
+  { text: "Elektronisch fluitje op tafel leggen" },
+  { text: "Matchbak veilig achter de tafel zetten" },
 ];
 
 const CLEANUP: MatchStep[] = [
@@ -105,6 +105,32 @@ const NET_SETUP: NetSetupStep[] = [
   { text: "Plaats de rode paalbeschermers rond beide palen" },
   { text: "Controleer de nethoogte en de spanning van de koorden" },
 ];
+
+const HOME_FAQS: MatchFaq[] = [
+  { question: "Is er een EHBO-koffer?", answer: "Ja, er ligt een EHBO-koffer achter de toog in het BOW kaffee." },
+];
+
+const SCORER_FAQS: MatchFaq[] = [
+  { question: "Wat als ik twijfel tijdens het markeren?", answer: "Vraag eerst de scheidsrechter voordat je verdergaat." },
+];
+
+function ProcedureFaq({ items }: { items: MatchFaq[] }) {
+  const faqs = list(items).filter((item) => text(item?.question) && text(item?.answer));
+  if (!faqs.length) return null;
+  return (
+    <section className="mt-8" aria-label="Veelgestelde vragen">
+      <h2 className="text-eyebrow text-club">Wat als … ?</h2>
+      <Accordion type="multiple" className="mt-4 border-t border-border">
+        {faqs.map((faq, i) => (
+          <AccordionItem key={i} value={`faq-${i}`}>
+            <AccordionTrigger className="gap-4 font-display text-base font-semibold">{faq.question}</AccordionTrigger>
+            <AccordionContent className="max-w-3xl whitespace-pre-line leading-relaxed text-muted-foreground">{faq.answer}</AccordionContent>
+          </AccordionItem>
+        ))}
+      </Accordion>
+    </section>
+  );
+}
 
 function useChecklist(key: string) {
   const [done, setDone] = useState<number[]>([]);
@@ -267,13 +293,16 @@ function MatchProcedurePage() {
               </p>
             </div>
 
-            <div className="grid gap-6 lg:grid-cols-2">
+            <div>
+              <h2 className="mb-4 text-eyebrow text-club">Wat moeten we allemaal doen?</h2>
+              <div className="grid gap-6 lg:grid-cols-2">
               <Checklist id="setup" title="Voor de match: klaarzetten" steps={setup.length ? setup : SETUP} />
               <div className="space-y-4">
                 <Checklist id="cleanup" title="Na de match: opruimen" steps={cleanup.length ? cleanup : CLEANUP} />
                 <p className="rounded-2xl bg-ink p-5 text-center font-display text-lg font-bold text-ink-foreground">
                   Op naar het BOW kaffee! 🍻
                 </p>
+              </div>
               </div>
             </div>
 
@@ -305,6 +334,7 @@ function MatchProcedurePage() {
                 ))}
               </ol>
             </div>
+            <ProcedureFaq items={siteInfo?.homeTeamFaqs ?? HOME_FAQS} />
           </div>
         ) : (
           <div className="mt-8">
@@ -340,6 +370,7 @@ function MatchProcedurePage() {
                 <BookOpen aria-hidden="true" className="h-4 w-4" /> VolleySpike-handleiding
               </a>
             ) : null}
+            <ProcedureFaq items={siteInfo?.scorerFaqs ?? SCORER_FAQS} />
           </div>
         )}
       </Section>
