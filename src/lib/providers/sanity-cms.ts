@@ -242,6 +242,7 @@ export const sanityCmsProvider: CmsProvider = {
       ...(list(raw?.matchSetupSteps).length ? { matchSetupSteps: list(raw?.matchSetupSteps) } : {}),
       ...(list(raw?.matchCleanupSteps).length ? { matchCleanupSteps: list(raw?.matchCleanupSteps) } : {}),
       ...(list(raw?.scorerPhases).length ? { scorerPhases: list(raw?.scorerPhases) } : {}),
+      ...(list(raw?.matchboxContents).length ? { matchboxContents: list(raw?.matchboxContents) } : {}),
     };
     if (!raw || (fees.length === 0 && info.length === 0)) return { ...fallback, ...insurance };
     return {
