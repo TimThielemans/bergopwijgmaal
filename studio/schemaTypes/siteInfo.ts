@@ -118,6 +118,13 @@ export const siteInfo = defineType({
       ] })],
     }),
     defineField({
+      name: "matchboxContents",
+      title: "Matchprocedure: inhoud van de matchbak",
+      type: "array",
+      description: "Leeg = standaardlijst van de website.",
+      of: [defineArrayMember({ type: "string" })],
+    }),
+    defineField({
       name: "volleyspikeManualFile",
       title: "Matchprocedure: VolleySpike-handleiding (PDF)",
       type: "file",
